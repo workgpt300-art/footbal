@@ -155,3 +155,24 @@
 @keyframes confetti-fall{0%{opacity:0;transform:translateY(-5px) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translateY(340px) rotate(460deg)}}
 @media(max-width:760px){.tryout-club-grid{grid-template-columns:1fr}.contract-offer-row{grid-template-columns:1fr}.shooting-drill{padding-inline:8px}.goal-targets{grid-template-rows:repeat(2,54px)}.drill-options{gap:6px}.drill-option{min-height:90px}.signed-details{gap:5px;padding:12px 0}.signed-details b{font-size:10px}.signing-paper{padding:18px}.trial-scorebar>div{padding:9px}.trial-scorebar b{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.goal-frame,.goal-ball,.trial-last-result,.trial-result-icon,.signing-paper,.club-seal,.signature-script,.signature-confetti span,.free-agent-mark{animation:none!important;transition:none!important}}
+
+/* Interactive real-time WebGL tryout */
+.trial3d-wrap{margin:20px 0 8px;padding:12px;border:1px solid rgba(184,250,82,.18);border-radius:14px;background:linear-gradient(180deg,rgba(4,16,20,.9),rgba(14,24,30,.96))}
+.trial3d-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+.trial3d-header b,.trial3d-header .eyebrow{display:block}
+.trial3d-header b{margin-top:4px;font-size:12px}
+.trial3d-status{padding:6px 9px;border:1px solid rgba(184,250,82,.2);border-radius:20px;color:var(--green);font-size:9px;white-space:nowrap}
+.trial3d-canvas-host{position:relative;min-height:300px;height:clamp(300px,48vw,510px);overflow:hidden;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:#07131a}
+.trial3d-canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.trial3d-loader{position:absolute;top:10px;left:50%;z-index:2;max-width:calc(100% - 24px);transform:translateX(-50%);padding:7px 10px;border:1px solid rgba(255,255,255,.13);border-radius:8px;color:#e8f1ec;background:rgba(4,12,16,.74);backdrop-filter:blur(8px);font-size:10px;text-align:center;pointer-events:none}
+.trial3d-help{position:absolute;left:10px;bottom:10px;z-index:2;display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:7px 9px;border-radius:8px;color:#e0e9e7;background:rgba(4,12,16,.77);font-size:9px;pointer-events:none}
+.trial3d-help b{color:var(--green)}
+.trial3d-help span{opacity:.5}
+.trial3d-buttons{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;gap:7px}
+.trial3d-buttons button{padding:10px 13px;border:1px solid rgba(184,250,82,.35);border-radius:9px;color:#11180b;background:var(--green);font-size:10px;font-weight:900;box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.trial3d-buttons button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.trial3d-buttons span{padding:10px 13px;border-radius:9px;color:#e6f0ea;background:rgba(4,12,16,.8);font-size:10px}
+.trial3d-tip{margin:10px 2px 0;color:var(--muted);font-size:10px;line-height:1.7}
+.trial3d-error{margin-bottom:10px;padding:10px;border:1px solid rgba(255,130,130,.25);border-radius:8px;color:#ffb5b5;font-size:11px}
+@media(max-width:640px){.trial3d-wrap{padding:8px}.trial3d-canvas-host{height:340px;min-height:340px}.trial3d-help{max-width:60%;font-size:8px}.trial3d-buttons button{padding:9px 10px;font-size:9px}.trial3d-loader{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.trial3d-buttons button{transition:none!important}}

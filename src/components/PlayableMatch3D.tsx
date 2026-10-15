@@ -178,6 +178,31 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         box(7.0,2.95,.06,mat(0xd8e8df),0,1.48,-26.6);
         for(let x=-3.3;x<=3.31;x+=.5)box(.018,2.85,1.35,lineMat,x,1.45,-25.9);
         for(let y=.25;y<2.9;y+=.46)box(7.0,.018,1.34,lineMat,0,y,-25.9);
+        // Opposite goal and net so both attacks have a physical target.
+        box(.16,3.05,.16,lineMat,-3.55,1.52,25.2);box(.16,3.05,.16,lineMat,3.55,1.52,25.2);box(7.1,.16,.16,lineMat,0,3.05,25.2);
+        box(7.0,2.95,.06,mat(0xd8e8df),0,1.48,26.6);
+        for(let x=-3.3;x<=3.31;x+=.5)box(.018,2.85,1.35,lineMat,x,1.45,25.9);
+        for(let y=.25;y<2.9;y+=.46)box(7.0,.018,1.34,lineMat,0,y,25.9);
+        // A 3D stadium bowl with visible seating tiers and floodlights.
+        const standMat=mat(0x263541),seatA=mat(0x607482),seatB=mat(0x9ba9b3),lightMat=mat(0xe9f6ff);
+        box(4.6,4.2,60,standMat,-19.2,1.8,0);box(4.6,4.2,60,standMat,19.2,1.8,0);
+        box(43,4.2,4.4,standMat,0,1.8,-30.6);box(43,4.2,4.4,standMat,0,1.8,30.6);
+        for(let row=0;row<7;row+=1){
+          for(let seat=-10;seat<=10;seat+=1){
+            const x=seat*1.72;
+            box(.72,.22,.42,(row+seat)%4===0?seatB:seatA,x,.5+row*.48,-30-row*.08);
+            box(.72,.22,.42,(row-seat)%4===0?seatB:seatA,x,.5+row*.48,30+row*.08);
+          }
+          for(let seat=0;seat<16;seat+=1){
+            const z=-27+seat*3.6;
+            box(.42,.22,.92,(row+seat)%5===0?seatB:seatA,-18.6-row*.25,.5+row*.48,z);
+            box(.42,.22,.92,(row+seat+2)%5===0?seatB:seatA,18.6+row*.25,.5+row*.48,z);
+          }
+        }
+        for(const x of [-22,22]){
+          box(.18,13,.18,standMat,x,6.2,-29);box(1.8,.18,1.8,lightMat,x,13,-29);
+          box(.18,13,.18,standMat,x,6.2,29);box(1.8,.18,1.8,lightMat,x,13,29);
+        }
         const actors:(Actor & { team:"user"|"opp"; index:number })[]=[];
         const makeActor=(x:number,z:number,shirt:any,shorts:any,team:"user"|"opp",index:number,keeper=false)=>{
           const root=new THREE.Group();root.position.set(x,0,z);

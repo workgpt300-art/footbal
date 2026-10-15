@@ -301,7 +301,7 @@ function MatchesPage({save,nextMatch,update,tell}:{save:CareerSave;nextMatch:()=
   const average=oldMatches===0?matchRating:(base.player.stats.averageRating*oldMatches+matchRating)/(oldMatches+1);
   const player={...base.player,fitness:Math.max(15,base.player.fitness-10),morale:Math.min(100,Math.max(20,base.player.morale+(ownScore>oppositionScore?4:ownScore===oppositionScore?1:-3))),form:Math.min(100,Math.max(30,Math.round(base.player.form*.7+matchRating*10*.3))),stats:{...base.player.stats,matches:base.player.stats.matches+1,starts:base.player.stats.starts+1,goals:base.player.stats.goals+ownGoals,minutes:base.player.stats.minutes+90,averageRating:Number(average.toFixed(2))}};
   const summary=home?.name+" "+result.homeScore+":"+result.awayScore+" "+away?.name;
-  const next:CareerSave={...base,date:matchDate,fixtures,player,lastEvent:"3D-матч: "+summary,updatedAt:new Date().toISOString(),news:[{id:"live-match-"+selected.id,date:matchDate,category:"match",title:"Фінальний свисток: "+summary,body:"Ти зіграв матч у реальному часі. Голи, рейтинг, фізична готовність і статистика кар'єри оновлені."},...base.news].slice(0,60)};
+  const next:CareerSave={...base,date:matchDate,fixtures,player,lastEvent:"3D-матч: "+summary,updatedAt:new Date().toISOString(),news:[{id:"live-match-"+selected.id,date:matchDate,category:"match" as const,title:"Фінальний свисток: "+summary,body:"Ти зіграв матч у реальному часі. Голи, рейтинг, фізична готовність і статистика кар'єри оновлені."},...base.news].slice(0,60)};
   update(next);setPlaying(false);setMinute(90);tell("Матч збережено: "+summary+". Рейтинг: "+matchRating+"/10.");
  }
  return <div className="match-workspace">

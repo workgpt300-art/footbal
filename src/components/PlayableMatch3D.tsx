@@ -359,31 +359,48 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const forward=Number(keys.has("w")||keys.has("arrowup"))-Number(keys.has("s")||keys.has("arrowdown"));
           const side=Number(keys.has("d")||keys.has("arrowright"))-Number(keys.has("a")||keys.has("arrowleft"));
           const length=Math.hypot(forward,side)||1;
-          const moving=(forward!==0||side!==0)&&!lock&&!sent;
+          const moving=(forward!==0||side!==0)&&!lock&&!sent&&!opponentPossession;
           if(moving){
             const sprint=keys.has("shift")?1.42:1;
             const speed=(3.4+clamp(rating,35,95)*.009)*sprint;
             actor.root.position.z=clamp(actor.root.position.z-forward/length*speed*dt,-22.4,23.5);
             actor.root.position.x=clamp(actor.root.position.x+side/length*speed*dt,-13.2,13.2);
             actor.root.rotation.y=Math.atan2(side,-forward||.001);
+            kickoffMode=false;
             walk+=dt*(keys.has("shift")?11:7);
-            actor.legs[0].rotation.x=Math.sin(walk)*.43;actor.legs[1].rotation.x=-Math.sin(walk)*.43;
-            actor.arms[0].rotation.x=-Math.sin(walk)*.24;actor.arms[1].rotation.x=Math.sin(walk)*.24;
+            actor.legs[0].rotation.x=Math.sin(walk)*.55;actor.legs[1].rotation.x=-Math.sin(walk)*.55;
+            actor.arms[0].rotation.x=-Math.sin(walk)*.3;actor.arms[1].rotation.x=Math.sin(walk)*.3;
           }else{actor.legs.forEach((l:any)=>l.rotation.x*=.82);actor.arms.forEach((a:any)=>a.rotation.x*=.82);}
-          // AI defenders close down space while teammates drift into support positions.
+          // Teammates support the attack; opposition closes passing lanes and tackles.
           oppActors.forEach((defender,i)=>{
             const d=Math.hypot(defender.root.position.x-actor.root.position.x,defender.root.position.z-actor.root.position.z);
-            if(d>2.7){defender.root.position.x+=(actor.root.position.x-defender.root.position.x)/d*dt*(.45+i%2*.1);defender.root.position.z+=(actor.root.position.z-defender.root.position.z)/d*dt*(.45+i%2*.1);}
-            else if(!lock&&Math.random()<dt*.18){
-              setStatus("Захисник пресингує! Зміни напрямок або віддай пас.");
+            if(opponentPossession&&opponentHolder===defender){
+              const gx=clamp(defender.baseX*.45,-12,12),gz=24;
+              const gd=Math.hypot(gx-defender.root.position.x,gz-defender.root.position.z)||1;
+              defender.root.position.x+=(gx-defender.root.position.x)/gd*dt*2;
+              defender.root.position.z+=(gz-defender.root.position.z)/gd*dt*2;
+            }else{
+              const px=actor.root.position.x*.62+defender.baseX*.38;
+              const pz=actor.root.position.z*.62+defender.baseZ*.38;
+              const pd=Math.hypot(px-defender.root.position.x,pz-defender.root.position.z)||1;
+              if(pd>.9){defender.root.position.x+=(px-defender.root.position.x)/pd*dt*(.65+i%3*.08);defender.root.position.z+=(pz-defender.root.position.z)/pd*dt*(.65+i%3*.08);}
+              if(!opponentPossession&&!lock&&!ballAction&&d<1.08&&Math.random()<dt*.5){
+                opponentPossession=true;opponentHolder=defender;opponentPossessionClock=0;kickoffMode=false;
+                setStatus("Суперник відібрав м'яч! Притиснись до носія та натисни R.");
+              }
             }
           });
           userActors.forEach((mate,i)=>{
             if(mate===actor)return;
-            const preferredX=mate.baseX+Math.sin(matchMinute*.07+i)*1.3;
-            const preferredZ=mate.baseZ-Math.min(4,matchMinute*.04);
-            mate.root.position.x+=(preferredX-mate.root.position.x)*dt*.12;
-            mate.root.position.z+=(preferredZ-mate.root.position.z)*dt*.12;
+            const supportX=clamp(mate.baseX+Math.sin(timer*1.25+i)*1.6+actor.root.position.x*.08,-13,13);
+            const runZ=i>=7?-Math.min(5,Math.max(0,actor.root.position.z+5)*.22):0;
+            const supportZ=clamp(mate.baseZ+Math.sin(timer*.7+i)*.55+runZ,-22,22);
+            mate.root.position.x+=(supportX-mate.root.position.x)*dt*.16;
+            mate.root.position.z+=(supportZ-mate.root.position.z)*dt*.16;
+          });
+          // Leg and arm swings animate all 22 players, including AI runners.
+          actors.forEach((a,i)=>{
+            if(a!==actor){const phase=timer*5.5+i*.8;a.legs[0].rotation.x=Math.sin(phase)*.13;a.legs[1].rotation.x=-Math.sin(phase)*.13;a.arms[0].rotation.x=-Math.sin(phase)*.08;a.arms[1].rotation.x=Math.sin(phase)*.08;}
           });
 
           if(ballAction){

@@ -277,7 +277,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();
         };
         if(typeof ResizeObserver!=="undefined"){observer=new ResizeObserver(()=>resizeFallback?.());observer.observe(host);}
-        else{window.addEventListener("resize",resizeFallback);cleanups.push(()=>window.removeEventListener("resize",resizeFallback));}
+        else{window.addEventListener("resize",resizeFallback!);cleanups.push(()=>window.removeEventListener("resize",resizeFallback!));}
         resizeFallback();
         setStarted(true);setStatus("WASD — починай атаку · E — пас · Q — пас у розріз · Space — удар");
         let walk=0;
@@ -372,7 +372,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             if(Math.random()<.43){
               opponentGoals.value+=1;opponentShots.value+=1;opponentOnTarget.value+=1;
               addEvent("shot",opponentClub.id,"Швидка контратака суперника.");
-              addEvent("goal",opponentClub.id,"Суперник завершив контратаку голом.","Гравець суперника");
+              addEvent("goal",opponentClub.id,"Суперник завершив контратаку голом.",undefined,"Гравець суперника");
               setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);
               setStatus("Гол суперника. Потрібно відігратися!");
             }else{

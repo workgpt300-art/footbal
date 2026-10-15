@@ -84,4 +84,11 @@ drop policy if exists "Authenticated users can read reference squads" on public.
 create policy "Authenticated users can read reference squads" on public.football_squads for select to authenticated using (true);
 drop policy if exists "Users can read own import runs" on public.football_import_runs;
 create policy "Users can read own import runs" on public.football_import_runs for select to authenticated using (auth.uid() = user_id);
+-- Explicit grants for the Data API: authenticated users may read reference data,
+-- while only the server-side service role may write through the importer.
+grant select on public.football_leagues, public.football_teams, public.football_players,
+  public.football_squads, public.football_import_runs to authenticated;
+grant select, insert, update, delete on public.football_leagues, public.football_teams,
+  public.football_players, public.football_squads, public.football_import_runs to service_role;
+
 -- Writes happen only through authenticated server functions using the service role.

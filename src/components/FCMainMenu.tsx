@@ -8,6 +8,7 @@ type Props = {
   playerName?: string;
   clubName?: string;
   season?: string;
+  rating?: number;
   onContinue: () => void;
   onNewCareer: () => void;
   onNavigate: (view: MainView) => void;
@@ -25,7 +26,7 @@ const menuOptions: MenuOption[] = [
   { id: "leagues", title: "СВІТ ФУТБОЛУ", subtitle: "ЛІГИ, КЛУБИ ТА ГРАВЦІ", view: "database", variant: "world" },
 ];
 
-export function FCMainMenu({ hasSave, playerName, clubName, season, onContinue, onNewCareer, onNavigate }: Props) {
+export function FCMainMenu({ hasSave, playerName, clubName, season, rating, onContinue, onNewCareer, onNavigate }: Props) {
   const [active, setActive] = useState(0);
   const rootRef = useRef<HTMLElement>(null);
   const quickModes = useMemo(() => [
@@ -53,25 +54,26 @@ export function FCMainMenu({ hasSave, playerName, clubName, season, onContinue, 
       const key = event.key.toLowerCase();
       if (["arrowdown", "s"].includes(key)) {
         event.preventDefault();
-        setActive((value) => (value + 1) % menuOptions.length);
+        setActive((value) => (value + 1) % 4);
       } else if (["arrowup", "w"].includes(key)) {
         event.preventDefault();
-        setActive((value) => (value - 1 + menuOptions.length) % menuOptions.length);
-      } else if (key === "enter" && target === rootRef.current) {
+        setActive((value) => (value - 1 + 4) % 4);
+      } else if (key === "enter" && !(target instanceof HTMLButtonElement)) {
         event.preventDefault();
-        activate();
+        const modeViews: MainView[] = ["home", "matches", "squad", "database"];
+        if (!hasSave) onNewCareer(); else onNavigate(modeViews[active]);
       } else if (key === "escape") {
         event.preventDefault();
         setActive(0);
-      } else if (/^[1-7]$/.test(key)) {
+      } else if (/^[1-4]$/.test(key)) {
         const idx = Number(key) - 1;
         setActive(idx);
-        activate(menuOptions[idx].id);
+        if (!hasSave) onNewCareer(); else onNavigate((["home", "matches", "squad", "database"] as MainView[])[idx]);
       }
     };
     window.addEventListener("keydown", handle);
     return () => window.removeEventListener("keydown", handle);
-  }, [active]);
+  }, [active, hasSave, onContinue, onNewCareer, onNavigate]);
 
   return <main className="fc27-screen" ref={rootRef} tabIndex={-1} aria-label="Головне меню FOOTBALL 27">
     <div className="fc27-stadium-photo" />
@@ -85,7 +87,7 @@ export function FCMainMenu({ hasSave, playerName, clubName, season, onContinue, 
         <span><b>FOOTBALL <em>27</em></b><small>THE NEXT CHAPTER</small></span>
       </button>
       <nav className="fc27-topnav" aria-label="Швидка навігація">
-        <button className="active" onClick={onContinue}><House size={14} /> ГОЛОВНА</button>
+        <button className="active" onClick={() => setActive(0)}><House size={14} /> ГОЛОВНА</button>
         <button onClick={() => hasSave ? onNavigate("home") : onNewCareer()}>КАР'ЄРА</button>
         <button onClick={() => hasSave ? onNavigate("database") : onNewCareer()}>ФУТБОЛЬНИЙ СВІТ</button>
         <button onClick={() => hasSave ? onNavigate("settings") : onNewCareer()}><Settings size={14} /> НАЛАШТУВАННЯ</button>
@@ -131,7 +133,7 @@ export function FCMainMenu({ hasSave, playerName, clubName, season, onContinue, 
           <path d="M310 632 L338 642 L345 659 L309 662 L286 649Z M135 641 L161 648 L163 664 L104 664 L102 655Z" fill="#bfff80"/>
         </svg>
         <div className="fc27-player-rim" />
-        <div className="fc27-ovr"><small>CAREER RATING</small><strong>{hasSave ? " " : "—"}{hasSave ? undefined : ""}</strong><span>{hasSave ? (clubName || "YOUR CLUB") : "CREATE YOUR LEGACY"}</span></div>
+        <div className="fc27-ovr"><small>CAREER RATING</small><strong>{hasSave ? (rating ?? "—") : "—"}</strong><span>{hasSave ? (clubName || "YOUR CLUB") : "CREATE YOUR LEGACY"}</span></div>
         <div className="fc27-player-label"><small>PLAYER CAREER / 01</small><strong>{playerName || "YOUR NAME"}</strong><span>{clubName || "CHOOSE YOUR CLUB"}</span></div>
       </div>
       <div className="fc27-side-note"><span>THE BEAUTIFUL GAME</span><i /></div>
@@ -141,7 +143,7 @@ export function FCMainMenu({ hasSave, playerName, clubName, season, onContinue, 
       <div className="fc27-mode-heading"><div><span>ВИБИРАЙ СВІЙ ШЛЯХ</span><h2>ІГРОВІ РЕЖИМИ</h2></div><div className="fc27-mode-index">ГОЛОВНЕ МЕНЮ <i /> 01 / 04</div></div>
       <div className="fc27-mode-cards">{quickModes.map((mode) => {
         const Icon = mode.icon;
-        return <button type="button" key={mode.number} className={`fc27-mode-card fc27-mode-${mode.tint}`} onClick={() => hasSave ? onNavigate(mode.view) : onNewCareer()}><span className="fc27-mode-number">{mode.number}</span><span className="fc27-mode-icon"><Icon size={22} /></span><span className="fc27-mode-title">{mode.title}</span><span className="fc27-mode-desc">{mode.desc}</span><ArrowRight className="fc27-mode-arrow" size={17} /></button>;
+        return <button type="button" key={mode.number} className={`fc27-mode-card fc27-mode-${mode.tint} ${active === Number(mode.number) - 1 ? "is-selected" : ""}`} onClick={() => hasSave ? onNavigate(mode.view) : onNewCareer()}><span className="fc27-mode-number">{mode.number}</span><span className="fc27-mode-icon"><Icon size={22} /></span><span className="fc27-mode-title">{mode.title}</span><span className="fc27-mode-desc">{mode.desc}</span><ArrowRight className="fc27-mode-arrow" size={17} /></button>;
       })}</div>
     </section>
 

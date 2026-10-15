@@ -26,6 +26,26 @@ export const CLUBS: Club[] = [
   { id:"veres",name:"Верес Рівне",city:"Рівне",country:"Україна",leagueId:"ukr-premier-league",strength:60,colors:["#e94a4a","#f6f7f9"],initials:"ВР" },
   { id:"obolon",name:"Оболонь Київ",city:"Київ",country:"Україна",leagueId:"ukr-premier-league",strength:59,colors:["#f4f8fb","#3289c9"],initials:"ОБ" },
   { id:"oleksandriya",name:"Олександрія",city:"Олександрія",country:"Україна",leagueId:"ukr-premier-league",strength:64,colors:["#f4d44c","#22272e"],initials:"ОЛ" },
+  { id:"epl-42",name:"Arsenal",city:"Лондон",country:"Англія",leagueId:"england",strength:88,colors:["#ef233c","#ffffff"],initials:"ARS" },
+  { id:"epl-66",name:"Aston Villa",city:"Бірмінгем",country:"Англія",leagueId:"england",strength:81,colors:["#8d1b3d","#83b9e8"],initials:"AVL" },
+  { id:"epl-35",name:"Bournemouth",city:"Борнмут",country:"Англія",leagueId:"england",strength:74,colors:["#c92a2a","#171717"],initials:"BOU" },
+  { id:"epl-55",name:"Brentford",city:"Лондон",country:"Англія",leagueId:"england",strength:76,colors:["#e63946","#ffffff"],initials:"BRE" },
+  { id:"epl-51",name:"Brighton",city:"Брайтон",country:"Англія",leagueId:"england",strength:79,colors:["#1b67b1","#ffffff"],initials:"BHA" },
+  { id:"epl-44",name:"Burnley",city:"Бернлі",country:"Англія",leagueId:"england",strength:68,colors:["#6d263b","#99d6ea"],initials:"BUR" },
+  { id:"epl-49",name:"Chelsea",city:"Лондон",country:"Англія",leagueId:"england",strength:83,colors:["#1768d1","#ffffff"],initials:"CHE" },
+  { id:"epl-52",name:"Crystal Palace",city:"Лондон",country:"Англія",leagueId:"england",strength:76,colors:["#2452a4","#e5394f"],initials:"CRY" },
+  { id:"epl-45",name:"Everton",city:"Ліверпуль",country:"Англія",leagueId:"england",strength:74,colors:["#1746a2","#ffffff"],initials:"EVE" },
+  { id:"epl-36",name:"Fulham",city:"Лондон",country:"Англія",leagueId:"england",strength:75,colors:["#f5f5f5","#20252b"],initials:"FUL" },
+  { id:"epl-40",name:"Liverpool",city:"Ліверпуль",country:"Англія",leagueId:"england",strength:89,colors:["#c8102e","#ffffff"],initials:"LIV" },
+  { id:"epl-1359",name:"Luton Town",city:"Лутон",country:"Англія",leagueId:"england",strength:66,colors:["#f07828","#ffffff"],initials:"LUT" },
+  { id:"epl-50",name:"Manchester City",city:"Манчестер",country:"Англія",leagueId:"england",strength:92,colors:["#69bdf4","#ffffff"],initials:"MCI" },
+  { id:"epl-33",name:"Manchester United",city:"Манчестер",country:"Англія",leagueId:"england",strength:82,colors:["#e31b23","#f8c52b"],initials:"MUN" },
+  { id:"epl-34",name:"Newcastle United",city:"Ньюкасл",country:"Англія",leagueId:"england",strength:82,colors:["#ffffff","#222222"],initials:"NEW" },
+  { id:"epl-65",name:"Nottingham Forest",city:"Ноттінгем",country:"Англія",leagueId:"england",strength:72,colors:["#df2027","#ffffff"],initials:"NFO" },
+  { id:"epl-62",name:"Sheffield United",city:"Шеффілд",country:"Англія",leagueId:"england",strength:65,colors:["#dc252c","#ffffff"],initials:"SHU" },
+  { id:"epl-47",name:"Tottenham Hotspur",city:"Лондон",country:"Англія",leagueId:"england",strength:82,colors:["#ffffff","#14285a"],initials:"TOT" },
+  { id:"epl-48",name:"West Ham United",city:"Лондон",country:"Англія",leagueId:"england",strength:77,colors:["#7a263a","#5ab3e6"],initials:"WHU" },
+  { id:"epl-39",name:"Wolverhampton",city:"Вулвергемптон",country:"Англія",leagueId:"england",strength:75,colors:["#fdb913","#222222"],initials:"WOL" },
 ];
 export const POSITIONS: {value:Position;label:string}[] = [
   {value:"GK",label:"Воротар"},{value:"CB",label:"Центральний захисник"},{value:"LB",label:"Лівий захисник"},{value:"RB",label:"Правий захисник"},
@@ -48,19 +68,32 @@ function seeded(seed:number):()=>number { let state=seed>>>0; return ()=>{ state
 function stringSeed(text:string):number { let hash=2166136261; for(let i=0;i<text.length;i+=1){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);} return hash>>>0; }
 function addDays(date:string,count:number):string { const value=new Date(date+"T12:00:00.000Z"); value.setUTCDate(value.getUTCDate()+count); return value.toISOString().slice(0,10); }
 
-function buildFixtures():Fixture[] {
-  const ids=CLUBS.map((club)=>club.id); const count=ids.length; const half=count/2; const rotation=[...ids];
-  const firstHalf:{home:string;away:string;round:number}[]=[];
-  for(let round=0;round<count-1;round+=1){
-    for(let i=0;i<half;i+=1){
-      const a=rotation[i]; const b=rotation[count-1-i]; const home=(round+i)%2===0?a:b; const away=home===a?b:a;
-      firstHalf.push({home,away,round:round+1});
+function buildFixtures(startDate="2026-07-25"):Fixture[] {
+  const byLeague=new Map<string,string[]>();
+  for(const club of CLUBS){const ids=byLeague.get(club.leagueId)??[];ids.push(club.id);byLeague.set(club.leagueId,ids);}
+  const fixtures:Fixture[]=[];let serial=0;
+  for(const [leagueId,leagueIds] of byLeague){
+    const ids=[...leagueIds].sort();const count=ids.length;
+    if(count<2)continue;
+    const rotation=[...ids];const firstHalf:{home:string;away:string;round:number}[]=[];
+    const rounds=count-1;const half=Math.floor(count/2);
+    for(let round=0;round<rounds;round+=1){
+      for(let i=0;i<half;i+=1){
+        const a=rotation[i],b=rotation[count-1-i];
+        const home=(round+i)%2===0?a:b;const away=home===a?b:a;
+        firstHalf.push({home,away,round:round+1});
+      }
+      const fixed=rotation[0];const tail=rotation.slice(1);tail.unshift(tail.pop()!);rotation.splice(0,rotation.length,fixed,...tail);
     }
-    const fixed=rotation[0]; const tail=rotation.slice(1); tail.unshift(tail.pop()!); rotation.splice(0,rotation.length,fixed,...tail);
+    const addFixture=(home:string,away:string,round:number)=>{
+      serial+=1;
+      const winterBreak=round>rounds?14:0;
+      const date=addDays(startDate,(round-1)*7+winterBreak);
+      fixtures.push({id:"fixture-"+leagueId+"-"+serial,date,round,homeClubId:home,awayClubId:away,status:"scheduled",homeScore:null,awayScore:null,events:[],stats:null,seed:stringSeed(leagueId+"|"+home+"|"+away+"|"+round)});
+    };
+    for(const match of firstHalf)addFixture(match.home,match.away,match.round);
+    for(const match of firstHalf)addFixture(match.away,match.home,match.round+rounds);
   }
-  const fixtures:Fixture[]=[]; let serial=0;
-  for(const match of firstHalf){ serial+=1; fixtures.push({id:"fixture-"+serial,date:addDays("2026-07-25",(match.round-1)*7),round:match.round,homeClubId:match.home,awayClubId:match.away,status:"scheduled",homeScore:null,awayScore:null,events:[],stats:null,seed:stringSeed(match.home+"|"+match.away+"|"+match.round)}); }
-  for(const match of firstHalf){ serial+=1; const round=match.round+count-1; fixtures.push({id:"fixture-"+serial,date:addDays("2026-07-25",(round-1)*7),round,homeClubId:match.away,awayClubId:match.home,status:"scheduled",homeScore:null,awayScore:null,events:[],stats:null,seed:stringSeed(match.away+"|"+match.home+"|"+round)}); }
   return fixtures.sort((a,b)=>a.date.localeCompare(b.date)||a.round-b.round);
 }
 function makeAttributes(position:Position,overall:number):Record<string,number>{
@@ -75,7 +108,7 @@ export function createCareer(input:{playerName:string;clubId:string;position:Pos
   const potential=Math.round(clamp(rating+(age<21?20:age<25?13:age<29?7:2),rating+1,92)); const today="2026-07-24";
   const player:CareerPlayer={id:"player-"+Date.now(),name:input.playerName.trim()||"Новий футболіст",age,nationality:input.nationality||"Україна",position:input.position,preferredFoot:input.preferredFoot,height:input.position==="GK"||input.position==="CB"?188:178,weight:input.position==="GK"||input.position==="CB"?80:72,number:input.position==="GK"?1:input.position==="ST"?9:27,rating,potential,fitness:94,morale:76,form:64,value:Math.round(Math.max(25000,rating*rating*(potential/65)*1100)),wage:Math.round(rating*145),attributes:makeAttributes(input.position,rating),stats:{matches:0,starts:0,goals:0,assists:0,minutes:0,yellowCards:0,averageRating:0},lastTrainingDate:null,clubId:club.id,joinedAt:today};
   const id="save-"+Date.now();
-  return {id,name:input.playerName.trim()?input.playerName.trim()+" — кар'єра":"Моя кар'єра",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),date:today,season:"2026/27",player,clubId:club.id,contractStatus:"active",contractEndDate:"2027-07-24",tryoutApplications:[],activeTryout:null,contractNegotiation:null,fixtures:buildFixtures(),offers:[],news:[{id:"news-start-"+id,date:today,category:"system",title:"Кар'єру розпочато",body:player.name+" підписав перший контракт із клубом "+club.name+". Починається сезон 2026/27 у симуляційному світі."}],trainingFocus:input.position==="ST"?"finish":"passing",difficulty:input.difficulty,lastEvent:"Перший день у клубі",isDemoWorld:true};
+  return {id,name:input.playerName.trim()?input.playerName.trim()+" — кар'єра":"Моя кар'єра",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),date:today,season:"2026/27",player,clubId:club.id,contractStatus:"active",contractEndDate:"2027-07-24",tryoutApplications:[],activeTryout:null,contractNegotiation:null,fixtures:buildFixtures(addDays(today,1)),offers:[],seasonHistory:[],news:[{id:"news-start-"+id,date:today,category:"system",title:"Кар'єру розпочато",body:player.name+" підписав перший контракт із клубом "+club.name+". Починається сезон 2026/27 у симуляційному світі."}],trainingFocus:input.position==="ST"?"finish":"passing",difficulty:input.difficulty,lastEvent:"Перший день у клубі",isDemoWorld:true};
 }
 export function getVirtualSquad(clubId:string):VirtualPlayer[]{
   const club=getClub(clubId); const random=seeded(stringSeed(clubId+"-virtual-squad"));
@@ -144,6 +177,24 @@ export function advanceOneDay(save:CareerSave):CareerSave{
     }
     next.news.unshift({id:"news-round-"+date,date,category:"match",title:"Зіграно тур "+today[0].round,body:"Симулятор обробив "+today.length+" матчів. Турнірна таблиця та статистика оновлені."});
   }
+  if(next.contractStatus==="active"&&next.contractEndDate&&date>next.contractEndDate){
+    next={...next,contractStatus:"free-agent",news:[{id:"contract-expired-"+date,date,category:"system",title:"Контракт завершився",body:next.player.name+" став вільним агентом після завершення контракту."},...next.news]};
+  }
+  if(next.fixtures.length>0&&next.fixtures.every((fixture)=>fixture.status==="played")){
+    const standings=getStandings(next.fixtures,getClub(next.clubId).leagueId);
+    const tablePosition=standings.findIndex((row)=>row.clubId===next.clubId)+1;
+    const nextSeasonStart=addDays(date,60);
+    const currentStart=Number(next.season.split("/")[0])||2026;
+    const nextSeason=String(currentStart+1)+"/"+String(currentStart+2).slice(-2);
+    const summary={season:next.season,clubId:next.clubId,finishedAt:date,tablePosition:tablePosition>0?tablePosition:null,careerMatches:next.player.stats.matches,careerGoals:next.player.stats.goals,careerAssists:next.player.stats.assists};
+    const expired=Boolean(next.contractEndDate&&next.contractEndDate<=nextSeasonStart);
+    next={...next,season:nextSeason,fixtures:buildFixtures(nextSeasonStart),seasonHistory:[...(next.seasonHistory??[]),summary],
+      player:{...next.player,age:Math.min(40,next.player.age+1),morale:clamp(next.player.morale+4,20,100)},
+      contractStatus:expired?"free-agent":next.contractStatus,
+      activeTryout:null,contractNegotiation:null,
+      news:[{id:"season-start-"+nextSeason,date,title:"Починається сезон "+nextSeason,category:"system",body:"Попередній сезон завершено"+(summary.tablePosition?" із "+summary.tablePosition+" місцем у твоїй лізі":"")+". Календар оновлено, вік футболіста збільшився на рік."},...next.news],
+      lastEvent:"Починається сезон "+nextSeason};
+  }
   return {...next,news:next.news.slice(0,60)};
 }
 export function advanceToNextMatch(save:CareerSave):CareerSave{
@@ -177,8 +228,8 @@ export function decideTransfer(save:CareerSave,offerId:string,accept:boolean):{s
   const updated:CareerSave={...save,clubId:target.id,player:{...save.player,clubId:target.id,wage:offer.wage,value:Math.round(save.player.value*1.05),fitness:clamp(save.player.fitness+4,15,100)},offers,updatedAt:new Date().toISOString(),lastEvent:"Трансфер до клубу "+target.name,news:[{id:"transfer-complete-"+offer.id,date:save.date,category:"transfer" as const,title:"Новий клуб: "+target.name,body:save.player.name+" перейшов із "+old.name+" до "+target.name+". Зарплата за тиждень: "+formatMoney(offer.wage)+"."},...save.news].slice(0,60)};
   return {save:updated,message:"Трансфер завершено. Майбутні матчі й статистика кар'єри продовжуються."};
 }
-export function getStandings(fixtures:Fixture[]):StandingRow[]{
-  const rows=new Map<string,StandingRow>();for(const club of CLUBS)rows.set(club.id,{clubId:club.id,played:0,wins:0,draws:0,losses:0,goalsFor:0,goalsAgainst:0,goalDifference:0,points:0,form:[]});
+export function getStandings(fixtures:Fixture[],leagueId?:string):StandingRow[]{
+  const rows=new Map<string,StandingRow>();for(const club of CLUBS.filter((item)=>!leagueId||item.leagueId===leagueId))rows.set(club.id,{clubId:club.id,played:0,wins:0,draws:0,losses:0,goalsFor:0,goalsAgainst:0,goalDifference:0,points:0,form:[]});
   for(const f of fixtures.filter((item)=>item.status==="played")){const h=rows.get(f.homeClubId);const a=rows.get(f.awayClubId);if(!h||!a||f.homeScore===null||f.awayScore===null)continue;h.played+=1;a.played+=1;h.goalsFor+=f.homeScore;h.goalsAgainst+=f.awayScore;a.goalsFor+=f.awayScore;a.goalsAgainst+=f.homeScore;
     if(f.homeScore>f.awayScore){h.wins+=1;a.losses+=1;h.points+=3;h.form.push("В");a.form.push("П");}else if(f.homeScore<f.awayScore){a.wins+=1;h.losses+=1;a.points+=3;a.form.push("В");h.form.push("П");}else{h.draws+=1;a.draws+=1;h.points+=1;a.points+=1;h.form.push("Н");a.form.push("Н");}}
   const result=[...rows.values()];result.forEach((row)=>{row.goalDifference=row.goalsFor-row.goalsAgainst;row.form=row.form.slice(-5);});

@@ -264,7 +264,7 @@ function MatchesPage({save,nextMatch,update,tell}:{save:CareerSave;nextMatch:()=
  const played=fs.filter(f=>f.status==="played").sort((a,b)=>b.date.localeCompare(a.date));
  const upcoming=fs.filter(f=>f.status==="scheduled"&&f.date>=save.date).sort((a,b)=>a.date.localeCompare(b.date));
  const [selectedId,setSelectedId]=useState("");
- const selected=fs.find(f=>f.id===selectedId)??played[0]??upcoming[0]??null;
+ const selected=fs.find(f=>f.id===selectedId)??upcoming[0]??played[0]??null;
  const [minute,setMinute]=useState(90);
  const [playing,setPlaying]=useState(false);
  const home=selected?getClub(selected.homeClubId):null;

@@ -9,6 +9,7 @@ A Ukrainian-language browser football career simulator built from scratch with R
 - Three independent local save slots, autosave, JSON import/export and delete confirmation.
 - Deterministic double round-robin starter season calendar.
 - Lightweight event-based match simulation with goals, shots, xG, possession, passing, fouls, cards, corners and news events.
+- Match centre with a responsive 2D pitch diagram, fixture picker, minute slider, event replay and final match statistics.
 - League standings calculated from played fixture results.
 - Player attributes, potential, fitness, morale, training and career statistics.
 - Transfer offers that can be accepted or rejected; accepting changes club, wage and career news.
@@ -50,6 +51,7 @@ Never commit API keys or put API_FOOTBALL_KEY in Vite variables. A key pasted in
 - Career saves currently persist locally in the browser. Cross-device cloud saves are not implemented yet.
 - The importer currently checks the API and saves returned league metadata. It does not yet import all teams, squads, players, schedules, transfers, historic stats, portraits or logos.
 - Team/player ratings, career values, match results and generated transfer offers are game-model values, not official API data.
+- The 2D match centre is an event replay over a schematic pitch. Player markers are illustrative/static; continuous player movement, ball trajectories and direct on-pitch controls are not implemented yet.
 - The game calendar and clubs currently support the starter simulation world. The other 19 league cards are a target catalogue, not a declaration of imported real-world league data.
 - Official club crests and player portraits are not bundled; neutral stylized initials and avatar icons are used.
 
@@ -57,6 +59,6 @@ Never commit API keys or put API_FOOTBALL_KEY in Vite variables. A key pasted in
 
 1. Finish paginated import for each target league, full squads, fixtures and per-league completeness reports.
 2. Connect verified clubs and players from the reference database into career squads.
-3. Extend tactical controls, substitutions, injuries, suspensions, international teams, cups and continental competitions.
+3. Link animated player/ball movement to the event timeline, then extend tactical controls, substitutions, injuries, suspensions, international teams, cups and continental competitions.
 4. Implement transactional cloud saves and world isolation.
 5. Add end-to-end tests for full seasons, transfer windows, imports and persistence.

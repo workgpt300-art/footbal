@@ -41,6 +41,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
   const [status, setStatus] = useState("Гра завантажується…");
   const [error, setError] = useState("");
   const [started, setStarted] = useState(false);
+  const [passAccuracy, setPassAccuracy] = useState<number | null>(null);
   useEffect(() => { finishRef.current = onFinish; }, [onFinish]);
 
   useEffect(() => {
@@ -70,9 +71,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     let walkClock = 0;
     let aimX = 0;
     let cameraYaw = 0;
-    let actorAnimation = 0;
     let opponentGoalAt = intBetween(17, 34);
-    let nextActor = 0;
 
     function finishMatch() {
       if (sent || disposed) return;
@@ -221,7 +220,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const desc=goal?"ГОЛ! "+playerName+" пробив воротаря!":saved?"Воротар відбив удар "+playerName+".":"Удар "+playerName+" — повз ворота.";
           ballAction={kind:"shot",elapsed:0,duration:.95,startX:ball.position.x,startY:Math.max(.24,ball.position.y),startZ:ball.position.z,targetX:x,targetY:.55+Math.random()*2.0,targetZ:-25.4,success:goal,points:goal?1:saved?2:0,description:desc};
           makeEvent("shot","user","Удар по воротах");
-          if(goal){ownGoals.value+=1;makeEvent("goal","user",desc,playerName);setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);addEvent("goal",userClub.id,desc,undefined,playerName);}
+          if(goal){ownGoals.value+=1;makeEvent("goal","user",desc,playerName);setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);}
           else if(saved){makeEvent("save","user",desc);addEvent("save",opponentClub.id,"Воротар парирував удар.");}
           setStatus(goal?"ГОЛ!":saved?"Сейв воротаря":"Удар — спробуй ще раз");
           lock=true;
@@ -342,6 +341,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
               }
               if(action.kind==="shot"&&action.points===2)keeper.root.position.x=clamp(action.targetX*.8,-2.9,2.9);
               ballAction=null;lock=false;
+              setPassAccuracy(ownPasses.value ? Math.round(ownPassesComplete.value/ownPasses.value*100) : null);
               if(action.kind==="shot"&&action.success){
                 ball.position.set(0,.25,9);userActors[0].root.position.set(0,0,9);activeIndex=0;
                 aimRing.position.x=0;aimX=0;
@@ -429,7 +429,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
       </div>
       {!started&&<div className="match3d-intro">WASD — вперед до воріт. Підійди до штрафного, відкрий партнера або пробий сам.</div>}
     </div>
-    <div className="live-match-footer"><span><b>{playerName}</b> · OVR {rating}</span><span>Влучні передачі: {ownPasses.value===0?"—":Math.round(ownPassesComplete.value/ownPasses.value*100)+"%"}</span><span>{minute<90?"Матч триває": "Матч завершено"}</span></div>
+    <div className="live-match-footer"><span><b>{playerName}</b> · OVR {rating}</span><span>Влучні передачі: {passAccuracy===null?"—":passAccuracy+"%"}</span><span>{minute<90?"Матч триває": "Матч завершено"}</span></div>
     <p className="live-match-tip">Порада: підведи футболіста ближче до штрафного перед ударом. Клацни мишкою по правій/лівій частині поля для прицілювання, потім натисни Space. На кожну дію є 3D-анімація м’яча.</p>
   </section>;
 }

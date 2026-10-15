@@ -123,7 +123,7 @@ const INTERNATIONAL_CLUB_ROWS: InternationalClubRow[] = [
   ["cro-rijeka","HNK Rijeka","Рієка","Хорватія","croatia",73,"#ffffff","#00529b","RIJ"],
   ["cro-osijek","NK Osijek","Осієк","Хорватія","croatia",69,"#ffffff","#00529b","OSI"]
 ];
-const INTERNATIONAL_CLUBS: Club[] = INTERNATIONAL_CLUB_ROWS.map(([id,name,city,country,leagueId,strength,colorA,colorB,initials])=>({id,name,city,country,leagueId,strength,colors:[colorA,colorB],initials}));
+const INTERNATIONAL_CLUBS: Club[] = INTERNATIONAL_CLUB_ROWS.map(([id,name,city,country,leagueId,strength,colorA,colorB,initials])=>({id,name,city,country,leagueId,strength,colors:[colorA,colorB] as [string,string],initials}));
 export const CLUBS: Club[] = [...BASE_CLUBS,...INTERNATIONAL_CLUBS];
 
 export const POSITIONS: {value:Position;label:string}[] = [

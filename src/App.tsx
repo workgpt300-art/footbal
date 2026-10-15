@@ -28,7 +28,7 @@ export default function App(){
  const [view,setView]=useState<View>("home"),[mobileMenu,setMobileMenu]=useState(false),[creating,setCreating]=useState(false),[notice,setNotice]=useState("");
  const [name,setName]=useState(""),[position,setPosition]=useState<Position>("ST"),[age,setAge]=useState("18"),[nationality,setNationality]=useState("Україна"),[foot,setFoot]=useState<"Права"|"Ліва">("Права"),[clubId,setClubId]=useState("karpaty-lviv"),[difficulty,setDifficulty]=useState<CareerSave["difficulty"]>("Нормальна");
  const [query,setQuery]=useState(""),[futureOnly,setFutureOnly]=useState(false),[marketFilter,setMarketFilter]=useState("Усі");
- const [email,setEmail]=useState(""),[password,setPassword]=useState(""),[signedIn,setSignedIn]=useState(false),[authBusy,setAuthBusy]=useState(false),[apiBusy,setApiBusy]=useState(false),[apiError,setApiError]=useState(""),[apiResult,setApiResult]=useState<{count:number;sample:string[]}|null>(null);
+ const [email,setEmail]=useState(""),[password,setPassword]=useState(""),[signedIn,setSignedIn]=useState(false),[authUserId,setAuthUserId]=useState<string|null>(null),[cloudReadyUserId,setCloudReadyUserId]=useState<string|null>(null),[cloudStatus,setCloudStatus]=useState("Локальне збереження"),[authBusy,setAuthBusy]=useState(false),[apiBusy,setApiBusy]=useState(false),[apiError,setApiError]=useState(""),[apiResult,setApiResult]=useState<{count:number;sample:string[]}|null>(null);
  const save=saves.find(s=>s.id===activeId)??saves[0]??null;
  const rows=useMemo(()=>save?getStandings(save.fixtures,getClub(save.clubId).leagueId):[],[save]);
  const standing=save?rows.find(r=>r.clubId===save.clubId):undefined;
@@ -36,7 +36,31 @@ export default function App(){
  const played=save?save.fixtures.filter(f=>f.status==="played"&&(f.homeClubId===save.clubId||f.awayClubId===save.clubId)).sort((a,b)=>b.date.localeCompare(a.date)):[];
  useEffect(()=>{try{persistSaves(saves)}catch(e){setNotice(e instanceof Error?e.message:"Помилка автозбереження.")}},[saves]);
  useEffect(()=>{setActiveSaveId(activeId)},[activeId]);
- useEffect(()=>{if(!supabase)return;let mounted=true;supabase.auth.getSession().then(({data})=>{if(mounted)setSignedIn(Boolean(data.session))});const {data}=supabase.auth.onAuthStateChange((_event,session)=>setSignedIn(Boolean(session)));return()=>{mounted=false;data.subscription.unsubscribe()}},[]);
+ useEffect(()=>{if(!supabase)return;let mounted=true;supabase.auth.getSession().then(({data})=>{if(mounted){setSignedIn(Boolean(data.session));setAuthUserId(data.session?.user.id??null)}});const {data}=supabase.auth.onAuthStateChange((_event,session)=>{setSignedIn(Boolean(session));setAuthUserId(session?.user.id??null);setCloudReadyUserId(null)});return()=>{mounted=false;data.subscription.unsubscribe()}},[]);
+ useEffect(()=>{
+  if(!supabase||!authUserId){setCloudReadyUserId(null);setCloudStatus("Локальне збереження");return}
+  let cancelled=false;setCloudStatus("Завантаження хмарних сейвів…");
+  supabase.from("career_saves").select("save_id,save_data,updated_at").eq("user_id",authUserId).then(({data,error})=>{
+   if(cancelled)return;
+   if(error){setCloudStatus("Хмара недоступна");setCloudReadyUserId(authUserId);return}
+   const cloud=(data??[]).map(row=>row.save_data as CareerSave).filter((item)=>item&&typeof item.id==="string"&&item.player&&Array.isArray(item.fixtures));
+   setSaves(local=>{
+    const merged=new Map(local.map(item=>[item.id,item]));
+    for(const remote of cloud){const localSave=merged.get(remote.id);if(!localSave||Date.parse(remote.updatedAt||"1970-01-01")>Date.parse(localSave.updatedAt||"1970-01-01"))merged.set(remote.id,remote)}
+    return [...merged.values()].slice(0,3);
+   });
+   setCloudReadyUserId(authUserId);setCloudStatus("Хмарні сейви завантажено");
+  });
+  return()=>{cancelled=true};
+ },[authUserId]);
+ useEffect(()=>{
+  if(!supabase||!authUserId||cloudReadyUserId!==authUserId)return;
+  if(!saves.length){setCloudStatus("Немає сейвів для синхронізації");return}
+  let cancelled=false;
+  const rows=saves.map(item=>({user_id:authUserId,save_id:item.id,save_name:item.name,season:item.season,save_data:item,updated_at:item.updatedAt||new Date().toISOString()}));
+  supabase.from("career_saves").upsert(rows,{onConflict:"user_id,save_id"}).then(({error})=>{if(cancelled)return;setCloudStatus(error?"Помилка хмарного збереження":"Хмара синхронізована")});
+  return()=>{cancelled=true};
+ },[saves,authUserId,cloudReadyUserId]);
  useEffect(()=>{if(!notice)return;const t=window.setTimeout(()=>setNotice(""),3600);return()=>window.clearTimeout(t)},[notice]);
  const tell=(s:string)=>setNotice(s);
  const update=(next:CareerSave)=>setSaves(old=>old.map(s=>s.id===next.id?{...next,updatedAt:new Date().toISOString()}:s));
@@ -56,7 +80,7 @@ export default function App(){
   update(next);setView("tryouts");tell("Контракт розірвано. Тепер можна надсилати заявки на перегляд.");
  }
  function selectSave(id:string){setActiveId(id);setActiveSaveId(id);setView("home");setMobileMenu(false)}
- function removeSave(id:string){const s=saves.find(x=>x.id===id);if(!s||!window.confirm("Видалити збереження «"+s.name+"»?"))return;const left=saves.filter(x=>x.id!==id);setSaves(left);if(activeId===id){setActiveId(left[0]?.id??null);setActiveSaveId(left[0]?.id??null)}tell("Збереження видалено.")}
+ function removeSave(id:string){const s=saves.find(x=>x.id===id);if(!s||!window.confirm("Видалити збереження «"+s.name+"»?"))return;if(supabase&&authUserId)void supabase.from("career_saves").delete().eq("user_id",authUserId).eq("save_id",id);const left=saves.filter(x=>x.id!==id);setSaves(left);if(activeId===id){setActiveId(left[0]?.id??null);setActiveSaveId(left[0]?.id??null)}tell("Збереження видалено.")}
  async function auth(action:"signin"|"signup"){if(!supabase){tell("Спочатку налаштуй Supabase у .env.");return}if(!email.trim()||password.length<6){tell("Вкажи email і пароль щонайменше з 6 символів.");return}setAuthBusy(true);const r=action==="signin"?await supabase.auth.signInWithPassword({email:email.trim(),password}):await supabase.auth.signUp({email:email.trim(),password});setAuthBusy(false);if(r.error){tell(r.error.message);return}setSignedIn(Boolean(r.data.session));tell(action==="signin"?"Вхід виконано.":"Акаунт створено. Перевір пошту, якщо підтвердження ввімкнене.")}
  async function checkApi(){if(!supabase||!signedIn){setApiError("Для захищеної перевірки налаштуй Supabase та увійди.");return}setApiBusy(true);setApiError("");setApiResult(null);const r=await supabase.functions.invoke("football-api",{body:{endpoint:"/leagues",params:{season:2026}}});setApiBusy(false);if(r.error){setApiError(r.error.message+" Перевір функцію та API_FOOTBALL_KEY у Supabase Secrets.");return}const p=r.data as {response?:Array<{league?:{name?:string};country?:{name?:string}}>;errors?:unknown};if(p?.errors&&Object.keys(p.errors as object).length){setApiError("API-Football повернув помилку. Перевір ключ і квоту.");return}const data=Array.isArray(p?.response)?p.response:[];setApiResult({count:data.length,sample:data.slice(0,8).map(x=>(x.league?.name??"Ліга")+" — "+(x.country?.name??"Країна"))});tell("API-Football відповів. Це перевірка, не повний імпорт складів.")}
  async function importFile(e:ChangeEvent<HTMLInputElement>){const file=e.target.files?.[0];if(!file)return;try{const s=await importSave(file);if(saves.length>=3){tell("Усі слоти зайняті. Видали один перед імпортом.");return}setSaves(old=>[s,...old]);setActiveId(s.id);setActiveSaveId(s.id);tell("Збереження імпортовано.")}catch(err){tell(err instanceof Error?err.message:"Не вдалося прочитати файл.")}e.target.value=""}
@@ -86,7 +110,7 @@ export default function App(){
  return <div className="app-shell">
   <aside className={cx("sidebar",mobileMenu&&"sidebar-open")}><div className="brand"><span className="brand-icon"><Shield size={22}/></span><div><b>FOOTBALL</b><small>CAREER 2027</small></div><button className="icon-btn mobile-close" onClick={()=>setMobileMenu(false)}><X size={18}/></button></div><button className="new-career" onClick={()=>setCreating(true)}><Plus size={16}/> Нова кар'єра</button><nav className="nav-list">{nav.map(g=><div className="nav-group" key={g.title}><span className="nav-caption">{g.title}</span>{g.items.map(([id,label,Icon])=><button key={id} className={cx("nav-link",view===id&&"selected")} onClick={()=>{setView(id as View);setMobileMenu(false)}}><Icon size={16}/><span>{label}</span>{id==="transfers"&&save?.offers.some(o=>o.status==="pending")&&<i className="nav-dot"/>}</button>)}</div>)}</nav><div className="sidebar-foot"><i/><span><b>Локальна кар'єра</b><small>Автозбереження активне</small></span></div></aside>
   {mobileMenu&&<button className="mobile-overlay" onClick={()=>setMobileMenu(false)} aria-label="Закрити меню"/>}
-  <main className="main"><header className="topbar"><div className="topbar-left"><button className="icon-btn mobile-open" onClick={()=>setMobileMenu(true)}><Menu size={19}/></button><div className="breadcrumb"><span>FOOTBALL CAREER</span><ChevronRight size={13}/><b>{activeLabel}</b></div></div><div className="topbar-right">{save&&<span className="season-pill"><i/>Сезон {save.season}</span>}<button className="icon-btn" onClick={()=>setView("news")} title="Новини"><Bell size={16}/></button><button className="avatar-btn" onClick={()=>setView("player")}>{save?.player.name[0]?.toUpperCase()??"FC"}</button></div></header>
+  <main className="main"><header className="topbar"><div className="topbar-left"><button className="icon-btn mobile-open" onClick={()=>setMobileMenu(true)}><Menu size={19}/></button><div className="breadcrumb"><span>FOOTBALL CAREER</span><ChevronRight size={13}/><b>{activeLabel}</b></div></div><div className="topbar-right">{signedIn&&<span className="season-pill" title={cloudStatus}><i/>{cloudStatus}</span>}{save&&<span className="season-pill"><i/>Сезон {save.season}</span>}<button className="icon-btn" onClick={()=>setView("news")} title="Новини"><Bell size={16}/></button><button className="avatar-btn" onClick={()=>setView("player")}>{save?.player.name[0]?.toUpperCase()??"FC"}</button></div></header>
   <div className="content"><div className="page-head"><div><span className="eyebrow">ТВОЯ ФУТБОЛЬНА ІСТОРІЯ</span><h1>{activeLabel}</h1><p>{save?formatDate(save.date)+" · "+save.season+" · "+(save.contractStatus==="free-agent"?"Вільний агент":getClub(save.clubId).name):"Створи футболіста та розпочни кар'єру"}</p></div>{save&&<div className="head-actions"><Btn quiet onClick={()=>exportSave(save)}><FileDown size={15}/> Експорт</Btn><Btn onClick={nextDay}><Play size={14} fill="currentColor"/> Наступний день</Btn></div>}</div>{body()}</div></main>
   {creating&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setCreating(false)}}><form className="modal" onSubmit={create}><div className="modal-head"><div><span className="eyebrow">НОВА ІСТОРІЯ</span><h2>Створи футболіста</h2><p>Обери позицію, стартовий клуб і складність.</p></div><button type="button" className="icon-btn" onClick={()=>setCreating(false)}><X size={18}/></button></div><div className="form-grid">
    <label className="field full"><span>Ім'я та прізвище</span><input autoFocus required maxLength={48} value={name} onChange={e=>setName(e.target.value)} placeholder="Наприклад, Іван Петренко"/></label>

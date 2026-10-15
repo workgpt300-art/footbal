@@ -68,6 +68,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     let opponentPossession = false;
     let opponentHolder: any = null;
     let opponentPossessionClock = 0;
+    let halftimeLogged = false;
     let lock = false;
     let sent = false;
     let timer = 0;
@@ -252,10 +253,11 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           keeperReactAt=timer+.3;keeperDiveX=x;
           const goal=framed&&!saved;
           if(framed)ownOnTarget.value+=1;
-          const desc=goal?"ГОЛ! "+playerName+" пробив воротаря!":saved?"Воротар відбив удар "+playerName+".":"Удар "+playerName+" — повз ворота.";
+          const scorer=actor.index===9?playerName:"Гравець команди";
+          const desc=goal?"ГОЛ! "+scorer+" пробив воротаря!":saved?"Воротар відбив удар "+scorer+".":"Удар "+scorer+" — повз ворота.";
           ballAction={kind:"shot",elapsed:0,duration:1.05,startX:ball.position.x,startY:Math.max(.24,ball.position.y),startZ:ball.position.z,targetX:x,targetY:saved?1.2:.55+Math.random()*2.0,targetZ:-25.4,success:goal,points:goal?1:saved?2:0,description:desc};
           makeEvent("shot","user","Удар по воротах");
-          if(goal){ownGoals.value+=1;makeEvent("goal","user",desc,playerName);setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);}
+          if(goal){ownGoals.value+=1;makeEvent("goal","user",desc,scorer);setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);}
           else if(saved){makeEvent("save","user",desc);addEvent("save",opponentClub.id,"Воротар парирував удар.");}
           setStatus(goal?"ГОЛ!":saved?"Сейв воротаря":"Удар — спробуй ще раз");
           lock=true;
@@ -281,12 +283,16 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const defender=[...oppActors].sort((a,b)=>Math.hypot(a.root.position.x-midX,a.root.position.z-midZ)-Math.hypot(b.root.position.x-midX,b.root.position.z-midZ))[0];
           const pressure=defender?Math.max(0,2.4-Math.hypot(defender.root.position.x-midX,defender.root.position.z-midZ)):0;
           const chance=clamp(.84+(passing-55)*.006-choice.dist*.009-pressure*.12+(fitness-55)*.001,.22,.97);
-          const success=Math.random()<chance;
+          // Simplified Law 11: forward receivers beyond both ball and second-last opponent are offside.
+          const defensiveLine=Math.min(...oppActors.map(a=>a.root.position.z));
+          const offside=choice.a.root.position.z<0&&choice.a.root.position.z<actor.root.position.z-.25&&choice.a.root.position.z<defensiveLine-.25;
+          const success=!offside&&Math.random()<chance;
           if(success)ownPassesComplete.value+=1;
-          const desc=success?(through?"Пас у розріз дістався партнеру!":"Передача дійшла до партнера — керування перейшло до нього."):"Захисник прочитав пас і перехопив м'яч!";
+          const desc=offside?"Поза грою! Свисток — вільний удар супернику.":success?(through?"Пас у розріз дістався партнеру!":"Передача дійшла до партнера — керування перейшло до нього."):"Захисник прочитав пас і перехопив м'яч!";
           const target=success?choice.a:defender??oppActors[0];
           ballAction={kind:"pass",elapsed:0,duration:.52,startX:ball.position.x,startY:.25,startZ:ball.position.z,targetX:target.root.position.x,targetY:.3,targetZ:target.root.position.z,success,points:success?1:0,description:desc,targetActor:success?choice.i:undefined};
           makeEvent("pass","user",desc,success?playerName:undefined);
+          if(offside)addEvent("foul",userClub.id,"Положення поза грою — вільний удар команді суперника.");
           if(!success){opponentPossession=true;opponentHolder=target;opponentPossessionClock=0;}
           setStatus(desc);lock=true;
         };

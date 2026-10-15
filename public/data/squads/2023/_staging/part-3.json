@@ -1,0 +1,2946 @@
+{
+  "season": 2023,
+  "seasonLabel": "2023/24",
+  "sourceBatch": 3,
+  "teams": [
+    {
+      "teamId": 40,
+      "name": "Liverpool",
+      "sourceClubId": "31",
+      "players": [
+        {
+          "id": "105470",
+          "name": "Alisson",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1992-02-10",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Brazil"
+          ],
+          "heightCm": 193,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "340918",
+          "name": "Caoimhín Kelleher",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1998-11-23",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Ireland"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "486604",
+          "name": "Vitezslav Jaros",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2001-07-23",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Czech Republic"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "71271",
+          "name": "Adrián San Miguel",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1987-03-01",
+          "ageAtSeasonStart": 36,
+          "nationalities": [
+            "Spain"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "662334",
+          "name": "Marcelo Pitaluga",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2002-12-20",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Brazil",
+            "Germany"
+          ],
+          "heightCm": 193,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "678402",
+          "name": "Fabian Mrozek",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2003-09-28",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Poland"
+          ],
+          "heightCm": 192,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "357119",
+          "name": "Ibrahima Konaté",
+          "position": "Centre-Back",
+          "dateOfBirth": "1999-05-25",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "France",
+            "Mali"
+          ],
+          "heightCm": 194,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "139208",
+          "name": "Virgil van Dijk",
+          "position": "Centre-Back",
+          "dateOfBirth": "1991-08-07",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Netherlands",
+            "Suriname"
+          ],
+          "heightCm": 195,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "256178",
+          "name": "Joe Gomez",
+          "position": "Centre-Back",
+          "dateOfBirth": "1997-05-23",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "England",
+            "The Gambia"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "632349",
+          "name": "Jarell Quansah",
+          "position": "Centre-Back",
+          "dateOfBirth": "2003-01-29",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "England",
+            "Scotland"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "82105",
+          "name": "Joël Matip",
+          "position": "Centre-Back",
+          "dateOfBirth": null,
+          "ageAtSeasonStart": null,
+          "nationalities": [
+            "Cameroon",
+            "Germany"
+          ],
+          "heightCm": 195,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "371814",
+          "name": "Nat Phillips",
+          "position": "Centre-Back",
+          "dateOfBirth": null,
+          "ageAtSeasonStart": null,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "503679",
+          "name": "Rhys Williams",
+          "position": "Centre-Back",
+          "dateOfBirth": "1997-03-21",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": 195,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "670861",
+          "name": "Luke Chambers",
+          "position": "Centre-Back",
+          "dateOfBirth": "2001-03-02",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "1108049",
+          "name": "Amara Nallo",
+          "position": "Centre-Back",
+          "dateOfBirth": "2004-06-24",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England",
+            "Sierra Leone"
+          ],
+          "heightCm": 186,
+          "preferredFoot": "both",
+          "isLoan": false
+        },
+        {
+          "id": "234803",
+          "name": "Andrew Robertson",
+          "position": "Left-Back",
+          "dateOfBirth": "2006-11-18",
+          "ageAtSeasonStart": 16,
+          "nationalities": [
+            "Scotland"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "338070",
+          "name": "Konstantinos Tsimikas",
+          "position": "Left-Back",
+          "dateOfBirth": "1994-11-03",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "Greece"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "551001",
+          "name": "Owen Beck",
+          "position": "Left-Back",
+          "dateOfBirth": "1996-12-05",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Wales"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "796298",
+          "name": "Calum Scanlon",
+          "position": "Left-Back",
+          "dateOfBirth": "2002-09-08",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": null,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "314353",
+          "name": "Trent Alexander-Arnold",
+          "position": "Right-Back",
+          "dateOfBirth": "2005-02-14",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "624258",
+          "name": "Conor Bradley",
+          "position": "Right-Back",
+          "dateOfBirth": "1998-07-10",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Northern Ireland"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "633652",
+          "name": "Calvin Ramsay",
+          "position": "Right-Back",
+          "dateOfBirth": "2003-09-07",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Scotland"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "478573",
+          "name": "Ryan Gravenberch",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2003-07-31",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Netherlands",
+            "Suriname"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "146310",
+          "name": "Wataru Endo",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2002-05-16",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Japan"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "864799",
+          "name": "Stefan Bajcetic",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1993-09-02",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Spain",
+            "Serbia"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "845289",
+          "name": "James McConnell",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2004-10-22",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "534033",
+          "name": "Alexis Mac Allister",
+          "position": "Central Midfield",
+          "dateOfBirth": "2004-09-13",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "Argentina",
+            "Italy"
+          ],
+          "heightCm": 176,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "433188",
+          "name": "Curtis Jones",
+          "position": "Central Midfield",
+          "dateOfBirth": "1998-12-24",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "60444",
+          "name": "Thiago Alcántara",
+          "position": "Central Midfield",
+          "dateOfBirth": "2001-01-30",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "Spain",
+            "Brazil"
+          ],
+          "heightCm": 174,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "712117",
+          "name": "Bobby Clark",
+          "position": "Central Midfield",
+          "dateOfBirth": "1991-11-04",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "1045123",
+          "name": "Trey Nyoni",
+          "position": "Central Midfield",
+          "dateOfBirth": "2005-07-02",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England",
+            "Zimbabwe"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "655990",
+          "name": "Tom Hill",
+          "position": "Central Midfield",
+          "dateOfBirth": "2007-06-30",
+          "ageAtSeasonStart": 16,
+          "nationalities": [
+            "Wales",
+            "Ireland"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "451276",
+          "name": "Dominik Szoboszlai",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2002-10-13",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Hungary"
+          ],
+          "heightCm": 187,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "565822",
+          "name": "Harvey Elliott",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2000-10-25",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 170,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "559263",
+          "name": "Fábio Carvalho",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2003-04-04",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Portugal"
+          ],
+          "heightCm": 170,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "570469",
+          "name": "Mateusz Musiałowski",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2002-08-30",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Poland"
+          ],
+          "heightCm": 175,
+          "preferredFoot": "both",
+          "isLoan": false
+        },
+        {
+          "id": "480692",
+          "name": "Luis Díaz",
+          "position": "Left Winger",
+          "dateOfBirth": "2003-10-16",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Colombia"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "434675",
+          "name": "Cody Gakpo",
+          "position": "Left Winger",
+          "dateOfBirth": "1997-01-13",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Netherlands",
+            "Togo"
+          ],
+          "heightCm": 193,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "340950",
+          "name": "Diogo Jota",
+          "position": "Left Winger",
+          "dateOfBirth": "1999-07-05",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "Portugal"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "922462",
+          "name": "Lewis Koumas",
+          "position": "Left Winger",
+          "dateOfBirth": "1996-04-12",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "Wales",
+            "England"
+          ],
+          "heightCm": 182,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "148455",
+          "name": "Mohamed Salah",
+          "position": "Right Winger",
+          "dateOfBirth": "2005-09-19",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "Egypt"
+          ],
+          "heightCm": 175,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "719673",
+          "name": "Ben Gannon-Doak",
+          "position": "Right Winger",
+          "dateOfBirth": "1992-06-15",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Scotland"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "732119",
+          "name": "Kaide Gordon",
+          "position": "Right Winger",
+          "dateOfBirth": "2005-11-11",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "546543",
+          "name": "Darwin Núñez",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2004-05-10",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Uruguay"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "939290",
+          "name": "Jayden Danns",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1999-06-24",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "England",
+            "Guyana"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        }
+      ]
+    },
+    {
+      "teamId": 1359,
+      "name": "Luton Town",
+      "sourceClubId": "1031",
+      "players": [
+        {
+          "id": "77757",
+          "name": "Thomas Kaminski",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1992-10-23",
+          "ageAtSeasonStart": 30,
+          "nationalities": [
+            "Belgium",
+            "Poland"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "33027",
+          "name": "Tim Krul",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1988-03-04",
+          "ageAtSeasonStart": 35,
+          "nationalities": [
+            "Netherlands"
+          ],
+          "heightCm": 193,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "368629",
+          "name": "Jack Walton",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1998-04-23",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "91340",
+          "name": "James Shea",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1991-06-16",
+          "ageAtSeasonStart": 32,
+          "nationalities": [
+            "England",
+            "Ireland"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "548470",
+          "name": "Teden Mengi",
+          "position": "Centre-Back",
+          "dateOfBirth": "2002-04-30",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "England",
+            "Angola"
+          ],
+          "heightCm": 186,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "424900",
+          "name": "Tom Holmes",
+          "position": "Centre-Back",
+          "dateOfBirth": "2000-12-03",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 194,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "364409",
+          "name": "Gabriel Osho",
+          "position": "Centre-Back",
+          "dateOfBirth": "1998-08-14",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Nigeria",
+            "England"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "407021",
+          "name": "Mads Andersen",
+          "position": "Centre-Back",
+          "dateOfBirth": "1997-12-27",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "Denmark"
+          ],
+          "heightCm": 194,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "207742",
+          "name": "Tom Lockyer",
+          "position": "Centre-Back",
+          "dateOfBirth": "1994-03-12",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Wales"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "278166",
+          "name": "Amari'i Bell",
+          "position": "Centre-Back",
+          "dateOfBirth": "1994-05-05",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Jamaica",
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "264220",
+          "name": "Reece Burke",
+          "position": "Centre-Back",
+          "dateOfBirth": "1996-02-09",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 189,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "207037",
+          "name": "Dan Potts",
+          "position": "Centre-Back",
+          "dateOfBirth": "1994-04-13",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "802230",
+          "name": "Aidan Francis-Clarke",
+          "position": "Centre-Back",
+          "dateOfBirth": "2004-02-07",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "1225825",
+          "name": "Christian Chigozie",
+          "position": "Centre-Back",
+          "dateOfBirth": "2007-11-23",
+          "ageAtSeasonStart": 15,
+          "nationalities": [
+            "England",
+            "Nigeria"
+          ],
+          "heightCm": null,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "504581",
+          "name": "Ryan Giles",
+          "position": "Left-Back",
+          "dateOfBirth": "2000-01-26",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "1088818",
+          "name": "Joe Johnson",
+          "position": "Left-Back",
+          "dateOfBirth": "2006-02-21",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "649452",
+          "name": "Issa Kaboré",
+          "position": "Right-Back",
+          "dateOfBirth": "2001-12-05",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Burkina Faso"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "387191",
+          "name": "Daiki Hashioka",
+          "position": "Right-Back",
+          "dateOfBirth": "1999-05-17",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Japan"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "324882",
+          "name": "Marvelous Nakamba",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1994-01-19",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Zimbabwe"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "244338",
+          "name": "Pelly Ruddock Mpanzu",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1994-03-22",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "DR Congo",
+            "England"
+          ],
+          "heightCm": 175,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "1203143",
+          "name": "Dominic Martins",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2005-10-13",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "Portugal",
+            "England"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "381967",
+          "name": "Albert Sambi Lokonga",
+          "position": "Central Midfield",
+          "dateOfBirth": "1999-10-22",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "Belgium",
+            "DR Congo"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "131978",
+          "name": "Ross Barkley",
+          "position": "Central Midfield",
+          "dateOfBirth": "1993-05-12",
+          "ageAtSeasonStart": 30,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 189,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "347619",
+          "name": "Allan Campbell",
+          "position": "Central Midfield",
+          "dateOfBirth": "1998-04-07",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "Scotland"
+          ],
+          "heightCm": 174,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "125685",
+          "name": "Luke Berry",
+          "position": "Central Midfield",
+          "dateOfBirth": "1992-12-07",
+          "ageAtSeasonStart": 30,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "505548",
+          "name": "Louie Watson",
+          "position": "Central Midfield",
+          "dateOfBirth": "2001-07-06",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Ireland",
+            "England"
+          ],
+          "heightCm": 176,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "907219",
+          "name": "Axel Piesold",
+          "position": "Central Midfield",
+          "dateOfBirth": "2005-03-31",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "965954",
+          "name": "Jake Burger",
+          "position": "Central Midfield",
+          "dateOfBirth": "2004-06-10",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 169,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "1088817",
+          "name": "Jayden Luker",
+          "position": "Central Midfield",
+          "dateOfBirth": "2005-04-30",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 182,
+          "preferredFoot": null,
+          "isLoan": false
+        },
+        {
+          "id": "305274",
+          "name": "Fred Onyedinma",
+          "position": "Right Midfield",
+          "dateOfBirth": "1996-11-24",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Nigeria",
+            "England"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "608175",
+          "name": "Alfie Doughty",
+          "position": "Left Midfield",
+          "dateOfBirth": "1999-12-21",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "344830",
+          "name": "Tahith Chong",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1999-04-12",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Curacao",
+            "Netherlands"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "184129",
+          "name": "Jordan Clark",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1993-09-22",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "496661",
+          "name": "Elliot Thorpe",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2000-09-11",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "Wales",
+            "Malaysia"
+          ],
+          "heightCm": 176,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "965940",
+          "name": "Zack Nelson",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2005-04-21",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": null,
+          "isLoan": false
+        },
+        {
+          "id": "499604",
+          "name": "Dion Pereira",
+          "position": "Left Winger",
+          "dateOfBirth": "1999-03-25",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Antigua and Barbuda",
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "392591",
+          "name": "Chiedozie Ogbene",
+          "position": "Right Winger",
+          "dateOfBirth": "1997-01-05",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Ireland",
+            "Nigeria"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "61842",
+          "name": "Andros Townsend",
+          "position": "Right Winger",
+          "dateOfBirth": "1991-07-16",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "504855",
+          "name": "John McAtee",
+          "position": "Second Striker",
+          "dateOfBirth": "1999-07-23",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "246963",
+          "name": "Carlton Morris",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1995-12-16",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "319900",
+          "name": "Elijah Adebayo",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1998-07-01",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "England",
+            "Nigeria"
+          ],
+          "heightCm": 193,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "469958",
+          "name": "Jacob Brown",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1998-10-04",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Scotland",
+            "England"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "169801",
+          "name": "Cauley Woodrow",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1994-02-12",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "944551",
+          "name": "Joe Taylor",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2002-11-18",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Wales",
+            "England"
+          ],
+          "heightCm": 170,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "314378",
+          "name": "Admiral Muskwe",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1998-08-21",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Zimbabwe",
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "985717",
+          "name": "Taylan Harris",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2005-10-30",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England",
+            "Türkiye"
+          ],
+          "heightCm": 181,
+          "preferredFoot": null,
+          "isLoan": false
+        }
+      ]
+    },
+    {
+      "teamId": 50,
+      "name": "Manchester City",
+      "sourceClubId": "281",
+      "players": [
+        {
+          "id": "238223",
+          "name": "Ederson",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1993-08-17",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Brazil",
+            "Portugal"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "85941",
+          "name": "Stefan Ortega",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1992-06-11",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Germany",
+            "Spain"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "221624",
+          "name": "Zack Steffen",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1995-02-04",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "United States"
+          ],
+          "heightCm": 191,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "919438",
+          "name": "True Grant",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2005-02-11",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": null,
+          "preferredFoot": null,
+          "isLoan": false
+        },
+        {
+          "id": "14555",
+          "name": "Scott Carson",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1985-03-09",
+          "ageAtSeasonStart": 38,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "258004",
+          "name": "Rúben Dias",
+          "position": "Centre-Back",
+          "dateOfBirth": "1997-05-14",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Portugal"
+          ],
+          "heightCm": 187,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "475959",
+          "name": "Josko Gvardiol",
+          "position": "Centre-Back",
+          "dateOfBirth": "2002-01-23",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Croatia"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "284730",
+          "name": "Manuel Akanji",
+          "position": "Centre-Back",
+          "dateOfBirth": "1995-07-19",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "Switzerland",
+            "Nigeria"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "177476",
+          "name": "Nathan Aké",
+          "position": "Centre-Back",
+          "dateOfBirth": "1995-02-18",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "Netherlands",
+            "Cote d'Ivoire"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "186590",
+          "name": "John Stones",
+          "position": "Centre-Back",
+          "dateOfBirth": "1994-05-28",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "503977",
+          "name": "Taylor Harwood-Bellis",
+          "position": "Centre-Back",
+          "dateOfBirth": "2002-01-30",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "843595",
+          "name": "Max Alleyne",
+          "position": "Centre-Back",
+          "dateOfBirth": "2005-07-21",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England",
+            "Barbados"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "both",
+          "isLoan": false
+        },
+        {
+          "id": "366930",
+          "name": "Sergio Gómez",
+          "position": "Left-Back",
+          "dateOfBirth": "2000-04-09",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "Spain"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "576121",
+          "name": "Josh Wilson-Esbrand",
+          "position": "Left-Back",
+          "dateOfBirth": "2002-12-26",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": 176,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "601883",
+          "name": "Matheus Nunes",
+          "position": "Right-Back",
+          "dateOfBirth": "1998-08-27",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Portugal",
+            "Brazil"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "701057",
+          "name": "Rico Lewis",
+          "position": "Right-Back",
+          "dateOfBirth": "2004-11-21",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": 170,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "95424",
+          "name": "Kyle Walker",
+          "position": "Right-Back",
+          "dateOfBirth": "1990-05-28",
+          "ageAtSeasonStart": 33,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "649452",
+          "name": "Issa Kaboré",
+          "position": "Right-Back",
+          "dateOfBirth": "2001-12-05",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Burkina Faso"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "357565",
+          "name": "Rodri",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1996-06-22",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "Spain"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "351749",
+          "name": "Kalvin Phillips",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1995-02-12",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "668547",
+          "name": "Máximo Perrone",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2003-07-01",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Argentina",
+            "Spain"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "895074",
+          "name": "Mahamadou Susoho",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2005-01-20",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "Spain",
+            "England"
+          ],
+          "heightCm": 175,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "983702",
+          "name": "Jacob Wright",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2005-09-21",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "51471",
+          "name": "Mateo Kovacic",
+          "position": "Central Midfield",
+          "dateOfBirth": "1994-06-05",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Croatia"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "406635",
+          "name": "Phil Foden",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2000-05-28",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 171,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "241641",
+          "name": "Bernardo Silva",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1994-10-08",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "Portugal"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "88755",
+          "name": "Kevin De Bruyne",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1991-06-28",
+          "ageAtSeasonStart": 32,
+          "nationalities": [
+            "Belgium",
+            "Burundi"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "583199",
+          "name": "James McAtee",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2002-10-18",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "486049",
+          "name": "Jérémy Doku",
+          "position": "Left Winger",
+          "dateOfBirth": "2002-05-27",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Belgium",
+            "Ghana"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "203460",
+          "name": "Jack Grealish",
+          "position": "Left Winger",
+          "dateOfBirth": "1995-10-09",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "England",
+            "Ireland"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "652797",
+          "name": "Micah Hamilton",
+          "position": "Left Winger",
+          "dateOfBirth": "2003-11-13",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "661207",
+          "name": "Oscar Bobb",
+          "position": "Right Winger",
+          "dateOfBirth": "2003-12-07",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Norway",
+            "The Gambia"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "418560",
+          "name": "Erling Haaland",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2000-07-21",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "Norway"
+          ],
+          "heightCm": 195,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "576024",
+          "name": "Julián Alvarez",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2000-01-31",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "Argentina",
+            "Italy"
+          ],
+          "heightCm": 170,
+          "preferredFoot": "right",
+          "isLoan": false
+        }
+      ]
+    },
+    {
+      "teamId": 33,
+      "name": "Manchester United",
+      "sourceClubId": "985",
+      "players": [
+        {
+          "id": "234509",
+          "name": "André Onana",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1996-02-04",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "Cameroon"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "258919",
+          "name": "Dean Henderson",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1997-12-03",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "336077",
+          "name": "Altay Bayındır",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1998-04-14",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "Türkiye"
+          ],
+          "heightCm": 198,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "622236",
+          "name": "Radek Vítek",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2003-10-24",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Czech Republic"
+          ],
+          "heightCm": 198,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "34130",
+          "name": "Tom Heaton",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1986-04-15",
+          "ageAtSeasonStart": 37,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "620362",
+          "name": "Dermot Mee",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2002-11-20",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Northern Ireland",
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "480762",
+          "name": "Lisandro Martínez",
+          "position": "Centre-Back",
+          "dateOfBirth": "1998-01-18",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "Argentina"
+          ],
+          "heightCm": 175,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "164770",
+          "name": "Raphaël Varane",
+          "position": "Centre-Back",
+          "dateOfBirth": "1993-04-25",
+          "ageAtSeasonStart": 30,
+          "nationalities": [
+            "France",
+            "Martinique"
+          ],
+          "heightCm": 191,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "177907",
+          "name": "Harry Maguire",
+          "position": "Centre-Back",
+          "dateOfBirth": "1993-05-03",
+          "ageAtSeasonStart": 30,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 194,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "184573",
+          "name": "Victor Lindelöf",
+          "position": "Centre-Back",
+          "dateOfBirth": "1994-07-17",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "Sweden"
+          ],
+          "heightCm": 187,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "780630",
+          "name": "Willy Kambwala",
+          "position": "Centre-Back",
+          "dateOfBirth": "2004-08-25",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "France",
+            "DR Congo"
+          ],
+          "heightCm": 192,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "42412",
+          "name": "Jonny Evans",
+          "position": "Centre-Back",
+          "dateOfBirth": "1988-03-01",
+          "ageAtSeasonStart": 35,
+          "nationalities": [
+            "Northern Ireland"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "both",
+          "isLoan": false
+        },
+        {
+          "id": "794816",
+          "name": "Rhys Bennett",
+          "position": "Centre-Back",
+          "dateOfBirth": "2003-10-30",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 187,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "858191",
+          "name": "Louis Jackson",
+          "position": "Centre-Back",
+          "dateOfBirth": "2005-09-18",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "Scotland",
+            "England"
+          ],
+          "heightCm": 191,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "183288",
+          "name": "Luke Shaw",
+          "position": "Left-Back",
+          "dateOfBirth": "1995-12-07",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "339340",
+          "name": "Tyrell Malacia",
+          "position": "Left-Back",
+          "dateOfBirth": "1999-08-17",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "Netherlands",
+            "Curacao"
+          ],
+          "heightCm": 169,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "282429",
+          "name": "Sergio Reguilón",
+          "position": "Left-Back",
+          "dateOfBirth": "1996-12-16",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Spain"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "811778",
+          "name": "Álvaro Carreras",
+          "position": "Left-Back",
+          "dateOfBirth": "2003-03-23",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Spain"
+          ],
+          "heightCm": 186,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "507700",
+          "name": "Brandon Williams",
+          "position": "Left-Back",
+          "dateOfBirth": "2000-03-09",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "1011738",
+          "name": "Harry Amass",
+          "position": "Left-Back",
+          "dateOfBirth": "2007-03-16",
+          "ageAtSeasonStart": 16,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "357147",
+          "name": "Diogo Dalot",
+          "position": "Right-Back",
+          "dateOfBirth": "1999-03-18",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "Portugal"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "477758",
+          "name": "Aaron Wan-Bissaka",
+          "position": "Right-Back",
+          "dateOfBirth": "1997-11-26",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "DR Congo",
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "864788",
+          "name": "Habeeb Ogunneye",
+          "position": "Right-Back",
+          "dateOfBirth": "2005-12-11",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England",
+            "Nigeria"
+          ],
+          "heightCm": 175,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "287579",
+          "name": "Sofyan Amrabat",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1996-08-21",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Morocco",
+            "Netherlands"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "16306",
+          "name": "Casemiro",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1992-02-23",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Brazil",
+            "Spain"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "654253",
+          "name": "Toby Collyer",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2004-03-01",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "820374",
+          "name": "Kobbie Mainoo",
+          "position": "Central Midfield",
+          "dateOfBirth": "2005-04-19",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England",
+            "Ghana"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "315969",
+          "name": "Scott McTominay",
+          "position": "Central Midfield",
+          "dateOfBirth": "1996-08-12",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Scotland",
+            "England"
+          ],
+          "heightCm": 193,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "288255",
+          "name": "Donny van de Beek",
+          "position": "Central Midfield",
+          "dateOfBirth": "1997-04-18",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Netherlands"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "747153",
+          "name": "Dan Gore",
+          "position": "Central Midfield",
+          "dateOfBirth": "2004-09-26",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 170,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "240306",
+          "name": "Bruno Fernandes",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1994-08-09",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "Portugal"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "346483",
+          "name": "Mason Mount",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1999-10-01",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "607224",
+          "name": "Hannibal",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2003-01-21",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Tunisia",
+            "France"
+          ],
+          "heightCm": 177,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "69633",
+          "name": "Christian Eriksen",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1992-02-14",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Denmark"
+          ],
+          "heightCm": 182,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "258923",
+          "name": "Marcus Rashford",
+          "position": "Left Winger",
+          "dateOfBirth": "1997-10-31",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "England",
+            "St. Kitts & Nevis"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "811779",
+          "name": "Alejandro Garnacho",
+          "position": "Left Winger",
+          "dateOfBirth": "2004-01-07",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Argentina",
+            "Spain"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "401173",
+          "name": "Jadon Sancho",
+          "position": "Left Winger",
+          "dateOfBirth": "2000-03-25",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England",
+            "Jamaica"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "640026",
+          "name": "Shola Shoretire",
+          "position": "Left Winger",
+          "dateOfBirth": "2004-02-02",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England",
+            "Nigeria"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "both",
+          "isLoan": false
+        },
+        {
+          "id": "602105",
+          "name": "Antony",
+          "position": "Right Winger",
+          "dateOfBirth": "2000-02-24",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "Brazil"
+          ],
+          "heightCm": 172,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "536835",
+          "name": "Amad Diallo",
+          "position": "Right Winger",
+          "dateOfBirth": "2002-11-07",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Cote d'Ivoire",
+            "Italy"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "676318",
+          "name": "Facundo Pellistri",
+          "position": "Right Winger",
+          "dateOfBirth": "2001-12-20",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Uruguay",
+            "Spain"
+          ],
+          "heightCm": 174,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "670845",
+          "name": "Omari Forson",
+          "position": "Right Winger",
+          "dateOfBirth": "2004-07-20",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England",
+            "Ghana"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "610442",
+          "name": "Rasmus Højlund",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2003-04-02",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Denmark"
+          ],
+          "heightCm": 191,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "182877",
+          "name": "Anthony Martial",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1995-05-12",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "France",
+            "Guadeloupe"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "726859",
+          "name": "Joe Hugill",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2003-10-19",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "888639",
+          "name": "Ethan Wheatley",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2006-01-20",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 187,
+          "preferredFoot": null,
+          "isLoan": false
+        }
+      ]
+    },
+    {
+      "teamId": 34,
+      "name": "Newcastle United",
+      "sourceClubId": "762",
+      "players": [
+        {
+          "id": "192080",
+          "name": "Nick Pope",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1992-04-19",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 198,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "74960",
+          "name": "Martin Dúbravka",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1989-01-15",
+          "ageAtSeasonStart": 34,
+          "nationalities": [
+            "Slovakia"
+          ],
+          "heightCm": 191,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "85864",
+          "name": "Loris Karius",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1993-06-22",
+          "ageAtSeasonStart": 30,
+          "nationalities": [
+            "Germany"
+          ],
+          "heightCm": 191,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "142389",
+          "name": "Mark Gillespie",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1992-03-27",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 191,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "1019169",
+          "name": "Adam Harrison",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2006-10-20",
+          "ageAtSeasonStart": 16,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": null,
+          "preferredFoot": null,
+          "isLoan": false
+        },
+        {
+          "id": "1019170",
+          "name": "Aidan Harris",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2006-12-16",
+          "ageAtSeasonStart": 16,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": null,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "361093",
+          "name": "Sven Botman",
+          "position": "Centre-Back",
+          "dateOfBirth": "2000-12-01",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "Netherlands"
+          ],
+          "heightCm": 193,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "135343",
+          "name": "Fabian Schär",
+          "position": "Centre-Back",
+          "dateOfBirth": "1991-12-20",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Switzerland"
+          ],
+          "heightCm": 186,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "134270",
+          "name": "Dan Burn",
+          "position": "Centre-Back",
+          "dateOfBirth": "1992-09-05",
+          "ageAtSeasonStart": 30,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 201,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "183318",
+          "name": "Jamaal Lascelles",
+          "position": "Centre-Back",
+          "dateOfBirth": "1993-11-11",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "England",
+            "Barbados"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "484389",
+          "name": "Kell Watts",
+          "position": "Centre-Back",
+          "dateOfBirth": "1999-03-11",
+          "ageAtSeasonStart": 24,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 192,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "670858",
+          "name": "Lewis Hall",
+          "position": "Left-Back",
+          "dateOfBirth": "2004-08-09",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "250478",
+          "name": "Matt Targett",
+          "position": "Left-Back",
+          "dateOfBirth": "1995-09-18",
+          "ageAtSeasonStart": 27,
+          "nationalities": [
+            "England",
+            "Scotland"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "346018",
+          "name": "Jamal Lewis",
+          "position": "Left-Back",
+          "dateOfBirth": "1998-01-25",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "Northern Ireland",
+            "England"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "170321",
+          "name": "Paul Dummett",
+          "position": "Left-Back",
+          "dateOfBirth": "1991-09-26",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Wales",
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "900601",
+          "name": "Alex Murphy",
+          "position": "Left-Back",
+          "dateOfBirth": "2004-06-25",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "Ireland"
+          ],
+          "heightCm": 188,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "503981",
+          "name": "Tino Livramento",
+          "position": "Right-Back",
+          "dateOfBirth": "2002-12-11",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "England",
+            "Scotland"
+          ],
+          "heightCm": 182,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "95810",
+          "name": "Kieran Trippier",
+          "position": "Right-Back",
+          "dateOfBirth": "1990-09-19",
+          "ageAtSeasonStart": 32,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "184528",
+          "name": "Emil Krafth",
+          "position": "Right-Back",
+          "dateOfBirth": "1994-02-08",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Sweden"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "162029",
+          "name": "Javier Manquillo",
+          "position": "Right-Back",
+          "dateOfBirth": "1994-05-05",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Spain"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "559130",
+          "name": "Harrison Ashby",
+          "position": "Right-Back",
+          "dateOfBirth": "2001-11-14",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "Scotland",
+            "England"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "397033",
+          "name": "Sandro Tonali",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2000-08-05",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "Italy"
+          ],
+          "heightCm": 181,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "206225",
+          "name": "Isaac Hayden",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1995-03-22",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "Jamaica",
+            "England"
+          ],
+          "heightCm": 187,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "520624",
+          "name": "Bruno Guimarães",
+          "position": "Central Midfield",
+          "dateOfBirth": "1997-11-16",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "Brazil",
+            "Spain"
+          ],
+          "heightCm": 182,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "333241",
+          "name": "Joelinton",
+          "position": "Central Midfield",
+          "dateOfBirth": "1996-08-14",
+          "ageAtSeasonStart": 26,
+          "nationalities": [
+            "Brazil"
+          ],
+          "heightCm": 186,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "340329",
+          "name": "Joe Willock",
+          "position": "Central Midfield",
+          "dateOfBirth": "1999-08-20",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "England",
+            "Montserrat"
+          ],
+          "heightCm": 186,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "346707",
+          "name": "Sean Longstaff",
+          "position": "Central Midfield",
+          "dateOfBirth": "1997-10-30",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 187,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "922769",
+          "name": "Lewis Miley",
+          "position": "Central Midfield",
+          "dateOfBirth": "2006-01-05",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 189,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "567576",
+          "name": "Elliot Anderson",
+          "position": "Central Midfield",
+          "dateOfBirth": "2002-06-11",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "England",
+            "Scotland"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "148262",
+          "name": "Jeff Hendrick",
+          "position": "Central Midfield",
+          "dateOfBirth": "1992-01-31",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "Ireland"
+          ],
+          "heightCm": 185,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "626291",
+          "name": "Lucas De Bolle",
+          "position": "Central Midfield",
+          "dateOfBirth": "2002-10-22",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "Scotland",
+            "Belgium"
+          ],
+          "heightCm": null,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "1053908",
+          "name": "Travis Hernes",
+          "position": "Central Midfield",
+          "dateOfBirth": "2005-04-11",
+          "ageAtSeasonStart": 18,
+          "nationalities": [
+            "Norway",
+            "Jamaica"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "712115",
+          "name": "James Huntley",
+          "position": "Central Midfield",
+          "dateOfBirth": "2004-02-03",
+          "ageAtSeasonStart": 19,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 184,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "92469",
+          "name": "Matt Ritchie",
+          "position": "Right Midfield",
+          "dateOfBirth": "1989-10-09",
+          "ageAtSeasonStart": 33,
+          "nationalities": [
+            "Scotland",
+            "England"
+          ],
+          "heightCm": 173,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "614811",
+          "name": "Joe White",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2002-01-10",
+          "ageAtSeasonStart": 21,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 186,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "503733",
+          "name": "Anthony Gordon",
+          "position": "Left Winger",
+          "dateOfBirth": "2001-02-24",
+          "ageAtSeasonStart": 22,
+          "nationalities": [
+            "England",
+            "Scotland"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "398065",
+          "name": "Harvey Barnes",
+          "position": "Left Winger",
+          "dateOfBirth": "1997-09-12",
+          "ageAtSeasonStart": 25,
+          "nationalities": [
+            "England",
+            "Scotland"
+          ],
+          "heightCm": 182,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "146795",
+          "name": "Ryan Fraser",
+          "position": "Left Winger",
+          "dateOfBirth": "1994-02-24",
+          "ageAtSeasonStart": 29,
+          "nationalities": [
+            "Scotland"
+          ],
+          "heightCm": 163,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "533086",
+          "name": "Amadou Diallo",
+          "position": "Left Winger",
+          "dateOfBirth": "2003-02-15",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "England",
+            "Guinea"
+          ],
+          "heightCm": 166,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "272999",
+          "name": "Miguel Almirón",
+          "position": "Right Winger",
+          "dateOfBirth": "1994-10-02",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "Paraguay"
+          ],
+          "heightCm": 178,
+          "preferredFoot": "left",
+          "isLoan": false
+        },
+        {
+          "id": "199527",
+          "name": "Jacob Murphy",
+          "position": "Right Winger",
+          "dateOfBirth": "1995-02-24",
+          "ageAtSeasonStart": 28,
+          "nationalities": [
+            "England",
+            "Ireland"
+          ],
+          "heightCm": 179,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "349066",
+          "name": "Alexander Isak",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1999-09-21",
+          "ageAtSeasonStart": 23,
+          "nationalities": [
+            "Sweden",
+            "Eritrea"
+          ],
+          "heightCm": 190,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "123682",
+          "name": "Callum Wilson",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1992-02-27",
+          "ageAtSeasonStart": 31,
+          "nationalities": [
+            "England",
+            "Ireland"
+          ],
+          "heightCm": 180,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "922764",
+          "name": "Ben Parkinson",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2005-10-03",
+          "ageAtSeasonStart": 17,
+          "nationalities": [
+            "England"
+          ],
+          "heightCm": 183,
+          "preferredFoot": "right",
+          "isLoan": false
+        },
+        {
+          "id": "698151",
+          "name": "Michael Ndiweni",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2003-02-12",
+          "ageAtSeasonStart": 20,
+          "nationalities": [
+            "England",
+            "Zimbabwe"
+          ],
+          "heightCm": null,
+          "preferredFoot": "right",
+          "isLoan": false
+        }
+      ]
+    }
+  ]
+}

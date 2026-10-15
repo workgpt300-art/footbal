@@ -359,7 +359,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const forward=Number(keys.has("w")||keys.has("arrowup"))-Number(keys.has("s")||keys.has("arrowdown"));
           const side=Number(keys.has("d")||keys.has("arrowright"))-Number(keys.has("a")||keys.has("arrowleft"));
           const length=Math.hypot(forward,side)||1;
-          const moving=(forward!==0||side!==0)&&!lock&&!sent&&!opponentPossession;
+          const moving=(forward!==0||side!==0)&&!lock&&!sent;
           if(moving){
             const sprint=keys.has("shift")?1.42:1;
             const speed=(3.4+clamp(rating,35,95)*.009)*sprint;
@@ -415,19 +415,23 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             if(t>=1){
               const action=ballAction;
               if(action.kind==="pass"&&action.success&&action.targetActor!==undefined){
-                activeIndex=action.targetActor;
-                action.elapsed=action.duration;
-              }else if(action.kind==="shot"&&action.success){
-                // Ball drops inside the net and returns to the player for the next kickoff.
+                activeIndex=action.targetActor;kickoffMode=false;opponentPossession=false;opponentHolder=null;
               }
-              if(action.kind==="shot"&&action.points===2)keeper.root.position.x=clamp(action.targetX*.8,-2.9,2.9);
+              if(action.kind==="shot"&&action.points===2)keeper.root.position.x=clamp(action.targetX*.8,-3.15,3.15);
+              keeperReactAt=Number.POSITIVE_INFINITY;
               ballAction=null;lock=false;
               setPassAccuracy(ownPasses.value ? Math.round(ownPassesComplete.value/ownPasses.value*100) : null);
               if(action.kind==="shot"&&action.success){
-                ball.position.set(0,.25,9);userActors[0].root.position.set(0,0,9);activeIndex=0;
-                aimRing.position.x=0;aimX=0;
+                // Every goal restarts from the centre spot instead of teleporting the ball to the player.
+                ball.position.set(0,.23,0);userActors[9].root.position.set(0,0,1.25);activeIndex=9;kickoffMode=true;
+                opponentPossession=false;opponentHolder=null;
+                targetX=0;aimX=0;aimZ=-18;aimRing.position.set(0,.05,-18);
               }else if(action.kind==="pass"&&!action.success){
-                activeIndex=0;ball.position.set(0,.25,9);userActors[0].root.position.set(0,0,9);
+                opponentPossession=true;
+                if(!opponentHolder)opponentHolder=oppActors[0];
+                opponentPossessionClock=0;ball.position.set(opponentHolder.root.position.x,.23,opponentHolder.root.position.z+.65);
+              }else if(opponentPossession&&opponentHolder){
+                ball.position.set(opponentHolder.root.position.x,.23,opponentHolder.root.position.z+.65);
               }else{
                 const active=controlled();ball.position.set(active.root.position.x,.24,active.root.position.z-.75);
               }
@@ -435,30 +439,39 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             }
           }else if(!lock&&!sent){
             const active=controlled();
-            ball.position.set(active.root.position.x,.23,active.root.position.z-.8);
+            if(kickoffMode)ball.position.set(0,.23,0);
+            else if(opponentPossession&&opponentHolder)ball.position.set(opponentHolder.root.position.x,.23,opponentHolder.root.position.z+.65);
+            else ball.position.set(active.root.position.x,.23,active.root.position.z-.8);
             ball.rotation.x+=dt*(moving?7:.4);
-            aimX+=(targetX-aimX)*dt*2;
           }
-          keeper.root.position.x+=(clamp(aimX*.75,-2.8,2.8)-keeper.root.position.x)*dt*.8;
-          const cameraOffset=new THREE.Vector3(Math.sin(cameraYaw)*10,7.5,Math.cos(cameraYaw)*11);
+          // Keeper starts reacting only after a readable 300ms delay, not by following the cursor.
+          if(timer>=keeperReactAt)keeper.root.position.x+=(clamp(keeperDiveX,-3.15,3.15)-keeper.root.position.x)*Math.min(1,dt*4.2);
+          else keeper.root.position.x+=(0-keeper.root.position.x)*dt*.22;
+          userKeeper.root.position.x+=(clamp((opponentHolder?.root.position.x??0)*.18,-2.5,2.5)-userKeeper.root.position.x)*dt*.7;
+          const cameraOffset=new THREE.Vector3(Math.sin(cameraYaw)*12,9.2,Math.cos(cameraYaw)*14);
           const desired=controlled().root.position.clone().add(cameraOffset);
-          camera.position.lerp(desired,1-Math.exp(-dt*4.3));
-          camera.lookAt(controlled().root.position.x,.7,controlled().root.position.z-4.3);
+          camera.position.lerp(desired,1-Math.exp(-dt*3.8));
+          camera.lookAt(controlled().root.position.x,.7,controlled().root.position.z-5.5);
           renderer.render(scene,camera);
 
           if(!sent&&matchMinute>=90&&!ballAction){addEvent("fulltime",userClub.id,"Фінальний свисток.");finishMatch();}
-          // Lightweight AI counterattacks keep both sides on the scoreboard.
-          if(!sent&&!ballAction&&matchMinute>=opponentGoalAt){
-            opponentGoalAt=matchMinute+intBetween(19,34);
-            if(Math.random()<.43){
-              opponentGoals.value+=1;opponentShots.value+=1;opponentOnTarget.value+=1;
-              addEvent("shot",opponentClub.id,"Швидка контратака суперника.");
-              addEvent("goal",opponentClub.id,"Суперник завершив контратаку голом.",undefined,"Гравець суперника");
-              setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);
-              setStatus("Гол суперника. Потрібно відігратися!");
-            }else{
-              opponentShots.value+=1;
-              addEvent("shot",opponentClub.id,"Суперник пробив, але не влучив у ворота.");
+          // Opponent attacks are resolved from actual possession and player movement.
+          if(opponentPossession&&!ballAction&&!sent){
+            opponentPossessionClock+=dt;
+            if(opponentPossessionClock>2.8){
+              opponentPossessionClock=0;opponentShots.value+=1;opponentOnTarget.value+=1;
+              const scores=Math.random()<clamp(.24+(opponentClub.strength-userClub.strength)*.008,.12,.48);
+              addEvent("shot",opponentClub.id,"Суперник завершив атаку ударом.");
+              if(scores){
+                opponentGoals.value+=1;addEvent("goal",opponentClub.id,"Гол суперника після швидкої атаки.","Гравець суперника");
+                setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);
+                setStatus("Гол суперника. Розіграш відновиться з центру поля.");
+                opponentPossession=false;opponentHolder=null;kickoffMode=true;ball.position.set(0,.23,0);userActors[9].root.position.set(0,0,1.25);activeIndex=9;
+              }else{
+                addEvent("save",userClub.id,"Твій воротар відбив удар.");
+                setStatus("Воротар врятував команду — м'яч знову у тебе.");
+                opponentPossession=false;opponentHolder=null;kickoffMode=false;ball.position.set(controlled().root.position.x,.23,controlled().root.position.z-.65);
+              }
             }
           }
         };

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { advanceOneDay, CLUBS, createCareer, getStandings, simulateFixture, trainPlayer } from "./game";
+import { advanceOneDay, advanceToNextMatch, CLUBS, createCareer, getStandings, simulateFixture, trainPlayer } from "./game";
 
 const makeCareer = () => createCareer({
   playerName: "Тестовий Гравець",
@@ -61,6 +61,23 @@ describe("FOOTBALL CAREER game foundation", () => {
     expect(next.fixtures.length).toBe(save.fixtures.length);
     expect(next.fixtures.every((fixture) => fixture.status === "scheduled")).toBe(true);
     expect(next.player.age).toBe(save.player.age + 1);
+  });
+
+  it("does not progress former-club fixtures or credit matches to a free agent", () => {
+    const save = makeCareer();
+    const fixture = save.fixtures.find((item) => item.homeClubId === save.clubId || item.awayClubId === save.clubId);
+    expect(fixture).toBeDefined();
+    const matchDay = new Date(fixture!.date + "T12:00:00.000Z");
+    matchDay.setUTCDate(matchDay.getUTCDate() - 1);
+    const freeAgent = {
+      ...save,
+      date: matchDay.toISOString().slice(0, 10),
+      contractStatus: "free-agent" as const,
+    };
+    expect(advanceToNextMatch(freeAgent)).toBe(freeAgent);
+    const next = advanceOneDay(freeAgent);
+    expect(next.player.stats.matches).toBe(save.player.stats.matches);
+    expect(next.player.stats.minutes).toBe(save.player.stats.minutes);
   });
 
   it("limits one training session to one attribute step and reduces fitness", () => {

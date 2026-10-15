@@ -1,63 +1,23 @@
-# Локальні склади за сезонами
+# Historical squad data
 
-Ця папка — джерело статичних даних для реальних складів, окремо від симуляційних гравців гри. Дані можна заповнювати вручну з перевірених відкритих джерел і комітити в GitHub; це не витрачає запити API-Football під час запуску гри.
+## Current dataset
 
-## Єдине правило сезону
+- Season convention: the season field is the start year (`2023` = `2023/24`).
+- Premier League 2023/24 is stored in `2023/leagues/39.json`.
+- The file contains 20 clubs and 853 player records, including name, position, date of birth, estimated age at season start, nationalities, height, preferred foot, and loan marker where available.
+- Team `teamId` values are API-Football club IDs. `sourceClubId` records the ID used by the upstream dataset.
+- `2023/manifest.json` tracks which leagues have data.
 
-У всьому проєкті `season` — **рік початку сезону**:
-- `2023` = сезон 2023/24
-- `2024` = сезон 2024/25
+## Sources
 
-Не змішуйте склади сезону 2023/24 із клубами чи лігами іншого сезону. ID ліги та клубу мають відповідати довіднику з тієї самої сезонної папки або мапінгу.
+- Squad data: [Samoilov2004/premier_league_dataset](https://github.com/Samoilov2004/premier_league_dataset/tree/main/dataset/DATA_JSON/Season_2023); its README says the squad data is sourced from Transfermarkt.
+- Cross-check: [official Premier League 2023/24 squad lists (13 September 2023)](https://www.premierleague.com/en/news/3681595/202324-premier-league-squad-lists).
 
-## Структура
+**Licensing note:** the third-party dataset repository does not present an explicit license. Before distributing this data publicly or commercially, review Transfermarkt's terms and any applicable database rights. Source metadata is included in the JSON.
 
-```
-public/data/squads/
-  README.md
-  2023/
-    manifest.json
-    leagues/
-      <league-id>.json
-```
+## Data quality and next steps
 
-Окремий файл ліги має формат:
-
-```json
-{
-  "season": 2023,
-  "seasonLabel": "2023/24",
-  "leagueId": 39,
-  "leagueName": "Premier League",
-  "source": {
-    "name": "Назва джерела",
-    "url": "https://example.com/source",
-    "retrievedAt": "YYYY-MM-DD"
-  },
-  "teams": [
-    {
-      "teamId": 33,
-      "teamName": "Manchester United",
-      "players": [
-        {
-          "playerId": null,
-          "name": "Player Name",
-          "position": "Goalkeeper",
-          "shirtNumber": 1,
-          "nationality": "England",
-          "dateOfBirth": "2000-01-01",
-          "photo": null
-        }
-      ]
-    }
-  ]
-}
-```
-
-## Важливо
-
-- Не вигадуйте відсутніх гравців, номерів або дат.
-- `null` дозволено для полів, яких немає в джерелі.
-- Зберігайте `source.url` і дату отримання для кожного набору.
-- Не копіюйте масово матеріали, якщо умови джерела забороняють повторне поширення.
-- Це формат для статичних даних; щоб гра автоматично їх читала, потрібно окремо під'єднати завантажувач до `src/lib/game.ts` і перевірити його тести.
+- The upstream season files are season-scoped rosters, but fields such as `currentClub` and `marketValue` were intentionally omitted because they can reflect a later snapshot.
+- `ageAtSeasonStart` is calculated from date of birth as of 1 August 2023.
+- Unknown values should remain `null`; do not invent ratings, shirt numbers, or missing attributes.
+- The data is committed to the repository, but `src/lib/game.ts` still needs a loader to read these files and map players into game career saves. Other leagues/seasons have not yet been populated.

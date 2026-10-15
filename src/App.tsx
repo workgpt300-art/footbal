@@ -1,17 +1,19 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode, type CSSProperties } from "react";
-import { Activity, ArrowLeftRight, ArrowRight, BarChart3, Bell, CalendarDays, Check, ChevronRight, CircleHelp, CloudDownload, Coins, Dumbbell, FileDown, FileUp, Goal, House, Menu, MousePointer2, Newspaper, Play, Plus, Save, Search, Settings, Shield, Shirt, Star, Target, Timer, Trophy, UserRound, Users, Wallet, X, Zap } from "lucide-react";
+import { Activity, ArrowLeftRight, ArrowRight, BarChart3, Bell, CalendarDays, Check, ChevronRight, CircleHelp, CloudDownload, Coins, Database, Dumbbell, FileDown, FileUp, Goal, House, Menu, MousePointer2, Newspaper, Play, Plus, Save, Search, Settings, Shield, Shirt, Star, Target, Timer, Trophy, UserRound, Users, Wallet, X, Zap } from "lucide-react";
 import type { CareerSave, Fixture, MatchEvent, MatchStats, Position, TrainingFocus, TryoutApplication, TryoutSession } from "./types";
 import { advanceOneDay, advanceToNextMatch, CLUBS, createCareer, createTransferOffers, decideTransfer, formatDate, formatMoney, getClub, getStandings, getTrainingLabel, getUpcomingFixtures, getVirtualSquad, LEAGUES, nextFixtureForPlayer, POSITIONS, shortDate, simulateFixture, TRAINING, trainPlayer } from "./lib/game";
 import { exportSave, getActiveSaveId, importSave, loadSaves, persistSaves, setActiveSaveId } from "./lib/storage";
 import { supabase, supabaseConfigured } from "./lib/supabase";
 import { ThreeDTrial } from "./components/ThreeDTrial";
 import { PlayableMatch3D } from "./components/PlayableMatch3D";
+import { FCCommandCenter } from "./components/FCCommandCenter";
+import { FootballDatabasePage } from "./components/FootballDatabasePage";
 
-type View = "home"|"player"|"squad"|"matches"|"calendar"|"leagues"|"transfers"|"market"|"training"|"tryouts"|"stats"|"news"|"finance"|"saves"|"settings"|"import";
+type View = "home"|"player"|"squad"|"matches"|"calendar"|"leagues"|"transfers"|"market"|"training"|"tryouts"|"stats"|"news"|"finance"|"saves"|"settings"|"import"|"database";
 const nav = [
  {title:"КАР'ЄРА",items:[["home","Головна кар'єри",House],["player","Мій футболіст",UserRound],["training","Тренування",Dumbbell],["tryouts","Перегляди",Target]]},
  {title:"КЛУБ",items:[["squad","Склад",Users],["matches","Матчі",Play],["calendar","Календар",CalendarDays]]},
- {title:"ФУТБОЛЬНИЙ СВІТ",items:[["leagues","Чемпіонати",Trophy],["transfers","Трансфери",ArrowLeftRight],["market","Ринок гравців",Search],["stats","Статистика",BarChart3]]},
+ {title:"ФУТБОЛЬНИЙ СВІТ",items:[["leagues","Чемпіонати",Trophy],["transfers","Трансфери",ArrowLeftRight],["market","Ринок гравців",Search],["stats","Статистика",BarChart3],["database","База клубів і гравців",Database]]},
  {title:"ІНШЕ",items:[["news","Новини",Newspaper],["finance","Фінанси",Wallet],["import","Імпорт футбольної бази",CloudDownload],["saves","Збереження",Save],["settings","Налаштування",Settings]]}
 ] as const;
 const positionName=Object.fromEntries(POSITIONS.map(p=>[p.value,p.label])) as Record<Position,string>;
@@ -91,12 +93,13 @@ export default function App(){
  function body(){
   if(!save)return <Welcome create={()=>setCreating(true)} importSave={()=>setView("saves")}/>;
   switch(view){
-   case "home":return save.contractStatus==="free-agent"?<FreeAgentHome save={save} navigate={setView} nextDay={nextDay}/>:<Dashboard save={save} standing={standing} upcoming={upcoming} nextDay={nextDay} nextMatch={nextMatch} navigate={setView} training={()=>setView("training")}/>;
+   case "home":return save.contractStatus==="free-agent"?<FreeAgentHome save={save} navigate={setView} nextDay={nextDay}/>:<FCCommandCenter save={save} standing={standing} upcoming={upcoming} nextDay={nextDay} nextMatch={nextMatch} navigate={setView} training={()=>setView("training")}/>;
    case "player":return <PlayerPage save={save} training={()=>setView("training")} transfers={()=>setView("transfers")} releaseContract={releaseContract}/>;
    case "squad":return <SquadPage save={save} query={query} setQuery={setQuery}/>;
    case "matches":return <MatchesPage save={save} nextMatch={nextMatch} update={update} tell={tell}/>;
    case "calendar":return <CalendarPage save={save} fixtures={fixtures} futureOnly={futureOnly} setFutureOnly={setFutureOnly} nextMatch={nextMatch}/>;
    case "leagues":return <LeaguesPage/>;
+   case "database":return <FootballDatabasePage signedIn={signedIn} navigateToImport={()=>setView("import")}/>;
    case "transfers":return <TransfersPage save={save} offers={offers} decision={decision}/>;
    case "market":return <MarketPage save={save} filter={marketFilter} setFilter={setMarketFilter} offers={offers}/>;
    case "training":return <TrainingPage save={save} training={training}/>;

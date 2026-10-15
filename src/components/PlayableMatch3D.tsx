@@ -35,6 +35,7 @@ const colorHex = (color: string) => Number.parseInt(color.replace("#", ""), 16) 
 export function PlayableMatch3D({ home, away, userClubId, playerName, rating, finishing, passing, dribbling, fitness, onFinish }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const finishRef = useRef(onFinish);
+  const actionRef = useRef<{pass:()=>void;through:()=>void;shoot:()=>void;move:(key:string,down:boolean)=>void;fullscreen:()=>void}>({pass:()=>{},through:()=>{},shoot:()=>{},move:()=>{},fullscreen:()=>{}});
   const [minute, setMinute] = useState(0);
   const [homeGoals, setHomeGoals] = useState(0);
   const [awayGoals, setAwayGoals] = useState(0);
@@ -61,8 +62,12 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     const ownGoals = { value: 0 }, opponentGoals = { value: 0 };
     const ownShots = { value: 0 }, ownOnTarget = { value: 0 }, opponentShots = { value: 0 }, opponentOnTarget = { value: 0 };
     const ownPasses = { value: 0 }, ownPassesComplete = { value: 0 };
-    let activeIndex = 0;
+    let activeIndex = 9;
     let ballAction: Motion | null = null;
+    let kickoffMode = true;
+    let opponentPossession = false;
+    let opponentHolder: any = null;
+    let opponentPossessionClock = 0;
     let lock = false;
     let sent = false;
     let timer = 0;
@@ -70,6 +75,9 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     let uiAccumulator = 0;
     let walkClock = 0;
     let aimX = 0;
+    let aimZ = 0;
+    let keeperReactAt = Number.POSITIVE_INFINITY;
+    let keeperDiveX = 0;
     let cameraYaw = 0;
     let opponentGoalAt = intBetween(17, 34);
 
@@ -120,7 +128,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x08151a);
         scene.fog = new THREE.Fog(0x08151a, 32, 72);
-        camera = new THREE.PerspectiveCamera(53, 1, 0.1, 150);
+        camera = new THREE.PerspectiveCamera(62, 1, 0.1, 180);
         renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
         renderer.shadowMap.enabled = true;
@@ -138,7 +146,8 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         scene.add(sun);
 
         const mat = (color: number, roughness = 0.8) => new THREE.MeshStandardMaterial({ color, roughness });
-        const grassA = mat(0x17613f), grassB = mat(0x1c7047), lineMat = mat(0xe7f1ea);
+        const grassA = mat(0x17613f), grassB = mat(0x1c7047);
+        const lineMat = new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide});
         const userShirt = mat(colorHex(userClub.colors[0]), 0.65), userShorts = mat(colorHex(userClub.colors[1]), 0.75);
         const opponentShirt = mat(colorHex(opponentClub.colors[0]), 0.65), opponentShorts = mat(colorHex(opponentClub.colors[1]), 0.75);
         const skin = mat(0xe5b18c, 0.7), keeperMat = mat(0xffad55, 0.65), black = mat(0x172229, 0.7);
@@ -147,7 +156,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const o = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);
           o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;
         };
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(31,53),grassA);
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(34,53),grassA);
         ground.rotation.x=-Math.PI/2;ground.position.set(0,0,0);ground.receiveShadow=true;scene.add(ground);
         for(let i=0;i<11;i+=1){
           const stripe=new THREE.Mesh(new THREE.PlaneGeometry(31,53/11+0.01),i%2?grassA:grassB);
@@ -155,7 +164,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         }
         const lineX=(x1:number,x2:number,z:number,y=0.025,t=0.045)=>box(x2-x1,0.018,t,lineMat,(x1+x2)/2,y,z);
         const lineZ=(x:number,z1:number,z2:number,y=0.025,t=0.045)=>box(t,0.018,z2-z1,lineMat,x,y,(z1+z2)/2);
-        lineX(-14.5,14.5,25.5);lineX(-14.5,14.5,-25.5);lineZ(-14.5,-25.5,25.5);lineZ(14.5,-25.5,25.5);
+        lineX(-16.2,16.2,25.5);lineX(-16.2,16.2,-25.5);lineZ(-16.2,-25.5,25.5);lineZ(16.2,-25.5,25.5);
         lineX(-14.5,14.5,0);
         const centerCircle=new THREE.Mesh(new THREE.RingGeometry(2.7,2.76,64),lineMat);centerCircle.rotation.x=-Math.PI/2;centerCircle.position.set(0,.032,0);scene.add(centerCircle);
         const centerDot=new THREE.Mesh(new THREE.CircleGeometry(.08,16),lineMat);centerDot.rotation.x=-Math.PI/2;centerDot.position.set(0,.035,0);scene.add(centerDot);
@@ -183,24 +192,25 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const actor={root,legs:[leg1,leg2],arms:[arm1,arm2],baseX:x,baseZ:z,keeper,team,index};
           actors.push(actor);return actor;
         };
-        // The controlled team attacks the near 3D goal. Squad members move as supporting runners.
-        makeActor(0,9,userShirt,userShorts,"user",0);
-        makeActor(-6,5,userShirt,userShorts,"user",1);makeActor(5,2,userShirt,userShorts,"user",2);
-        makeActor(-3,-2,userShirt,userShorts,"user",3);makeActor(4,-7,userShirt,userShorts,"user",4);
-        makeActor(-8,-5,userShirt,userShorts,"user",5);makeActor(8,-11,userShirt,userShorts,"user",6);
-        makeActor(-9,1,opponentShirt,opponentShorts,"opp",0);makeActor(9,0,opponentShirt,opponentShorts,"opp",1);
-        makeActor(-3,-5,opponentShirt,opponentShorts,"opp",2);makeActor(3,-9,opponentShirt,opponentShorts,"opp",3);
-        makeActor(-6,-15,opponentShirt,opponentShorts,"opp",4);makeActor(6,-17,opponentShirt,opponentShorts,"opp",5);
-        const keeper=makeActor(0,-23.1,keeperMat,opponentShorts,"opp",6,true);
-        const userActors=actors.filter(a=>a.team==="user");
+        // Full 11v11: ten outfield players and a goalkeeper on each team.
+        makeActor(0,23.1,keeperMat,userShorts,"user",-1,true);
+        const userFormation:[number,number][]=[[-10,12],[-3,13],[3,13],[10,12],[-8,5],[-2,6],[4,5],[9,3],[-5,-8],[5,-10]];
+        userFormation.forEach(([x,z],i)=>makeActor(x,z,userShirt,userShorts,"user",i));
+        makeActor(0,-23.1,keeperMat,opponentShorts,"opp",-1,true);
+        const opponentFormation:[number,number][]=[[-10,-12],[-3,-13],[3,-13],[10,-12],[-8,-5],[-2,-6],[4,-5],[9,-3],[-5,8],[5,10]];
+        opponentFormation.forEach(([x,z],i)=>makeActor(x,z,opponentShirt,opponentShorts,"opp",i));
+        const keeper=actors.find(a=>a.team==="opp"&&a.keeper)!;
+        const userKeeper=actors.find(a=>a.team==="user"&&a.keeper)!;
+        const userActors=actors.filter(a=>a.team==="user"&&!a.keeper);
         const oppActors=actors.filter(a=>a.team==="opp"&&!a.keeper);
-        const ball=new THREE.Mesh(new THREE.SphereGeometry(.23,18,14),ballMaterial);ball.castShadow=true;scene.add(ball);
+        userActors[activeIndex].root.position.set(0,0,1.25);
+        const ball=new THREE.Mesh(new THREE.SphereGeometry(.23,18,14),ballMaterial);ball.castShadow=true;ball.position.set(0,.23,0);scene.add(ball);
         const spotGroup=new THREE.Group();for(let i=0;i<5;i++){const patch=new THREE.Mesh(new THREE.CircleGeometry(.065,6),black);patch.position.set(Math.cos(i*Math.PI*2/5)*.19,.035,Math.sin(i*Math.PI*2/5)*.19);patch.rotation.x=-Math.PI/2;spotGroup.add(patch);}ball.add(spotGroup);
         const aimRing=new THREE.Mesh(new THREE.RingGeometry(.28,.38,28),mat(0xc3ff6a));aimRing.rotation.x=-Math.PI/2;aimRing.position.set(0,.05,-24.8);scene.add(aimRing);
         const clock=new THREE.Clock();
         const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
         let targetX=0;
-        const controlled=()=>userActors[activeIndex]??userActors[0];
+        const controlled=()=>userActors[activeIndex]??userActors[9]??userActors[0];
         const clubFor=(team:"user"|"opp")=>team==="user"?userClub:opponentClub;
         const makeEvent=(kind:MatchEvent["kind"],team:"user"|"opp",desc:string,player?:string)=>{
           addEvent(kind,clubFor(team).id,desc,undefined,player);

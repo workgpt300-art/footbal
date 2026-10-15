@@ -4,6 +4,7 @@ import type { CareerSave, Fixture, Position, TrainingFocus, TryoutApplication, T
 import { advanceOneDay, advanceToNextMatch, CLUBS, createCareer, createTransferOffers, decideTransfer, formatDate, formatMoney, getClub, getStandings, getTrainingLabel, getUpcomingFixtures, getVirtualSquad, LEAGUES, nextFixtureForPlayer, POSITIONS, shortDate, TRAINING, trainPlayer } from "./lib/game";
 import { exportSave, getActiveSaveId, importSave, loadSaves, persistSaves, setActiveSaveId } from "./lib/storage";
 import { supabase, supabaseConfigured } from "./lib/supabase";
+import { ThreeDTrial } from "./components/ThreeDTrial";
 
 type View = "home"|"player"|"squad"|"matches"|"calendar"|"leagues"|"transfers"|"market"|"training"|"tryouts"|"stats"|"news"|"finance"|"saves"|"settings"|"import";
 const nav = [
@@ -177,31 +178,16 @@ function TryoutsPage({save,update,tell}:{save:CareerSave;update:(save:CareerSave
   update({...save,activeTryout:{id:"session-"+Date.now(),clubId:application.clubId,phase:"shooting",attemptsInPhase:0,totalAttempts:0,score:0,lastResult:"Тренер чекає на твої перші удари по воротах."}});
   tell("Перегляд у "+getClub(application.clubId).name+" розпочався. Виконуй завдання самостійно.");
  }
- function takeAction(choice:number){
+  function take3DAction(result:{success:boolean;points:number;description:string}){
   if(!session||session.phase==="complete")return;
-  const phase=session.phase;
-  const attribute=phase==="shooting"?(save.player.attributes.finishing??save.player.rating):phase==="passing"?(save.player.attributes.passing??save.player.rating):(save.player.attributes.dribbling??save.player.rating);
-  const targetPenalty=(phase==="shooting"&&choice!==1)?0.055:(phase==="passing"&&choice===2)?0.055:0;
-  const chance=Math.max(.18,Math.min(.94,.43+(attribute-55)*.009+(save.player.morale-50)*.0012+(save.player.fitness-50)*.0012-targetPenalty));
-  const success=Math.random()<chance;
-  let result="",earned=0;
-  if(phase==="shooting"){
-   if(!success)result="Промах! Удар не влучив у площину воріт.";
-   else {const goal=Math.random()<(choice===1?.28:.58);earned=goal?2:1;result=goal?"ГОЛ! Тренер відзначив точність удару.":"Удар у площину, але воротар відбив м'яч.";}
-  }else if(phase==="passing"){
-   if(success){earned=1;result=choice===2?"Довга передача дійшла до партнера.":"Точна передача — тренер задоволений.";}
-   else result="Передача перехоплена. Спробуй зберегти темп.";
-  }else{
-   if(success){earned=1;result=choice===1?"Успішний прохід центром!":"Ти обіграв суперника й зберіг м'яч.";}
-   else result="Захисник прочитав фінт і відібрав м'яч.";
-  }
-  const newScore=session.score+earned;
+  const newScore=session.score+result.points;
   const nextAttempt=session.attemptsInPhase+1;
   const isPhaseDone=nextAttempt>=3;
-  const nextPhase:TryoutSession["phase"]=!isPhaseDone?phase:phase==="shooting"?"passing":phase==="passing"?"dribbling":"complete";
+  const nextPhase:TryoutSession["phase"]=!isPhaseDone?session.phase:session.phase==="shooting"?"passing":session.phase==="passing"?"dribbling":"complete";
   const complete=nextPhase==="complete";
-  const nextSession:TryoutSession={...session,phase:nextPhase,attemptsInPhase:isPhaseDone?0:nextAttempt,totalAttempts:session.totalAttempts+1,score:newScore,lastResult:result};
-  const nextApplications=complete?applications.map(a=>a.id===applications.find(x=>x.clubId===session.clubId&&x.status==="invited")?.id?{...a,status:"completed" as const,score:newScore,message:"Перегляд завершено: "+newScore+" балів."}:a):applications;
+  const nextSession:TryoutSession={...session,phase:nextPhase,attemptsInPhase:isPhaseDone?0:nextAttempt,totalAttempts:session.totalAttempts+1,score:newScore,lastResult:result.description};
+  const applicationId=applications.find(x=>x.clubId===session.clubId&&x.status==="invited")?.id;
+  const nextApplications=complete?applications.map(a=>a.id===applicationId?{...a,status:"completed" as const,score:newScore,message:"Перегляд завершено: "+newScore+" балів."}:a):applications;
   let nextSave:CareerSave={...save,activeTryout:nextSession,tryoutApplications:nextApplications};
   if(complete){
    if(newScore>=5){
@@ -212,6 +198,8 @@ function TryoutsPage({save,update,tell}:{save:CareerSave;update:(save:CareerSave
     nextSave={...nextSave,contractNegotiation:null};
     tell("Перегляд завершено: "+newScore+" балів. Цього разу клуб не запропонував контракт — спробуй ще один перегляд.");
    }
+  } else {
+    tell(result.description);
   }
   update(nextSave);
  }
@@ -239,18 +227,15 @@ function TryoutsPage({save,update,tell}:{save:CareerSave;update:(save:CareerSave
   update({...save,contractNegotiation:{...negotiation,status:"rejected"}});
   tell("Ти відхилив контрактну пропозицію.");
  }
- const phaseLabels={shooting:"Удари по воротах",passing:"Точність передач",dribbling:"Дриблінг один на один",complete:"Перегляд завершено"};
- const taskOptions=session?.phase==="shooting"?[{label:"Верхній лівий",short:"ВЛ"},{label:"По центру",short:"Ц"},{label:"Верхній правий",short:"ВП"},{label:"Низ лівий",short:"НЛ"},{label:"Низ правий",short:"НП"}]:session?.phase==="passing"?[{label:"Короткий пас",short:"КОРОТКИЙ"},{label:"Передача в розріз",short:"У РОЗРІЗ"},{label:"Довгий пас",short:"ДОВГИЙ"}]:[{label:"Обіграти ліворуч",short:"ЛІВОРУЧ"},{label:"Пройти центром",short:"ЦЕНТР"},{label:"Обіграти праворуч",short:"ПРАВОРУЧ"}];
- const completedCount=session?session.score:0;
  return <div className="stack-lg">
   {locked&&<section className="info-banner"><Shield size={16}/><div><b>Перегляди для вільних агентів</b><small>Спочатку розірви контракт на сторінці «Мій футболіст». Після завершення перегляду можна буде узгодити зарплату й підписати новий контракт.</small></div></section>}
-  {session&&session.phase!=="complete"&&activeClub&&<section className="panel trial-session"><PanelTitle title={"Перегляд у "+activeClub.name} subtitle={"Завдання "+(session.phase==="shooting"?"1":session.phase==="passing"?"2":"3")+" із 3 · спроба "+(session.attemptsInPhase+1)+" із 3"}/><div className="trial-scorebar"><div><span>Балів</span><b>{session.score}</b></div><div><span>Усього спроб</span><b>{session.totalAttempts}/9</b></div><div><span>Рейтинг</span><b>{save.player.rating}</b></div></div><h3>{phaseLabels[session.phase]}</h3><p className="trial-instruction">{session.phase==="shooting"?"Наведи курсор і натисни на зону воріт або обери її кнопкою. Кутові удари складніші, але при влучанні дають більше балів.":session.phase==="passing"?"Обери тип передачі. Чим складніша передача, тим важче виконати вправу.":"Обери напрямок фінту та спробуй пройти захисника."}</p>{session.phase==="shooting"?<div className="shooting-drill"><div className="goal-frame"><div className="goal-net"/><div className="goal-targets">{taskOptions.map((o,i)=><button key={o.short} title={o.label} aria-label={o.label} onClick={()=>takeAction(i)}>{o.short}</button>)}</div></div><div className="goal-ball">⚽</div></div>:<div className={"drill-options "+session.phase}>{taskOptions.map((o,i)=><button key={o.short} className="drill-option" onClick={()=>takeAction(i)}><span>{session.phase==="passing"?"↗":"↝"}</span><b>{o.label}</b></button>)}</div>}<div className="trial-last-result" aria-live="polite"><span className="result-dot"/>{session.lastResult}</div></section>}
+  {session&&session.phase!=="complete"&&activeClub&&<section className="panel trial-session"><PanelTitle title={"Перегляд у "+activeClub.name} subtitle={"Завдання "+(session.phase==="shooting"?"1":session.phase==="passing"?"2":"3")+" із 3 · спроба "+(session.attemptsInPhase+1)+" із 3"}/><div className="trial-scorebar"><div><span>Балів</span><b>{session.score}</b></div><div><span>Усього спроб</span><b>{session.totalAttempts}/9</b></div><div><span>Рейтинг</span><b>{save.player.rating}</b></div></div><ThreeDTrial key={session.totalAttempts} phase={session.phase} attempt={session.attemptsInPhase} rating={save.player.rating} finishing={save.player.attributes.finishing??save.player.rating} passing={save.player.attributes.passing??save.player.rating} dribbling={save.player.attributes.dribbling??save.player.rating} fitness={save.player.fitness} onAction={take3DAction}/><div className="trial-last-result" aria-live="polite"><span className="result-dot"/>{session.lastResult}</div></section>}
   {session?.phase==="complete"&&<section className="panel trial-result"><div className="trial-result-icon"><Trophy size={27}/></div><span className="eyebrow">РЕЗУЛЬТАТ ПЕРЕГЛЯДУ</span><h2>{session.score} балів із можливих 12</h2><p>{session.score>=5?"Тренер задоволений твоїми вправами. Перейди до узгодження контракту.":"Тренер поки не готовий запропонувати контракт. Спробуй пройти перегляд в іншій команді."}</p><div className="trial-scorebar"><div><span>Удари</span><b>3 вправи</b></div><div><span>Передачі</span><b>3 вправи</b></div><div><span>Дриблінг</span><b>3 вправи</b></div></div></section>}
   {negotiation?.status==="open"&&contractClub&&<section className="panel contract-negotiation"><PanelTitle title={"Узгодження контракту · "+contractClub.name} subtitle={"Результат перегляду: "+negotiation.tryoutScore+" балів"}/><div className="contract-offer-row"><div><span className="eyebrow">ПРОПОЗИЦІЯ КЛУБУ</span><strong>{formatMoney(negotiation.proposedWage)}</strong><small>на тиждень</small></div><div className="contract-years"><label className="field"><span>Тривалість</span><select value={yearsInput} onChange={e=>setYearsInput(Number(e.target.value))}><option value={1}>1 рік</option><option value={2}>2 роки</option><option value={3}>3 роки</option><option value={4}>4 роки</option><option value={5}>5 років</option></select></label></div></div><label className="salary-field"><span>Твоя бажана зарплата <b>{formatMoney(salaryInput||negotiation.proposedWage)}/тиж.</b></span><input type="range" min={Math.max(400,Math.round(negotiation.proposedWage*.6/50)*50)} max={Math.round(negotiation.proposedWage*1.8/50)*50} step="50" value={salaryInput||negotiation.proposedWage} onChange={e=>setSalaryInput(Number(e.target.value))}/><small>Клуб може погодитися або запропонувати зустрічну суму.</small></label><div className="hero-actions"><Btn onClick={submitWage}><Check size={15}/> Запропонувати зарплату</Btn><Btn quiet onClick={rejectWage}>Відхилити пропозицію</Btn></div></section>}
   {negotiation?.status==="rejected"&&<section className="panel"><PanelTitle title="Пропозицію відхилено" subtitle="Можеш податися на перегляд в інший клуб."/><Btn onClick={()=>{update({...save,contractNegotiation:null,activeTryout:null});tell("Готово. Обирай наступний клуб.")}}>Знайти інший клуб</Btn></section>}
   {negotiation?.status==="signed"&&contractClub&&<section className="panel signed-contract"><div className="signature-confetti">{Array.from({length:16},(_,i)=><span key={i} style={{"--i":i} as React.CSSProperties}/>)}</div><div className="signing-paper"><div className="club-seal"><Check size={25}/></div><span className="eyebrow">ОФІЦІЙНИЙ КОНТРАКТ</span><h2>Ласкаво просимо до {contractClub.name}!</h2><p>Контракт гравця <b>{save.player.name}</b> офіційно підписано.</p><div className="signed-details"><div><small>Зарплата</small><b>{formatMoney(negotiation.requestedWage)}/тиж.</b></div><div><small>Тривалість</small><b>{negotiation.years} {negotiation.years===1?"рік":"роки"}</b></div><div><small>До</small><b>{formatDate(save.contractEndDate??save.date)}</b></div></div><div className="signature-script"> {save.player.name} <span>✓</span></div><div className="signed-actions"><Btn onClick={()=>{update({...save,contractNegotiation:null,activeTryout:null,tryoutApplications:applications.filter(a=>a.status!=="completed")});tell("Контракт збережено. Починай новий етап кар'єри!")}}>До кар'єри <ArrowRight size={14}/></Btn></div></div></section>}
   <section className="panel"><PanelTitle title="Клуби для перегляду" subtitle="Подай заявку — рішення залежить від рівня футболіста й сили клубу." action={<span className="tag">{applications.length} заявок</span>}/><div className="tryout-club-grid">{CLUBS.filter(c=>c.id!==save.clubId).map(club=>{const app=applications.find(a=>a.clubId===club.id);return <article className="tryout-club-card" key={club.id}><div className="tryout-club-head"><Crest id={club.id}/><div><b>{club.name}</b><small>{club.city} · сила {club.strength}</small></div></div><div className="tryout-club-foot"><span className="tag">{app?app.status==="invited"?"Запрошено":app.status==="rejected"?"Відмова":"Завершено":"Відкрита заявка"}</span>{app?.status==="invited"?<Btn small disabled={locked||Boolean(session&&session.phase!=="complete")} onClick={()=>attend(app)}><Play size={13}/> Прийти на перегляд</Btn>:<Btn small disabled={locked||Boolean(session&&session.phase!=="complete")||(negotiation?.status==="open"||negotiation?.status==="signed")} onClick={()=>apply(club.id)}><Target size={13}/> Надіслати на перегляд</Btn>}</div>{app?.score!==undefined&&<small className="tryout-past-score">Результат: {app.score} балів</small>}</article>})}</div></section>
-  <section className="info-banner"><MousePointer2 size={16}/><div><b>Керування на перегляді</b><small>Клацай по зонах воріт мишкою або кнопками. Виконуй 3 удари, 3 передачі й 3 дриблінги. Хороший результат відкриває переговори про зарплату.</small></div></section>
+  <section className="info-banner"><MousePointer2 size={16}/><div><b>Керування на перегляді</b><small>WASD або стрілки — рух, Shift — ривок, миша — прицілювання/обертання камери, Space — удар, E — пас. Виконуй 3 удари, 3 передачі й 3 дриблінги. Хороший результат відкриває переговори про зарплату.</small></div></section>
  </div>;
 }
 

@@ -68,7 +68,7 @@ export default function App(){
  const update=(next:CareerSave)=>setSaves(old=>old.map(s=>s.id===next.id?{...next,updatedAt:new Date().toISOString()}:s));
  function create(event:FormEvent<HTMLFormElement>){event.preventDefault();if(saves.length>=3){tell("Усі 3 слоти зайняті. Експортуй або видали збереження.");return}const fresh=createCareer({playerName:name,clubId,position,age:Number(age)||18,nationality,preferredFoot:foot,difficulty});setSaves(old=>[fresh,...old]);setActiveId(fresh.id);setCreating(false);setView("home");tell("Кар'єру створено. Прогрес зберігається в цьому браузері.")}
  function nextDay(){if(!save)return;if(view==="matches"){tell("У матч-центрі використай «До наступного матчу» або заверши 3D-гру, щоб не перервати матч.");return}const next=advanceOneDay(save);update(next);tell(next.fixtures.some(f=>f.status==="played"&&f.date===next.date)?next.lastEvent:"Наступний день: "+formatDate(next.date))}
- function nextMatch(){if(!save)return;const next=advanceToNextMatch(save);if(next===save){tell("Немає наступного матчу в календарі.");return}update(next);tell("Календар просунуто до "+formatDate(next.date))}
+ function nextMatch(){if(!save)return;if(save.contractStatus==="free-agent"){tell("Щоб грати за команду, спочатку підпиши контракт із новим клубом.");setView("tryouts");return}const next=advanceToNextMatch(save);if(next===save){tell("Немає наступного матчу в календарі.");return}update(next);tell("Календар просунуто до "+formatDate(next.date))}
  function training(f:TrainingFocus){if(!save)return;const r=trainPlayer(save,f);update(r.save);tell(r.message)}
  function offers(){if(!save)return;const r=createTransferOffers(save);update(r.save);tell(r.message)}
  function decision(id:string,accept:boolean){if(!save)return;const r=decideTransfer(save,id,accept);update(r.save);tell(r.message)}
@@ -87,7 +87,7 @@ export default function App(){
  async function checkApi(){if(!supabase||!signedIn){setApiError("Для захищеної перевірки налаштуй Supabase та увійди.");return}setApiBusy(true);setApiError("");setApiResult(null);const r=await supabase.functions.invoke("football-api",{body:{endpoint:"/leagues",params:{season:2026}}});setApiBusy(false);if(r.error){setApiError(r.error.message+" Перевір функцію та API_FOOTBALL_KEY у Supabase Secrets.");return}const p=r.data as {response?:Array<{league?:{name?:string};country?:{name?:string}}>;errors?:unknown};if(p?.errors&&Object.keys(p.errors as object).length){setApiError("API-Football повернув помилку. Перевір ключ і квоту.");return}const data=Array.isArray(p?.response)?p.response:[];setApiResult({count:data.length,sample:data.slice(0,8).map(x=>(x.league?.name??"Ліга")+" — "+(x.country?.name??"Країна"))});tell("API-Football відповів. Це перевірка, не повний імпорт складів.")}
  async function importFile(e:ChangeEvent<HTMLInputElement>){const file=e.target.files?.[0];if(!file)return;try{const s=await importSave(file);if(saves.length>=3){tell("Усі слоти зайняті. Видали один перед імпортом.");return}setSaves(old=>[s,...old]);setActiveId(s.id);setActiveSaveId(s.id);tell("Збереження імпортовано.")}catch(err){tell(err instanceof Error?err.message:"Не вдалося прочитати файл.")}e.target.value=""}
  const activeLabel=nav.flatMap(g=>g.items.map(i=>({id:i[0],label:i[1]}))).find(x=>x.id===view)?.label??"Головна кар'єри";
- const fixtures=save?save.fixtures.filter(f=>(f.homeClubId===save.clubId||f.awayClubId===save.clubId)&&(!futureOnly||f.status==="scheduled")).sort((a,b)=>a.date.localeCompare(b.date)):[];
+ const fixtures=save&&save.contractStatus!=="free-agent"?save.fixtures.filter(f=>(f.homeClubId===save.clubId||f.awayClubId===save.clubId)&&(!futureOnly||f.status==="scheduled")).sort((a,b)=>a.date.localeCompare(b.date)):[];
  function body(){
   if(!save)return <Welcome create={()=>setCreating(true)} importSave={()=>setView("saves")}/>;
   switch(view){
@@ -262,7 +262,7 @@ function MatchLine({f,clubId}:{f:Fixture;clubId:string}){
  return <div className="match-line"><div className="date-col"><b>{shortDate(f.date).split(" ")[0]}</b><small>{shortDate(f.date).split(" ").slice(1).join(" ")}</small></div><Crest id={clubId}/><div className="opponent"><b>{getClub(clubId).name}</b><small>{home?"Вдома":"На виїзді"} · Тур {f.round}</small></div><span className="dash">—</span><Crest id={opp.id}/><div className="opponent"><b>{opp.name}</b><small>{f.status==="played"?"Завершено":"Заплановано"}</small></div><strong className={"score "+result}>{f.status==="played"?own+" : "+other:"— : —"}</strong></div>;
 }
 function MatchesPage({save,nextMatch,update,tell}:{save:CareerSave;nextMatch:()=>void;update:(save:CareerSave)=>void;tell:(message:string)=>void}){
- const fs=save.fixtures.filter(f=>f.homeClubId===save.clubId||f.awayClubId===save.clubId);
+  const fs=save.contractStatus==="free-agent"?[]:save.fixtures.filter(f=>f.homeClubId===save.clubId||f.awayClubId===save.clubId);
  const played=fs.filter(f=>f.status==="played").sort((a,b)=>b.date.localeCompare(a.date));
  const upcoming=fs.filter(f=>f.status==="scheduled"&&f.date>=save.date).sort((a,b)=>a.date.localeCompare(b.date));
  const [selectedId,setSelectedId]=useState("");
@@ -336,7 +336,7 @@ function MatchesPage({save,nextMatch,update,tell}:{save:CareerSave;nextMatch:()=
       {selected.stats&&minute===90&&<div className="match-stat-grid"><div><small>Володіння</small><b>{selected.stats.possessionHome}% <span>—</span> {selected.stats.possessionAway}%</b></div><div><small>Удари</small><b>{selected.stats.shotsHome} <span>—</span> {selected.stats.shotsAway}</b></div><div><small>У площину</small><b>{selected.stats.shotsOnTargetHome} <span>—</span> {selected.stats.shotsOnTargetAway}</b></div><div><small>xG</small><b>{selected.stats.xgHome.toFixed(2)} <span>—</span> {selected.stats.xgAway.toFixed(2)}</b></div></div>}
     </div>
     </>:<div className="match-pending-note"><Activity size={16}/><div><b>Матч готовий до старту</b><span>Виходь на поле, веди атаку клавішами, віддавай передачі та сам завершуй моменти. Матч триватиме близько двох хвилин.</span><Btn onClick={()=>{setPlaying(true);tell("Матч розпочато. WASD — рух, E — пас, Q — пас у розріз, Space — удар.")}}><Play size={15} fill="currentColor"/> Почати 3D-матч</Btn></div></div>}
-   </>:<div className="empty-match-events">У календарі більше немає матчів цього клубу.</div>}
+   </>:<div className="empty-match-events">{save.contractStatus==="free-agent"?"Ти вільний агент. Спершу підпиши контракт із новим клубом, щоб грати матчі кар'єри.":"У календарі більше немає матчів цього клубу."}</div>}
   </section>
   <section className="panel match-list-panel"><PanelTitle title="Календар команди" subtitle="Обери майбутній матч і вийди на поле або відкрий події завершеного"/>
    <div className="match-list-summary"><span><b>{played.length}</b> зіграно</span><span><b>{upcoming.length}</b> попереду</span><span><b>{played.reduce((n,f)=>n+(f.homeClubId===save.clubId?f.homeScore??0:f.awayScore??0),0)}</b> голів</span></div>

@@ -1,6 +1,7 @@
 import { Activity, ArrowRight, CalendarDays, CirclePlay, Clock3, Dumbbell, Flame, Goal, Medal, Play, Shield, Sparkles, Star, Target, TrendingUp, Trophy, UserRound, Users, Zap } from "lucide-react";
 import type { CareerSave, Fixture, Position, StandingRow } from "../types";
-import { formatDate, formatMoney, getClub, getStandings, shortDate } from "../lib/game";
+import { formatDate, formatMoney, getClub, getStandings } from "../lib/game";
+import type { CSSProperties, ReactNode } from "react";
 
 type HubView = "player" | "squad" | "matches" | "calendar" | "leagues" | "transfers" | "market" | "training" | "stats" | "news" | "finance" | "database";
 type Props = {
@@ -21,10 +22,10 @@ const positionLabels: Record<Position, string> = {
 
 function Mark({ clubId, size = "normal" }: { clubId: string; size?: "normal" | "large" }) {
   const club = getClub(clubId);
-  return <span className={`fc-club-mark ${size === "large" ? "fc-club-mark-large" : ""}`} style={{ "--club-color": club.colors[0], "--club-alt": club.colors[1] } as React.CSSProperties}>{club.initials}</span>;
+  return <span className={`fc-club-mark ${size === "large" ? "fc-club-mark-large" : ""}`} style={{ "--club-color": club.colors[0], "--club-alt": club.colors[1] } as CSSProperties}>{club.initials}</span>;
 }
 
-function Action({ children, onClick, variant = "primary" }: { children: React.ReactNode; onClick: () => void; variant?: "primary" | "subtle" }) {
+function Action({ children, onClick, variant = "primary" }: { children: ReactNode; onClick: () => void; variant?: "primary" | "subtle" }) {
   return <button type="button" className={`fc-action ${variant === "subtle" ? "fc-action-subtle" : ""}`} onClick={onClick}>{children}</button>;
 }
 

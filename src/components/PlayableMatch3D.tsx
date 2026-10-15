@@ -528,6 +528,11 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
                 makeEvent("save","user","Воротар відбив удар.");
                 addEvent("save",opponentClub.id,"Воротар парирував удар.");
                 userBallHolder=null;
+                opponentPossession=true;opponentHolder=oppActors[0];opponentPossessionClock=0;
+              }
+              if(action.kind==="shot"&&!action.success&&action.points!==2){
+                // A missed effort gives the opposition a goal-kick/restart rather than teleporting possession back.
+                userBallHolder=null;opponentPossession=true;opponentHolder=oppActors[0];opponentPossessionClock=0;
               }
               if(action.kind==="shot"&&action.success){
                 ownGoals.value+=1;

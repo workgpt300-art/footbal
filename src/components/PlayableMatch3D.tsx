@@ -366,6 +366,11 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             timer+=dt;
             uiAccumulator+=dt;
             if(uiAccumulator>.15){setMinute(Math.floor(matchMinute));uiAccumulator=0;}
+            if(matchMinute>=45&&!halftimeLogged){
+              halftimeLogged=true;
+              addEvent("halftime",userClub.id,"Перерва після першого тайму.");
+              setStatus("Перерва! Рахунок зберігається — продовжуй грати в другому таймі.");
+            }
           }
           const actor=controlled();
           const forward=Number(keys.has("w")||keys.has("arrowup"))-Number(keys.has("s")||keys.has("arrowdown"));
@@ -398,7 +403,11 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
               if(pd>.9){defender.root.position.x+=(px-defender.root.position.x)/pd*dt*(.65+i%3*.08);defender.root.position.z+=(pz-defender.root.position.z)/pd*dt*(.65+i%3*.08);}
               if(!opponentPossession&&!lock&&!ballAction&&d<1.08&&Math.random()<dt*.5){
                 opponentPossession=true;opponentHolder=defender;opponentPossessionClock=0;kickoffMode=false;
-                setStatus("Суперник відібрав м'яч! Притиснись до носія та натисни R.");
+                if(Math.random()<.12){
+                  addEvent("foul",userClub.id,"Фол у боротьбі за м'яч — вільний удар супернику.");
+                  if(Math.random()<.18)addEvent("yellow",userClub.id,"Жовта картка за зрив атаки.");
+                  setStatus("Фол! Суддя зупинив гру; м'яч у суперника.");
+                }else setStatus("Суперник відібрав м'яч! Притиснись до носія та натисни R.");
               }
             }
           });
@@ -457,8 +466,14 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             ball.rotation.x+=dt*(moving?7:.4);
           }
           // Keeper starts reacting only after a readable 300ms delay, not by following the cursor.
-          if(timer>=keeperReactAt)keeper.root.position.x+=(clamp(keeperDiveX,-3.15,3.15)-keeper.root.position.x)*Math.min(1,dt*4.2);
-          else keeper.root.position.x+=(0-keeper.root.position.x)*dt*.22;
+          if(timer>=keeperReactAt){
+            const diveDirection=Math.sign(keeperDiveX-keeper.root.position.x);
+            keeper.root.position.x+=(clamp(keeperDiveX,-3.15,3.15)-keeper.root.position.x)*Math.min(1,dt*4.2);
+            keeper.root.rotation.z+=(diveDirection*.28-keeper.root.rotation.z)*Math.min(1,dt*3.5);
+          }else{
+            keeper.root.position.x+=(0-keeper.root.position.x)*dt*.22;
+            keeper.root.rotation.z+=(0-keeper.root.rotation.z)*dt*3;
+          }
           userKeeper.root.position.x+=(clamp((opponentHolder?.root.position.x??0)*.18,-2.5,2.5)-userKeeper.root.position.x)*dt*.7;
           const cameraOffset=new THREE.Vector3(Math.sin(cameraYaw)*12,9.2,Math.cos(cameraYaw)*14);
           const desired=controlled().root.position.clone().add(cameraOffset);

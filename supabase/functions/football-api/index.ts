@@ -35,7 +35,7 @@ Deno.serve(async (request: Request) => {
       if (typeof value !== "string" && typeof value !== "number" && typeof value !== "boolean") continue;
       const text = String(value).trim();
       if (!text || text.length > 120) continue;
-      if ((key === "page" || key === "season") && (!/^\\d+$/.test(text) || Number(text) < 1 || Number(text) > (key === "page" ? 20 : 2100))) {
+      if ((key === "page" || key === "season") && (!/^\d+$/.test(text) || Number(text) < 1 || Number(text) > (key === "page" ? 20 : 2100))) {
         return send({ error: "Invalid " + key + " parameter." }, 400);
       }
       params.set(key, text);

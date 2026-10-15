@@ -64,3 +64,94 @@
 .match-list-footnote{margin:14px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
 @media(max-width:1050px){.match-workspace{grid-template-columns:minmax(0,1fr)}.match-select-list{max-height:480px}}
 @media(max-width:520px){.match-scoreboard{gap:5px;padding:15px 0}.match-score-team .crest{width:34px;height:34px}.match-score-team>b{font-size:11px}.match-score-main>small{font-size:9px}.match-score-number{font-size:26px}.match-stat-grid b{font-size:12px}.match-select{grid-template-columns:45px minmax(0,1fr) auto;gap:6px;padding:9px 7px}.match-select-teams>span{font-size:10px}}
+
+/* Player career: contracts and interactive trials */
+.danger-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,115,115,.3);color:#ff9999;background:rgba(255,85,85,.075);border-radius:9px;padding:10px 12px;font-size:11px;font-weight:800}
+.danger-btn:hover{background:rgba(255,85,85,.14);border-color:rgba(255,115,115,.5)}
+.contract-footnote{margin:12px 0 0;color:var(--muted);font-size:10px}
+.free-agent-home{max-width:900px;margin:12px auto}
+.free-agent-hero{text-align:center;padding:42px 24px;background:radial-gradient(circle at 50% 0,rgba(184,250,82,.1),transparent 48%),var(--panel)}
+.free-agent-mark{width:76px;height:76px;display:grid;place-items:center;margin:0 auto 22px;border:1px solid rgba(184,250,82,.22);border-radius:24px;color:var(--green);background:rgba(184,250,82,.06)}
+.free-agent-hero h2{margin:10px 0;font:800 clamp(22px,3vw,32px) Manrope}
+.free-agent-hero p{max-width:580px;margin:0 auto;color:var(--muted);line-height:1.7;font-size:12px}
+.free-agent-hero .hero-actions{justify-content:center;margin-top:22px}
+.free-agent-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:24px}
+.free-agent-meta span{padding:9px 13px;border:1px solid var(--line);border-radius:9px;color:#b6c0cc;font-size:10px}
+.free-agent-meta b{margin-left:7px;color:var(--green)}
+.tryout-club-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tryout-club-card{min-width:0;padding:13px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.015);transition:border-color .18s,transform .18s}
+.tryout-club-card:hover{border-color:rgba(184,250,82,.25);transform:translateY(-1px)}
+.tryout-club-head{display:flex;align-items:center;gap:10px}
+.tryout-club-head>div{min-width:0}
+.tryout-club-head b,.tryout-club-head small{display:block}
+.tryout-club-head b{font-size:11px}
+.tryout-club-head small{margin-top:4px;color:var(--muted);font-size:10px}
+.tryout-club-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:15px;padding-top:12px;border-top:1px solid var(--line)}
+.tryout-past-score{display:block;margin-top:9px;color:var(--muted);font-size:10px}
+.trial-scorebar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}
+.trial-scorebar>div{padding:12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
+.trial-scorebar span,.trial-scorebar b{display:block}
+.trial-scorebar span{color:var(--muted);font-size:10px}
+.trial-scorebar b{margin-top:5px;font:800 18px Manrope}
+.trial-session h3{margin:20px 0 5px;font:800 19px Manrope}
+.trial-instruction{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+.shooting-drill{position:relative;max-width:530px;margin:26px auto 14px;padding:10px 26px 18px}
+.goal-frame{position:relative;isolation:isolate;padding:10px;border:5px solid #dfe7ec;border-bottom-width:9px;border-radius:7px 7px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.025));box-shadow:0 0 0 2px rgba(255,255,255,.04),0 12px 26px rgba(0,0,0,.17);transform-origin:bottom center;animation:goal-arrive .55s ease-out both}
+.goal-net{position:absolute;inset:0;z-index:-1;opacity:.45;background-image:linear-gradient(rgba(255,255,255,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.2) 1px,transparent 1px);background-size:22px 22px}
+.goal-targets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,65px);gap:6px}
+.goal-targets button{border:1px solid rgba(235,245,255,.25);border-radius:5px;color:#eaf5f5;background:rgba(14,30,28,.35);font:800 11px Manrope;transition:background .15s,border-color .15s,transform .15s}
+.goal-targets button:hover{border-color:var(--green);background:rgba(184,250,82,.2);color:var(--green);transform:scale(.98)}
+.goal-targets button:nth-child(2){grid-column:2;grid-row:1}
+.goal-targets button:nth-child(1){grid-column:1;grid-row:1}
+.goal-targets button:nth-child(3){grid-column:3;grid-row:1}
+.goal-targets button:nth-child(4){grid-column:1;grid-row:2}
+.goal-targets button:nth-child(5){grid-column:3;grid-row:2}
+.goal-ball{margin:9px auto 0;text-align:center;font-size:25px;animation:ball-hover 1.6s ease-in-out infinite}
+.drill-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:24px 0}
+.drill-option{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:108px;padding:15px 8px;border:1px solid var(--line);border-radius:12px;color:#e5edf3;background:rgba(255,255,255,.025);transition:transform .15s,border-color .15s,background .15s}
+.drill-option:hover{transform:translateY(-2px);border-color:rgba(184,250,82,.35);background:rgba(184,250,82,.07)}
+.drill-option span{font-size:24px;color:var(--green)}
+.drill-option b{font-size:11px}
+.trial-last-result{display:flex;align-items:center;gap:8px;min-height:38px;margin-top:10px;padding:10px 12px;border-radius:9px;color:#d0dae2;background:rgba(255,255,255,.035);font-size:11px;animation:result-in .25s ease-out}
+.result-dot{width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(184,250,82,.35)}
+.trial-result{text-align:center;padding:28px}
+.trial-result-icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 16px;border-radius:17px;color:var(--green);background:rgba(184,250,82,.1);animation:result-trophy .65s cubic-bezier(.2,.9,.2,1.2) both}
+.trial-result h2{margin:8px 0;font:800 24px Manrope}
+.trial-result p{max-width:560px;margin:0 auto;color:var(--muted);font-size:12px;line-height:1.7}
+.trial-result .trial-scorebar{max-width:600px;margin:20px auto 0}
+.contract-negotiation{position:relative;overflow:hidden}
+.contract-offer-row{display:grid;grid-template-columns:1fr minmax(130px,200px);gap:18px;align-items:end;margin:10px 0 24px;padding:18px;border:1px solid rgba(184,250,82,.17);border-radius:12px;background:rgba(184,250,82,.035)}
+.contract-offer-row>div:first-child strong,.contract-offer-row>div:first-child small{display:block}
+.contract-offer-row>div:first-child strong{margin:8px 0;font:800 clamp(24px,3vw,32px) Manrope;color:var(--green)}
+.contract-offer-row>div:first-child small{color:var(--muted);font-size:10px}
+.salary-field{display:block;margin:12px 0 20px}
+.salary-field>span{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px}
+.salary-field>span b{color:var(--green)}
+.salary-field input[type="range"]{width:100%;margin:18px 0;accent-color:var(--green);cursor:pointer}
+.salary-field small{display:block;color:var(--muted);font-size:10px}
+.signed-contract{position:relative;overflow:hidden;min-height:300px;padding:20px;background:radial-gradient(circle at 50% 0,rgba(184,250,82,.1),transparent 50%),var(--panel)}
+.signing-paper{position:relative;z-index:2;max-width:650px;margin:0 auto;padding:26px;text-align:center;border:1px solid rgba(184,250,82,.24);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.02));box-shadow:0 18px 55px rgba(0,0,0,.2);animation:paper-sign .75s cubic-bezier(.2,.85,.2,1.2) both}
+.club-seal{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 14px;border:2px solid var(--green);border-radius:50%;color:var(--green);animation:seal-stamp .45s .4s cubic-bezier(.15,1.4,.4,1) both}
+.signing-paper h2{margin:8px 0;font:800 clamp(20px,3vw,27px) Manrope}
+.signing-paper p{font-size:12px;color:var(--muted);line-height:1.7}
+.signed-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:22px 0;padding:16px 0;border-block:1px solid var(--line)}
+.signed-details small,.signed-details b{display:block}
+.signed-details small{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+.signed-details b{margin-top:7px;font-size:11px}
+.signature-script{font-family:cursive;font-size:25px;font-style:italic;color:var(--green);transform:rotate(-4deg);animation:signature-write 1.1s .55s both}
+.signature-script span{display:inline-block;font-family:inherit;margin-left:6px}
+.signed-actions{display:flex;justify-content:center;margin-top:25px}
+.signature-confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.signature-confetti span{position:absolute;top:-15px;left:calc((var(--i)*6.4%) + 1%);width:7px;height:13px;border-radius:2px;background:var(--green);opacity:0;animation:confetti-fall 1.8s calc(var(--i)*.06s) ease-out both}
+.signature-confetti span:nth-child(3n){background:var(--blue);width:5px;height:9px}
+.signature-confetti span:nth-child(3n + 1){background:var(--orange);transform:rotate(24deg)}
+@keyframes goal-arrive{from{transform:perspective(500px) rotateX(-9deg) translateY(12px);opacity:0}to{transform:perspective(500px) rotateX(0) translateY(0);opacity:1}}
+@keyframes ball-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes result-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes result-trophy{from{transform:scale(.5) rotate(-14deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes paper-sign{from{opacity:0;transform:translateY(24px) rotateX(7deg) scale(.97)}to{opacity:1;transform:translateY(0) rotateX(0) scale(1)}}
+@keyframes seal-stamp{from{transform:scale(2.1);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes signature-write{from{clip-path:inset(0 100% 0 0);opacity:.2}to{clip-path:inset(0 0 0 0);opacity:1}}
+@keyframes confetti-fall{0%{opacity:0;transform:translateY(-5px) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translateY(340px) rotate(460deg)}}
+@media(max-width:760px){.tryout-club-grid{grid-template-columns:1fr}.contract-offer-row{grid-template-columns:1fr}.shooting-drill{padding-inline:8px}.goal-targets{grid-template-rows:repeat(2,54px)}.drill-options{gap:6px}.drill-option{min-height:90px}.signed-details{gap:5px;padding:12px 0}.signed-details b{font-size:10px}.signing-paper{padding:18px}.trial-scorebar>div{padding:9px}.trial-scorebar b{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.goal-frame,.goal-ball,.trial-last-result,.trial-result-icon,.signing-paper,.club-seal,.signature-script,.signature-confetti span,.free-agent-mark{animation:none!important;transition:none!important}}

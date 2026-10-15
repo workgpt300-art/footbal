@@ -67,7 +67,7 @@ export default function App(){
  const tell=(s:string)=>setNotice(s);
  const update=(next:CareerSave)=>setSaves(old=>old.map(s=>s.id===next.id?{...next,updatedAt:new Date().toISOString()}:s));
  function create(event:FormEvent<HTMLFormElement>){event.preventDefault();if(saves.length>=3){tell("Усі 3 слоти зайняті. Експортуй або видали збереження.");return}const fresh=createCareer({playerName:name,clubId,position,age:Number(age)||18,nationality,preferredFoot:foot,difficulty});setSaves(old=>[fresh,...old]);setActiveId(fresh.id);setCreating(false);setView("home");tell("Кар'єру створено. Прогрес зберігається в цьому браузері.")}
- function nextDay(){if(!save)return;const next=advanceOneDay(save);update(next);tell(next.fixtures.some(f=>f.status==="played"&&f.date===next.date)?next.lastEvent:"Наступний день: "+formatDate(next.date))}
+ function nextDay(){if(!save)return;if(view==="matches"){tell("У матч-центрі використай «До наступного матчу» або заверши 3D-гру, щоб не перервати матч.");return}const next=advanceOneDay(save);update(next);tell(next.fixtures.some(f=>f.status==="played"&&f.date===next.date)?next.lastEvent:"Наступний день: "+formatDate(next.date))}
  function nextMatch(){if(!save)return;const next=advanceToNextMatch(save);if(next===save){tell("Немає наступного матчу в календарі.");return}update(next);tell("Календар просунуто до "+formatDate(next.date))}
  function training(f:TrainingFocus){if(!save)return;const r=trainPlayer(save,f);update(r.save);tell(r.message)}
  function offers(){if(!save)return;const r=createTransferOffers(save);update(r.save);tell(r.message)}
@@ -308,7 +308,7 @@ function MatchesPage({save,nextMatch,update,tell}:{save:CareerSave;nextMatch:()=
  }
  return <div className="match-workspace">
   <section className="panel match-center">
-   <PanelTitle title="Матч-центр" subtitle="Переходь від симуляції до особистого контролю на 3D-полі" action={<Btn small onClick={nextMatch}><Play size={13}/> До наступного матчу</Btn>}/>
+   <PanelTitle title="Матч-центр" subtitle="Переходь від симуляції до особистого контролю на 3D-полі" action={!playing&&<Btn small onClick={nextMatch}><Play size={13}/> До наступного матчу</Btn>}/>
    {selected&&home&&away?<>
     <div className="match-scoreboard">
      <div className="match-score-team"><Crest id={home.id}/><b>{home.name}</b><small>{selected.homeClubId===save.clubId?"Твій клуб":"Господарі"}</small></div>

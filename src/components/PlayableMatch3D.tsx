@@ -463,7 +463,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
               const scores=Math.random()<clamp(.24+(opponentClub.strength-userClub.strength)*.008,.12,.48);
               addEvent("shot",opponentClub.id,"Суперник завершив атаку ударом.");
               if(scores){
-                opponentGoals.value+=1;addEvent("goal",opponentClub.id,"Гол суперника після швидкої атаки.","Гравець суперника");
+                opponentGoals.value+=1;addEvent("goal",opponentClub.id,"Гол суперника після швидкої атаки.",undefined,"Гравець суперника");
                 setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);
                 setStatus("Гол суперника. Розіграш відновиться з центру поля.");
                 opponentPossession=false;opponentHolder=null;kickoffMode=true;ball.position.set(0,.23,0);userActors[9].root.position.set(0,0,1.25);activeIndex=9;

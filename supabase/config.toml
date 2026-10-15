@@ -1,0 +1,4 @@
+project_id = "football-career-2027"
+
+[functions.football-api]
+verify_jwt = true

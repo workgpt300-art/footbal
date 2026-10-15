@@ -75,7 +75,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     let uiAccumulator = 0;
     let walkClock = 0;
     let aimX = 0;
-    let aimZ = 0;
+    let aimZ = -18;
     let keeperReactAt = Number.POSITIVE_INFINITY;
     let keeperDiveX = 0;
     let cameraYaw = 0;
@@ -231,7 +231,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         userActors[activeIndex].root.position.set(0,0,1.25);
         const ball=new THREE.Mesh(new THREE.SphereGeometry(.23,18,14),ballMaterial);ball.castShadow=true;ball.position.set(0,.23,0);scene.add(ball);
         const spotGroup=new THREE.Group();for(let i=0;i<5;i++){const patch=new THREE.Mesh(new THREE.CircleGeometry(.065,6),black);patch.position.set(Math.cos(i*Math.PI*2/5)*.19,.035,Math.sin(i*Math.PI*2/5)*.19);patch.rotation.x=-Math.PI/2;spotGroup.add(patch);}ball.add(spotGroup);
-        const aimRing=new THREE.Mesh(new THREE.RingGeometry(.28,.38,28),mat(0xc3ff6a));aimRing.rotation.x=-Math.PI/2;aimRing.position.set(0,.05,-24.8);scene.add(aimRing);
+        const aimRing=new THREE.Mesh(new THREE.RingGeometry(.28,.38,28),mat(0xc3ff6a));aimRing.rotation.x=-Math.PI/2;aimRing.position.set(0,.05,-18);scene.add(aimRing);
         const clock=new THREE.Clock();
         const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
         let targetX=0;
@@ -408,7 +408,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             const t=clamp(ballAction.elapsed/ballAction.duration,0,1);
             ball.position.set(
               ballAction.startX+(ballAction.targetX-ballAction.startX)*t,
-              Math.max(.22,ballAction.startY+Math.sin(t*Math.PI)*(ballAction.kind==="shot"?4.4:.85)),
+              Math.max(.22,ballAction.startY+Math.sin(t*Math.PI)*(ballAction.kind==="shot"?clamp(ballAction.targetY+.2,.8,2.75):.85)),
               ballAction.startZ+(ballAction.targetZ-ballAction.startZ)*t
             );
             ball.rotation.x+=dt*7;ball.rotation.z+=dt*5;

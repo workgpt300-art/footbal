@@ -37,7 +37,8 @@ export function ThreeDTrial({ phase, attempt, rating, finishing, passing, dribbl
     async function start() {
       try {
         // Loaded on demand so the rest of the game can start without bundling a 3D engine.
-        const THREE = await import(/* @vite-ignore */ "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js") as unknown as Record<string, any>;
+        const threeModuleUrl = "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+        const THREE = await import(/* @vite-ignore */ threeModuleUrl) as unknown as Record<string, any>;
         if (disposed || !mount.current) return;
 
         const host = mount.current;

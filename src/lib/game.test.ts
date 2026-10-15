@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createCareer, getStandings, simulateFixture, trainPlayer } from "./game";
+import { advanceOneDay, CLUBS, createCareer, getStandings, simulateFixture, trainPlayer } from "./game";
 
 const makeCareer = () => createCareer({
   playerName: "Тестовий Гравець",
@@ -12,12 +12,22 @@ const makeCareer = () => createCareer({
 });
 
 describe("FOOTBALL CAREER game foundation", () => {
-  it("creates a player and a double round-robin calendar", () => {
+  it("creates a double round-robin calendar for every configured league", () => {
     const save = makeCareer();
+    const expectedFixtures = [...new Set(CLUBS.map((club) => club.leagueId))].reduce((total, leagueId) => {
+      const clubCount = CLUBS.filter((club) => club.leagueId === leagueId).length;
+      return total + clubCount * (clubCount - 1);
+    }, 0);
     expect(save.player.name).toBe("Тестовий Гравець");
-    expect(save.fixtures).toHaveLength(132);
+    expect(save.fixtures).toHaveLength(expectedFixtures);
     expect(save.fixtures.every((fixture) => fixture.status === "scheduled")).toBe(true);
-    expect(new Set(save.fixtures.map((fixture) => fixture.id)).size).toBe(132);
+    expect(new Set(save.fixtures.map((fixture) => fixture.id)).size).toBe(expectedFixtures);
+    for (const leagueId of new Set(CLUBS.map((club) => club.leagueId))) {
+      const leagueClubs = new Set(CLUBS.filter((club) => club.leagueId === leagueId).map((club) => club.id));
+      const leagueFixtures = save.fixtures.filter((fixture) => leagueClubs.has(fixture.homeClubId));
+      expect(leagueFixtures.length).toBe(leagueClubs.size * (leagueClubs.size - 1));
+      expect(leagueFixtures.every((fixture) => leagueClubs.has(fixture.awayClubId))).toBe(true);
+    }
   });
 
   it("produces a match score consistent with goal events", () => {
@@ -36,6 +46,21 @@ describe("FOOTBALL CAREER game foundation", () => {
     const standings = getStandings(save.fixtures.map((fixture) => fixture.id === result.id ? result : fixture));
     expect(standings.reduce((sum, row) => sum + row.played, 0)).toBe(2);
     expect(standings.reduce((sum, row) => sum + row.points, 0)).toBeGreaterThanOrEqual(2);
+  });
+
+
+  it("opens a fresh season after all world fixtures are finished", () => {
+    const save = makeCareer();
+    const completed = {
+      ...save,
+      fixtures: save.fixtures.map((fixture) => ({ ...fixture, status: "played" as const, homeScore: 0, awayScore: 0 })),
+    };
+    const next = advanceOneDay(completed);
+    expect(next.season).toBe("2027/28");
+    expect(next.seasonHistory).toHaveLength(1);
+    expect(next.fixtures.length).toBe(save.fixtures.length);
+    expect(next.fixtures.every((fixture) => fixture.status === "scheduled")).toBe(true);
+    expect(next.player.age).toBe(save.player.age + 1);
   });
 
   it("limits one training session to one attribute step and reduces fitness", () => {

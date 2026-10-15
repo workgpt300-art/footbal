@@ -565,3 +565,76 @@
 @media(max-width:760px){.fc27-screen{min-height:100vh;overflow-x:hidden}.fc27-stadium-photo{height:calc(100vh + 160px);min-height:710px;background-position:58% top}.fc27-header{min-height:68px;flex-wrap:wrap;gap:12px;padding:12px 16px}.fc27-brand-mark{width:36px;height:36px}.fc27-brand b{font-size:13px}.fc27-topnav{order:3;width:100%;justify-content:space-between;gap:8px;padding-top:6px;border-top:1px solid rgba(234,255,241,.08)}.fc27-topnav button{font-size:7px}.fc27-user{margin-left:auto}.fc27-user-avatar{width:32px;height:32px}.fc27-hero{display:block;min-height:590px;padding:30px 18px 26px}.fc27-hero-copy{width:100%;padding-bottom:0}.fc27-season-tag{font-size:7px;letter-spacing:.1em}.fc27-hero h1{margin-top:23px;font-size:clamp(41px,10vw,62px)}.fc27-hero-copy>p{max-width:325px;font-size:11px}.fc27-hero-actions{gap:8px;margin-top:20px}.fc27-play-button,.fc27-secondary-button{min-height:43px;padding:10px 11px;font-size:8px;gap:7px}.fc27-play-button svg:last-child{margin-left:2px}.fc27-platform-hint{margin-top:17px;font-size:6px}.fc27-player-art{top:180px;right:-28%;bottom:0;width:105%;opacity:.64}.fc27-art-ring{top:15%;right:8%;width:72vw}.fc27-art-ring-two{top:24%;right:21%;width:54vw}.fc27-player-silhouette{right:8%;bottom:-5%;width:min(85vw,430px);height:88%}.fc27-player-backdrop{right:0;width:95%;height:78%}.fc27-ovr{top:27%;right:8%;padding:9px}.fc27-ovr strong{font-size:26px}.fc27-player-label{right:11%;bottom:6%;min-width:150px;padding:9px 11px}.fc27-player-label strong{font-size:13px}.fc27-side-note{display:none}.fc27-mode-section{padding:10px 16px 19px;background:linear-gradient(180deg,rgba(7,13,17,.18),#070d11 15%)}.fc27-mode-heading h2{font-size:16px}.fc27-mode-index{font-size:6px}.fc27-mode-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fc27-mode-card{grid-template-columns:34px minmax(0,1fr) 13px;gap:7px;padding:11px;min-height:82px}.fc27-mode-icon{width:33px;height:33px;border-radius:8px}.fc27-mode-icon svg{width:18px;height:18px}.fc27-mode-title{font-size:9px}.fc27-mode-desc{font-size:7px}.fc27-footer{align-items:flex-start;flex-direction:column;gap:8px;padding:13px 16px}.fc27-footer>span:nth-child(2){display:none}}
 @media(max-width:390px){.fc27-topnav button{gap:4px;font-size:6.5px}.fc27-hero{min-height:565px;padding-inline:14px}.fc27-hero h1{font-size:38px}.fc27-season-tag{font-size:6px}.fc27-platform-hint{gap:4px;letter-spacing:.03em}.fc27-mode-card{padding:9px;grid-template-columns:29px minmax(0,1fr) 12px;gap:7px}.fc27-mode-icon{width:28px;height:28px}.fc27-mode-title{font-size:8px}.fc27-mode-desc{font-size:6.5px}.fc27-mode-heading>div:first-child>span{font-size:6px}}
 @media(prefers-reduced-motion:reduce){.fc27-stadium-photo,.fc27-hero-copy{animation:none!important}.fc27-mode-card,.fc27-play-button,.fc27-secondary-button{transition:none!important}}
+
+
+/* Shared in-game shell: keep the rest of career mode visually consistent with the new start screen. */
+.app-shell{background:radial-gradient(ellipse at 75% 0,rgba(83,137,65,.085),transparent 37%),#080e12}
+.sidebar{width:238px;padding:22px 14px 14px;background:linear-gradient(180deg,rgba(7,14,17,.985),rgba(9,17,20,.98));border-right:1px solid rgba(218,246,225,.1);box-shadow:12px 0 38px rgba(0,0,0,.12)}
+.main{margin-left:238px}
+.brand{padding-bottom:22px}
+.brand-icon{border-radius:10px;color:#10200c;background:linear-gradient(140deg,#d6ff9e,#99ec57);box-shadow:0 7px 22px rgba(165,241,105,.1)}
+.brand b{font-size:15px;letter-spacing:.04em}
+.brand small{font-size:9px;letter-spacing:.2em}
+.new-career{min-height:42px;border-radius:7px;font-size:12px;letter-spacing:.01em;background:linear-gradient(120deg,rgba(193,255,126,.12),rgba(193,255,126,.035))}
+.nav-list{padding-top:20px}
+.nav-group{margin-bottom:20px}
+.nav-caption{padding-bottom:9px;color:#829487;font-size:9px;letter-spacing:.15em}
+.nav-link{min-height:39px;padding:10px 12px;border-radius:7px;font-size:11.5px;font-weight:700;letter-spacing:.01em}
+.nav-link.selected{border-color:rgba(185,255,130,.14);color:#d4ff9e;background:linear-gradient(90deg,rgba(187,255,128,.13),rgba(187,255,128,.035))}
+.nav-link.selected:before{left:-14px;width:3px;height:25px;background:#c5ff89;box-shadow:0 0 10px rgba(194,255,135,.22)}
+.nav-link svg{flex-shrink:0}
+.sidebar-foot{padding-top:15px}
+.sidebar-foot b{font-size:11px}
+.sidebar-foot small{font-size:10px}
+.topbar{height:72px;padding-inline:clamp(17px,2.4vw,36px);background:rgba(5,12,15,.88);border-bottom:1px solid rgba(218,246,225,.095)}
+.breadcrumb{font-size:10px;letter-spacing:.04em}
+.breadcrumb b{font-size:12px}
+.season-pill{font-size:10px}
+.game-home-btn{color:#c8ff91;border-color:rgba(198,255,137,.19);background:rgba(190,255,128,.055)}
+.game-home-btn:hover{color:#e0ffbf;border-color:rgba(198,255,137,.5)}
+.content{width:min(1640px,100%);padding:30px clamp(18px,2.5vw,38px) 52px}
+.page-head{align-items:flex-end;margin-bottom:25px}
+.page-head h1{margin-top:7px;font-size:31px;letter-spacing:-.05em}
+.page-head p{font-size:11px;line-height:1.65}
+.eyebrow{font-size:9px;color:#aac497;letter-spacing:.17em}
+.btn{min-height:39px;padding:9px 14px;border-radius:7px;font-size:11px;letter-spacing:.01em}
+.btn.small{min-height:33px;font-size:10px;padding:7px 10px}
+.icon-btn{width:37px;height:37px;border-radius:8px}
+.panel{border-color:rgba(209,235,216,.105);border-radius:12px;background:linear-gradient(140deg,rgba(18,28,31,.97),rgba(12,19,23,.98));box-shadow:0 10px 30px rgba(0,0,0,.07)}
+.panel-title{gap:12px}
+.panel-title h2{font-size:17px;letter-spacing:-.035em}
+.panel-title p{font-size:10.5px;line-height:1.6}
+.empty h3{font-size:14px}
+.empty p{font-size:11px;line-height:1.7}
+.stat-card{border-color:rgba(211,238,218,.09);border-radius:10px;background:linear-gradient(145deg,#131f22,#10181d)}
+.stat-top>span{font-size:10px}
+.stat-value{font-size:26px}
+.stat-sub{font-size:9px}
+.table{font-size:11px}
+.table th{font-size:9px;padding:13px 11px}
+.table td{padding:12px 11px;font-size:10.5px}
+.panel-title .text-btn,.text-btn{font-size:10px}
+.tag{font-size:9px}
+.field>span,.field label{font-size:11px}
+.field input,.field select,.field textarea{min-height:40px;font-size:12px}
+.modal{border-color:rgba(206,255,160,.17);border-radius:14px;background:linear-gradient(135deg,#152125,#0e171b);box-shadow:0 26px 100px rgba(0,0,0,.5)}
+.modal-head h2{font-size:23px}
+.modal-head p{font-size:11px;line-height:1.7}
+.modal-foot{font-size:10px}
+.toast{border-color:rgba(203,255,153,.2);border-radius:9px;background:rgba(15,33,25,.96);font-size:11px}
+.match-select{border-color:rgba(220,245,224,.09);border-radius:9px;background:rgba(255,255,255,.018)}
+.match-select:hover,.match-select-active{border-color:rgba(193,255,128,.38);background:rgba(180,255,120,.055)}
+.match-select-teams>span{font-size:11px}
+.match-list-footnote,.live-match-tip{font-size:10px;line-height:1.75;color:#98a99e}
+.live-match-panel{overflow:hidden}
+.live-match-head h2{font-size:22px;letter-spacing:-.04em}
+.live-match-head p{font-size:11px}
+.live-match-clock>span{font-size:28px}
+.live-match-score{min-height:66px}
+.live-match-score b{font-size:12px}
+.live-match-score strong{font-size:28px}
+.match3d-buttons button{min-height:39px;font-size:10px;font-weight:900}
+.match3d-status{font-size:10px}
+.match3d-controls span{font-size:9px}
+@media(max-width:1050px){.sidebar{width:220px}.main{margin-left:220px}.content{padding:24px 20px 40px}}
+@media(max-width:760px){.sidebar{width:min(300px,84vw)}.main{margin-left:0}.topbar{height:61px;padding-inline:12px}.content{padding:20px 12px 36px}.page-head{align-items:flex-start;flex-direction:column}.page-head h1{font-size:27px}.page-head p{font-size:10px}.page-head .head-actions{width:100%;flex-wrap:wrap}.page-head .head-actions .btn{flex:1}.panel-title h2{font-size:16px}.live-match-head h2{font-size:20px}}

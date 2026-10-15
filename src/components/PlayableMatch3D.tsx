@@ -242,18 +242,21 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         };
         const launchShot=()=>{
           if(lock||ballAction||sent)return;
+          if(opponentPossession){setStatus("Суперник контролює м'яч — підійди ближче й натисни R для відбору.");return;}
+          kickoffMode=false;
           const actor=controlled();ownShots.value+=1;
           const dz=Math.abs(actor.root.position.z+25);
           const distancePenalty=clamp((dz-10)*.009,0,.26);
           const accuracy=clamp(.39+(finishing-55)*.009-distancePenalty+(fitness-60)*.0014,.15,.9);
           const inFrame=Math.random()<accuracy;
-          const x=clamp(targetX+actor.root.position.x*.18,-4.6,4.6);
+          const x=clamp(targetX,-4.45,4.45);
           const framed=inFrame&&Math.abs(x)<=3.35;
-          const saved=framed&&Math.random()<clamp(.5-(finishing-55)*.004,.18,.53);
+          const saved=framed&&Math.random()<clamp(.58-(finishing-55)*.004,.22,.68);
+          keeperReactAt=timer+.3;keeperDiveX=x;
           const goal=framed&&!saved;
           if(framed)ownOnTarget.value+=1;
           const desc=goal?"ГОЛ! "+playerName+" пробив воротаря!":saved?"Воротар відбив удар "+playerName+".":"Удар "+playerName+" — повз ворота.";
-          ballAction={kind:"shot",elapsed:0,duration:.95,startX:ball.position.x,startY:Math.max(.24,ball.position.y),startZ:ball.position.z,targetX:x,targetY:.55+Math.random()*2.0,targetZ:-25.4,success:goal,points:goal?1:saved?2:0,description:desc};
+          ballAction={kind:"shot",elapsed:0,duration:1.05,startX:ball.position.x,startY:Math.max(.24,ball.position.y),startZ:ball.position.z,targetX:x,targetY:saved?1.2:.55+Math.random()*2.0,targetZ:-25.4,success:goal,points:goal?1:saved?2:0,description:desc};
           makeEvent("shot","user","Удар по воротах");
           if(goal){ownGoals.value+=1;makeEvent("goal","user",desc,playerName);setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);}
           else if(saved){makeEvent("save","user",desc);addEvent("save",opponentClub.id,"Воротар парирував удар.");}
@@ -262,23 +265,33 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         };
         const launchPass=(through=false)=>{
           if(lock||ballAction||sent)return;
+          if(opponentPossession){setStatus("М'яч у суперника — підійди ближче й натисни R для відбору.");return;}
+          kickoffMode=false;
           const actor=controlled();
-          const options=userActors.map((a,i)=>({a,i,dist:Math.hypot(a.root.position.x-actor.root.position.x,a.root.position.z-actor.root.position.z),forward:actor.root.position.z-a.root.position.z})).filter(o=>o.i!==activeIndex&&o.dist<21);
-          options.sort((a,b)=>through?(b.forward-a.forward):(a.dist-b.dist));
-          const choice=through?options.find(o=>o.forward>1.3&&o.dist<24)??options[0]:options[0];
+          // Mouse target selects a teammate by position; the opposition is never a receiver option.
+          const options=userActors.map((a,i)=>({
+            a,i,
+            dist:Math.hypot(a.root.position.x-actor.root.position.x,a.root.position.z-actor.root.position.z),
+            aimDist:Math.hypot(a.root.position.x-targetX,a.root.position.z-aimZ),
+            forward:actor.root.position.z-a.root.position.z,
+          })).filter(o=>o.i!==activeIndex&&o.dist<25);
+          options.sort((a,b)=>(a.aimDist+(through&&a.forward<1?18:0))-(b.aimDist+(through&&b.forward<1?18:0)));
+          const choice=through?(options.find(o=>o.forward>1&&o.dist<25)??options[0]):options[0];
           ownPasses.value+=1;
-          if(!choice){makeEvent("pass","user","Немає відкритого партнера для передачі.");setStatus("Партнер далеко — підійди ближче.");return;}
-          const distance=choice.dist;
-          const chance=clamp(.76+(passing-55)*.008-distance*.012+(fitness-55)*.002,.26,.96);
+          if(!choice){makeEvent("pass","user","Немає відкритого партнера для передачі.");setStatus("Наведи мишку на партнера або вільний простір поруч.");return;}
+          const midX=(actor.root.position.x+choice.a.root.position.x)/2;
+          const midZ=(actor.root.position.z+choice.a.root.position.z)/2;
+          const defender=[...oppActors].sort((a,b)=>Math.hypot(a.root.position.x-midX,a.root.position.z-midZ)-Math.hypot(b.root.position.x-midX,b.root.position.z-midZ))[0];
+          const pressure=defender?Math.max(0,2.4-Math.hypot(defender.root.position.x-midX,defender.root.position.z-midZ)):0;
+          const chance=clamp(.84+(passing-55)*.006-choice.dist*.009-pressure*.12+(fitness-55)*.001,.22,.97);
           const success=Math.random()<chance;
           if(success)ownPassesComplete.value+=1;
-          const defender=[...oppActors].sort((a,b)=>Math.hypot(a.root.position.x-choice.a.root.position.x,a.root.position.z-choice.a.root.position.z)-Math.hypot(b.root.position.x-choice.a.root.position.x,b.root.position.z-choice.a.root.position.z))[0];
-          const target=success?choice.a:defender;
-          const desc=success?(through?"Передача в розріз дійшла до партнера!":"Точний пас — партнер прийняв м’яч."):"Передачу перехопили. Перебудуй атаку.";
-          ballAction={kind:"pass",elapsed:0,duration:.64,startX:ball.position.x,startY:.25,startZ:ball.position.z,targetX:target.root.position.x,targetY:.3,targetZ:target.root.position.z,success,points:success?1:0,description:desc,targetActor:success?choice.i:undefined};
+          const desc=success?(through?"Пас у розріз дістався партнеру!":"Передача дійшла до партнера — керування перейшло до нього."):"Захисник прочитав пас і перехопив м'яч!";
+          const target=success?choice.a:defender??oppActors[0];
+          ballAction={kind:"pass",elapsed:0,duration:.52,startX:ball.position.x,startY:.25,startZ:ball.position.z,targetX:target.root.position.x,targetY:.3,targetZ:target.root.position.z,success,points:success?1:0,description:desc,targetActor:success?choice.i:undefined};
           makeEvent("pass","user",desc,success?playerName:undefined);
-          setStatus(success?"Передача! Відкривайся під продовження атаки.":"М'яч перехоплено.");
-          lock=true;
+          if(!success){opponentPossession=true;opponentHolder=target;opponentPossessionClock=0;}
+          setStatus(desc);lock=true;
         };
         const onKeyDown=(e:KeyboardEvent)=>{
           const k=e.key.toLowerCase();

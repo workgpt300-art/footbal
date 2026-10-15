@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import * as THREE_MODULE from "three";
 import type { Club, MatchEvent, MatchStats } from "../types";
 
 type LiveMatchResult = { homeScore: number; awayScore: number; events: MatchEvent[]; stats: MatchStats };
@@ -128,8 +129,8 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
 
     async function startScene() {
       try {
-        const url = "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
-        const THREE = await import(/* @vite-ignore */ url) as unknown as Record<string, any>;
+        // Three.js is bundled with the app, so gameplay does not depend on a third-party CDN.
+        const THREE = THREE_MODULE as unknown as Record<string, any>;
         if (disposed || !hostRef.current) return;
         const host = hostRef.current;
         scene = new THREE.Scene();
@@ -611,8 +612,8 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         frame=window.requestAnimationFrame(animate);
       } catch (err) {
         if (!disposed) {
-          setError("Не вдалося запустити 3D. Перевір інтернет і підтримку WebGL у браузері.");
-          setStatus(err instanceof Error ? err.message : "Помилка 3D-сцени");
+          setError("3D не запустилося: " + (err instanceof Error ? err.message : "невідома помилка") + ". Перевір підтримку WebGL у браузері.");
+          setStatus("Помилка 3D-сцени");
         }
       }
     }

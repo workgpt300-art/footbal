@@ -202,7 +202,7 @@ function makeMatchStats(values:number[]):MatchStats{
 export function simulateFixture(fixture:Fixture,user:CareerSave):Fixture{
   if(fixture.status==="played")return fixture;
   const home=getClub(fixture.homeClubId);const away=getClub(fixture.awayClubId);const random=seeded(fixture.seed^stringSeed(user.id+fixture.date));
-  const homeUser=user.clubId===home.id;const awayUser=user.clubId===away.id;
+  const contracted=user.contractStatus!=="free-agent";const homeUser=contracted&&user.clubId===home.id;const awayUser=contracted&&user.clubId===away.id;
   const tacticsBonus=user.trainingFocus==="finish"&&["ST","LW","RW"].includes(user.player.position)?1:0;
   const homePower=home.strength+(homeUser?(user.player.rating-home.strength)*.08+tacticsBonus*.25:0);
   const awayPower=away.strength+(awayUser?(user.player.rating-away.strength)*.08+tacticsBonus*.25:0);

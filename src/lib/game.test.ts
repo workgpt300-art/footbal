@@ -63,6 +63,17 @@ describe("FOOTBALL CAREER game foundation", () => {
     expect(next.player.age).toBe(save.player.age + 1);
   });
 
+  it("does not apply a free agent's rating to their former club's result", () => {
+    const save = makeCareer();
+    const fixture = save.fixtures.find((item) => item.homeClubId === save.clubId || item.awayClubId === save.clubId);
+    expect(fixture).toBeDefined();
+    const lowRated = { ...save, contractStatus: "free-agent" as const, player: { ...save.player, rating: 25 } };
+    const highRated = { ...save, contractStatus: "free-agent" as const, player: { ...save.player, rating: 99 } };
+    const lowResult = simulateFixture(fixture!, lowRated);
+    const highResult = simulateFixture(fixture!, highRated);
+    expect([lowResult.homeScore, lowResult.awayScore]).toEqual([highResult.homeScore, highResult.awayScore]);
+  });
+
   it("does not progress former-club fixtures or credit matches to a free agent", () => {
     const save = makeCareer();
     const fixture = save.fixtures.find((item) => item.homeClubId === save.clubId || item.awayClubId === save.clubId);

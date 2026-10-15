@@ -26,6 +26,7 @@ type Motion = {
   points: number;
   description: string;
   targetActor?: number;
+  actorName?: string;
 };
 
 const clamp = (n: number, a: number, b: number) => Math.min(b, Math.max(a, n));
@@ -67,7 +68,10 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     let kickoffMode = true;
     let opponentPossession = false;
     let opponentHolder: any = null;
+    let userBallHolder: any = null;
     let opponentPossessionClock = 0;
+    let teammatePossessionClock = 0;
+    let lastTackleAt = -10;
     let halftimeLogged = false;
     let lock = false;
     let sent = false;
@@ -77,6 +81,8 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     let walkClock = 0;
     let aimX = 0;
     let aimZ = -18;
+    let aimHeight = 1.2;
+    let aimedTeammateIndex: number | null = null;
     let keeperReactAt = Number.POSITIVE_INFINITY;
     let keeperDiveX = 0;
     let cameraYaw = 0;
@@ -129,7 +135,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x08151a);
         scene.fog = new THREE.Fog(0x08151a, 32, 72);
-        camera = new THREE.PerspectiveCamera(62, 1, 0.1, 180);
+        camera = new THREE.PerspectiveCamera(52, 1, 0.1, 200);
         renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
         renderer.shadowMap.enabled = true;
@@ -137,6 +143,8 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.domElement.className = "match3d-canvas";
         renderer.domElement.setAttribute("aria-label", "Інтерактивний тривимірний футбольний матч");
+        renderer.domElement.tabIndex = 0;
+        renderer.domElement.style.outline = "none";
         host.appendChild(renderer.domElement);
 
         scene.add(new THREE.HemisphereLight(0xcaf0ff, 0x173523, 2.05));
@@ -148,7 +156,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
 
         const mat = (color: number, roughness = 0.8) => new THREE.MeshStandardMaterial({ color, roughness });
         const grassA = mat(0x17613f), grassB = mat(0x1c7047);
-        const lineMat = new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide});
+        const lineMat = new THREE.MeshBasicMaterial({color:0xf8fff9,side:THREE.DoubleSide,toneMapped:false});
         const userShirt = mat(colorHex(userClub.colors[0]), 0.65), userShorts = mat(colorHex(userClub.colors[1]), 0.75);
         const opponentShirt = mat(colorHex(opponentClub.colors[0]), 0.65), opponentShorts = mat(colorHex(opponentClub.colors[1]), 0.75);
         const skin = mat(0xe5b18c, 0.7), keeperMat = mat(0xffad55, 0.65), black = mat(0x172229, 0.7);
@@ -163,8 +171,8 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const stripe=new THREE.Mesh(new THREE.PlaneGeometry(31,53/11+0.01),i%2?grassA:grassB);
           stripe.rotation.x=-Math.PI/2;stripe.position.set(0,0.012,-24+ i*(53/11)+53/22);scene.add(stripe);
         }
-        const lineX=(x1:number,x2:number,z:number,y=0.025,t=0.045)=>box(x2-x1,0.018,t,lineMat,(x1+x2)/2,y,z);
-        const lineZ=(x:number,z1:number,z2:number,y=0.025,t=0.045)=>box(t,0.018,z2-z1,lineMat,x,y,(z1+z2)/2);
+        const lineX=(x1:number,x2:number,z:number,y=0.045,t=0.075)=>box(x2-x1,0.025,t,lineMat,(x1+x2)/2,y,z);
+        const lineZ=(x:number,z1:number,z2:number,y=0.045,t=0.075)=>box(t,0.025,z2-z1,lineMat,x,y,(z1+z2)/2);
         lineX(-16.2,16.2,25.5);lineX(-16.2,16.2,-25.5);lineZ(-16.2,-25.5,25.5);lineZ(16.2,-25.5,25.5);
         lineX(-14.5,14.5,0);
         const centerCircle=new THREE.Mesh(new THREE.RingGeometry(2.7,2.76,64),lineMat);centerCircle.rotation.x=-Math.PI/2;centerCircle.position.set(0,.032,0);scene.add(centerCircle);
@@ -173,6 +181,13 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         lineX(-7.7,7.7,17.8);lineZ(-7.7,17.8,25.5);lineZ(7.7,17.8,25.5);
         lineX(-4,4,-22.8);lineZ(-4,-25.5,-22.8);lineZ(4,-25.5,-22.8);
         lineX(-4,4,22.8);lineZ(-4,22.8,25.5);lineZ(4,22.8,25.5);
+        // Penalty spots and arcs on both ends.
+        for(const z of [-20.5,20.5]){
+          const spot=new THREE.Mesh(new THREE.CircleGeometry(.12,20),lineMat);
+          spot.rotation.x=-Math.PI/2;spot.position.set(0,.06,z);scene.add(spot);
+          const arc=new THREE.Mesh(new THREE.RingGeometry(3.25,3.34,64,1,0,Math.PI),lineMat);
+          arc.rotation.x=-Math.PI/2;arc.position.set(0,.055,z);scene.add(arc);
+        }
 
         // A proper 3D goal: frame, side bars and visible net strands.
         box(.16,3.05,.16,lineMat,-3.55,1.52,-25.2);box(.16,3.05,.16,lineMat,3.55,1.52,-25.2);box(7.1,.16,.16,lineMat,0,3.05,-25.2);
@@ -233,67 +248,91 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         const clock=new THREE.Clock();
         const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
         let targetX=0;
-        const controlled=()=>userActors[activeIndex]??userActors[9]??userActors[0];
+        const controlled=()=>userActors[9]??userActors[0];
+        const userHasBall=()=>!opponentPossession&&!userBallHolder&&(kickoffMode||Math.hypot(ball.position.x-controlled().root.position.x,ball.position.z-controlled().root.position.z)<2.2);
         const clubFor=(team:"user"|"opp")=>team==="user"?userClub:opponentClub;
         const makeEvent=(kind:MatchEvent["kind"],team:"user"|"opp",desc:string,player?:string)=>{
           addEvent(kind,clubFor(team).id,desc,undefined,player);
         };
-        const launchShot=()=>{
+        const launchShot=(actorOverride?:any)=>{
           if(lock||ballAction||sent)return;
-          if(opponentPossession){setStatus("Суперник контролює м'яч — підійди ближче й натисни R для відбору.");return;}
+          if(opponentPossession){setStatus("Суперник контролює м'яч — підведи свого футболіста ближче й натисни R для відбору.");return;}
+          const isAI=Boolean(actorOverride);
+          if(!isAI&&!userHasBall()){
+            setStatus(userBallHolder?"Партнер веде м'яч. Ти керуєш лише своїм футболістом — відкрийся, щоб отримати передачу.":"Підійди до м'яча, перш ніж бити.");
+            return;
+          }
           kickoffMode=false;
-          const actor=controlled();ownShots.value+=1;
+          const actor=actorOverride??controlled();
+          ownShots.value+=1;
           const dz=Math.abs(actor.root.position.z+25);
-          const distancePenalty=clamp((dz-10)*.009,0,.26);
-          const accuracy=clamp(.39+(finishing-55)*.009-distancePenalty+(fitness-60)*.0014,.15,.9);
-          const inFrame=Math.random()<accuracy;
-          const x=clamp(targetX,-4.45,4.45);
-          const framed=inFrame&&Math.abs(x)<=3.35;
-          const saved=framed&&Math.random()<clamp(.58-(finishing-55)*.004,.22,.68);
-          keeperReactAt=timer+.3;keeperDiveX=x;
+          const distancePenalty=clamp((dz-10)*.008,0,.24);
+          const x=clamp(isAI?(Math.random()<.5?-1:1)*(1.1+Math.random()*2.05):targetX,-4.45,4.45);
+          const shotHeight=clamp(isAI ? .75+Math.random()*1.95 : aimHeight,.45,2.88);
+          const accuracy=clamp(.55+(finishing-55)*.008-distancePenalty+(fitness-60)*.0015,.24,.96);
+          const framed=Math.abs(x)<=3.4&&shotHeight<=3.0&&Math.random()<accuracy;
+          const keeperDistance=Math.abs(x-keeper.root.position.x);
+          const keeperCanReach=keeperDistance<=(2.3+Math.max(0,1.2-shotHeight)*.2);
+          const cornerBonus=clamp((Math.abs(x)-1.15)*.075,0,.19);
+          const heightBonus=clamp((shotHeight-1.1)*.065,0,.12);
+          const saveChance=clamp((keeperCanReach ? .45 : .13)-(finishing-55)*.004-cornerBonus-heightBonus,.045,.64);
+          const saved=framed&&Math.random()<saveChance;
           const goal=framed&&!saved;
           if(framed)ownOnTarget.value+=1;
-          const scorer=actor.index===9?playerName:"Гравець команди";
+          keeperReactAt=timer+.3;keeperDiveX=x;
+          const scorer=actor===controlled()?playerName:"Гравець команди";
           const desc=goal?"ГОЛ! "+scorer+" пробив воротаря!":saved?"Воротар відбив удар "+scorer+".":"Удар "+scorer+" — повз ворота.";
-          ballAction={kind:"shot",elapsed:0,duration:1.05,startX:ball.position.x,startY:Math.max(.24,ball.position.y),startZ:ball.position.z,targetX:x,targetY:saved?1.2:.55+Math.random()*2.0,targetZ:-25.4,success:goal,points:goal?1:saved?2:0,description:desc};
-          makeEvent("shot","user","Удар по воротах");
-          if(goal){ownGoals.value+=1;makeEvent("goal","user",desc,scorer);setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);}
-          else if(saved){makeEvent("save","user",desc);addEvent("save",opponentClub.id,"Воротар парирував удар.");}
-          setStatus(goal?"ГОЛ!":saved?"Сейв воротаря":"Удар — спробуй ще раз");
+          ballAction={kind:"shot",elapsed:0,duration:1.05,startX:ball.position.x,startY:Math.max(.24,ball.position.y),startZ:ball.position.z,targetX:x,targetY:shotHeight,targetZ:-25.4,success:goal,points:goal?1:saved?2:0,description:desc,actorName:scorer};
+          makeEvent("shot","user",scorer===playerName?"Удар по воротах":"Удар команди по воротах",scorer);
+          setStatus("Удар летить до воріт — голкіпер реагує із затримкою 0,3 с…");
           lock=true;
         };
-        const launchPass=(through=false)=>{
+        const launchPass=(through=false,actorOverride?:any)=>{
           if(lock||ballAction||sent)return;
-          if(opponentPossession){setStatus("М'яч у суперника — підійди ближче й натисни R для відбору.");return;}
+          if(opponentPossession){setStatus("М'яч у суперника — підведи свого футболіста ближче й натисни R для відбору.");return;}
+          const isAI=Boolean(actorOverride);
+          if(!isAI&&!userHasBall()){
+            setStatus(userBallHolder?"Партнер сам приймає рішення з м'ячем. Рухай свого футболіста, щоб відкритися для пасу.":"Підійди до м'яча перед передачею.");
+            return;
+          }
+          const actor=actorOverride??controlled();
           kickoffMode=false;
-          const actor=controlled();
-          // Mouse target selects a teammate by position; the opposition is never a receiver option.
+          const aimPointX=isAI?controlled().root.position.x:targetX;
+          const aimPointZ=isAI?controlled().root.position.z:aimZ;
           const options=userActors.map((a,i)=>({
             a,i,
             dist:Math.hypot(a.root.position.x-actor.root.position.x,a.root.position.z-actor.root.position.z),
-            aimDist:Math.hypot(a.root.position.x-targetX,a.root.position.z-aimZ),
+            aimDist:Math.hypot(a.root.position.x-aimPointX,a.root.position.z-aimPointZ),
             forward:actor.root.position.z-a.root.position.z,
-          })).filter(o=>o.i!==activeIndex&&o.dist<25);
-          options.sort((a,b)=>(a.aimDist+(through&&a.forward<1?18:0))-(b.aimDist+(through&&b.forward<1?18:0)));
-          const choice=through?(options.find(o=>o.forward>1&&o.dist<25)??options[0]):options[0];
+          })).filter(o=>o.i!==actor.index&&o.dist<25);
           ownPasses.value+=1;
-          if(!choice){makeEvent("pass","user","Немає відкритого партнера для передачі.");setStatus("Наведи мишку на партнера або вільний простір поруч.");return;}
+          if(!options.length){makeEvent("pass","user","Немає відкритого партнера для передачі.");setStatus("Немає партнера для передачі.");return;}
+          let choice:(typeof options)[number]|undefined;
+          if(!isAI&&aimedTeammateIndex!==null)choice=options.find(o=>o.i===aimedTeammateIndex);
+          if(isAI){
+            const playerReceiver=options.find(o=>o.i===9);
+            const forwardOptions=options.filter(o=>o.forward>1).sort((a,b)=>a.aimDist-b.aimDist);
+            choice=(actor.root.position.z < -14&&forwardOptions.length&&Math.random()<.58)?forwardOptions[0]:(playerReceiver&&playerReceiver.dist<19?playerReceiver:forwardOptions[0]??options[0]);
+          }else if(!choice){
+            options.sort((a,b)=>(a.aimDist+(through&&a.forward<1?18:0)+a.dist*.035)-(b.aimDist+(through&&b.forward<1?18:0)+b.dist*.035));
+            choice=through?(options.find(o=>o.forward>1)??options[0]):options[0];
+          }
+          if(!choice){setStatus("Наведи курсор на партнера своєї команди або вільну ділянку поля.");return;}
           const midX=(actor.root.position.x+choice.a.root.position.x)/2;
           const midZ=(actor.root.position.z+choice.a.root.position.z)/2;
           const defender=[...oppActors].sort((a,b)=>Math.hypot(a.root.position.x-midX,a.root.position.z-midZ)-Math.hypot(b.root.position.x-midX,b.root.position.z-midZ))[0];
           const pressure=defender?Math.max(0,2.4-Math.hypot(defender.root.position.x-midX,defender.root.position.z-midZ)):0;
-          const chance=clamp(.84+(passing-55)*.006-choice.dist*.009-pressure*.12+(fitness-55)*.001,.22,.97);
-          // Simplified Law 11: forward receivers beyond both ball and second-last opponent are offside.
+          const chance=clamp(.88+(passing-55)*.006-choice.dist*.006-pressure*.13+(fitness-55)*.001,.28,.98);
           const defensiveLine=Math.min(...oppActors.map(a=>a.root.position.z));
           const offside=choice.a.root.position.z<0&&choice.a.root.position.z<actor.root.position.z-.25&&choice.a.root.position.z<defensiveLine-.25;
           const success=!offside&&Math.random()<chance;
           if(success)ownPassesComplete.value+=1;
-          const desc=offside?"Поза грою! Свисток — вільний удар супернику.":success?(through?"Пас у розріз дістався партнеру!":"Передача дійшла до партнера — керування перейшло до нього."):"Захисник прочитав пас і перехопив м'яч!";
+          const desc=offside?"Поза грою! Свисток — вільний удар супернику.":success?(through?"Пас у розріз дістався партнеру!":"Передача дійшла до партнера команди."):"Захисник прочитав пас і перехопив м'яч!";
           const target=success?choice.a:defender??oppActors[0];
-          ballAction={kind:"pass",elapsed:0,duration:.52,startX:ball.position.x,startY:.25,startZ:ball.position.z,targetX:target.root.position.x,targetY:.3,targetZ:target.root.position.z,success,points:success?1:0,description:desc,targetActor:success?choice.i:undefined};
-          makeEvent("pass","user",desc,success?playerName:undefined);
+          ballAction={kind:"pass",elapsed:0,duration:.52,startX:ball.position.x,startY:.25,startZ:ball.position.z,targetX:target.root.position.x,targetY:.3,targetZ:target.root.position.z,success,points:success?1:0,description:desc,targetActor:success?choice.i:undefined,actorName:actor===controlled()?playerName:"Гравець команди"};
+          makeEvent("pass","user",desc,isAI?undefined:playerName);
           if(offside)addEvent("foul",userClub.id,"Положення поза грою — вільний удар команді суперника.");
-          if(!success){opponentPossession=true;opponentHolder=target;opponentPossessionClock=0;}
+          if(!success){opponentPossession=true;opponentHolder=target;userBallHolder=null;opponentPossessionClock=0;}
           setStatus(desc);lock=true;
         };
         const onKeyDown=(e:KeyboardEvent)=>{
@@ -306,7 +345,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             if(k==="r"){
               const carrier=opponentHolder??[...oppActors].sort((a,b)=>Math.hypot(a.root.position.x-controlled().root.position.x,a.root.position.z-controlled().root.position.z)-Math.hypot(b.root.position.x-controlled().root.position.x,b.root.position.z-controlled().root.position.z))[0];
               if(opponentPossession&&carrier&&Math.hypot(carrier.root.position.x-controlled().root.position.x,carrier.root.position.z-controlled().root.position.z)<2.8){
-                opponentPossession=false;opponentHolder=null;opponentPossessionClock=0;kickoffMode=false;
+                opponentPossession=false;opponentHolder=null;userBallHolder=null;opponentPossessionClock=0;kickoffMode=false;
                 ball.position.set(controlled().root.position.x,.23,controlled().root.position.z-.7);
                 setStatus("Чудовий відбір! М'яч знову у твоєї команди.");
               } else setStatus("Підійди ближче до суперника та натисни R для відбору.");
@@ -316,13 +355,22 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           keys.add(k);
         };
         const onKeyUp=(e:KeyboardEvent)=>keys.delete(e.key.toLowerCase());
-        window.addEventListener("keydown",onKeyDown);window.addEventListener("keyup",onKeyUp);
-        cleanups.push(()=>window.removeEventListener("keydown",onKeyDown),()=>window.removeEventListener("keyup",onKeyUp));
+        window.addEventListener("keydown",onKeyDown,true);window.addEventListener("keyup",onKeyUp,true);
+        cleanups.push(()=>window.removeEventListener("keydown",onKeyDown,true),()=>window.removeEventListener("keyup",onKeyUp,true));
 
         const updateAim=(e:PointerEvent,announce=false)=>{
           const rect=renderer.domElement.getBoundingClientRect();
           pointer.set(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
+          aimHeight=clamp(.45+((pointer.y+1)/2)*2.4,.45,2.88);
           raycaster.setFromCamera(pointer,camera);
+          const playerHits=raycaster.intersectObjects(actors.map(a=>a.root),true);
+          aimedTeammateIndex=null;
+          if(playerHits.length){
+            let node=playerHits[0].object;
+            while(node.parent&&!actors.some(a=>a.root===node))node=node.parent;
+            const hitActor=actors.find(a=>a.root===node);
+            if(hitActor&&hitActor.team==="user"&&!hitActor.keeper&&hitActor!==controlled())aimedTeammateIndex=hitActor.index;
+          }
           const ray=raycaster.ray;
           if(Math.abs(ray.direction.y)>.0001){
             const dist=(0-ray.origin.y)/ray.direction.y;
@@ -334,7 +382,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             }
           }
         };
-        const onPointerDown=(e:PointerEvent)=>updateAim(e,true);
+        const onPointerDown=(e:PointerEvent)=>{renderer.domElement.focus();updateAim(e,true);};
         const onPointerMove=(e:PointerEvent)=>{if(e.buttons===0)updateAim(e,false);};
         renderer.domElement.addEventListener("pointerdown",onPointerDown);
         renderer.domElement.addEventListener("pointermove",onPointerMove);
@@ -353,7 +401,12 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           through:()=>launchPass(true),
           shoot:()=>launchShot(),
           move:(key,down)=>{if(down)keys.add(key.toLowerCase());else keys.delete(key.toLowerCase());},
-          fullscreen:()=>{if(!document.fullscreenElement)void host.requestFullscreen?.();else void document.exitFullscreen?.();},
+          fullscreen:()=>{
+            const element=host as HTMLDivElement & {webkitRequestFullscreen?:()=>Promise<void>|void};
+            const doc=document as Document & {webkitExitFullscreen?:()=>Promise<void>|void};
+            if(!document.fullscreenElement){if(element.requestFullscreen)void element.requestFullscreen();else void element.webkitRequestFullscreen?.();}
+            else{if(document.exitFullscreen)void document.exitFullscreen();else void doc.webkitExitFullscreen?.();}
+          },
         };
         setStarted(true);setStatus("Матч 11 на 11 · WASD/стрілки — рух · E — пас за прицілом · Q — розріз · Space — удар · R — відбір");
         let walk=0;
@@ -390,19 +443,20 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           }else{actor.legs.forEach((l:any)=>l.rotation.x*=.82);actor.arms.forEach((a:any)=>a.rotation.x*=.82);}
           // Teammates support the attack; opposition closes passing lanes and tackles.
           oppActors.forEach((defender,i)=>{
-            const d=Math.hypot(defender.root.position.x-actor.root.position.x,defender.root.position.z-actor.root.position.z);
+            const carrier=userBallHolder??actor;
+            const d=Math.hypot(defender.root.position.x-carrier.root.position.x,defender.root.position.z-carrier.root.position.z);
             if(opponentPossession&&opponentHolder===defender){
               const gx=clamp(defender.baseX*.45,-12,12),gz=24;
               const gd=Math.hypot(gx-defender.root.position.x,gz-defender.root.position.z)||1;
               defender.root.position.x+=(gx-defender.root.position.x)/gd*dt*2;
               defender.root.position.z+=(gz-defender.root.position.z)/gd*dt*2;
             }else{
-              const px=actor.root.position.x*.62+defender.baseX*.38;
-              const pz=actor.root.position.z*.62+defender.baseZ*.38;
+              const px=carrier.root.position.x*.62+defender.baseX*.38;
+              const pz=carrier.root.position.z*.62+defender.baseZ*.38;
               const pd=Math.hypot(px-defender.root.position.x,pz-defender.root.position.z)||1;
-              if(pd>.9){defender.root.position.x+=(px-defender.root.position.x)/pd*dt*(.65+i%3*.08);defender.root.position.z+=(pz-defender.root.position.z)/pd*dt*(.65+i%3*.08);}
-              if(!opponentPossession&&!lock&&!ballAction&&d<1.08&&Math.random()<dt*.5){
-                opponentPossession=true;opponentHolder=defender;opponentPossessionClock=0;kickoffMode=false;
+              if(pd>.9){defender.root.position.x+=(px-defender.root.position.x)/pd*dt*(1.45+i%3*.12);defender.root.position.z+=(pz-defender.root.position.z)/pd*dt*(1.45+i%3*.12);}
+              if(!opponentPossession&&!lock&&!ballAction&&d<1.25&&timer-lastTackleAt>.65&&Math.random()<dt*.95){
+                lastTackleAt=timer;opponentPossession=true;opponentHolder=defender;userBallHolder=null;opponentPossessionClock=0;kickoffMode=false;
                 if(Math.random()<.12){
                   addEvent("foul",userClub.id,"Фол у боротьбі за м'яч — вільний удар супернику.");
                   if(Math.random()<.18)addEvent("yellow",userClub.id,"Жовта картка за зрив атаки.");
@@ -412,13 +466,42 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             }
           });
           userActors.forEach((mate,i)=>{
-            if(mate===actor)return;
+            if(mate===actor||mate===userBallHolder)return;
+            if(opponentPossession&&opponentHolder){
+              const d=Math.hypot(mate.root.position.x-opponentHolder.root.position.x,mate.root.position.z-opponentHolder.root.position.z);
+              const pressing=[...userActors].filter(p=>p!==actor).sort((a,b)=>Math.hypot(a.root.position.x-opponentHolder.root.position.x,a.root.position.z-opponentHolder.root.position.z)-Math.hypot(b.root.position.x-opponentHolder.root.position.x,b.root.position.z-opponentHolder.root.position.z)).slice(0,3).includes(mate);
+              const gx=pressing?opponentHolder.root.position.x:mate.baseX;
+              const gz=pressing?opponentHolder.root.position.z:mate.baseZ;
+              const gd=Math.hypot(gx-mate.root.position.x,gz-mate.root.position.z)||1;
+              mate.root.position.x+=(gx-mate.root.position.x)/gd*dt*(pressing?1.7:.6);
+              mate.root.position.z+=(gz-mate.root.position.z)/gd*dt*(pressing?1.7:.6);
+              if(pressing&&d<1.15&&!lock&&!ballAction&&timer-lastTackleAt>.65&&Math.random()<dt*.48){
+                lastTackleAt=timer;opponentPossession=false;opponentHolder=null;userBallHolder=mate===controlled()?null:mate;teammatePossessionClock=0;
+                ball.position.set(mate.root.position.x,.23,mate.root.position.z-.65);
+                setStatus("Твій партнер виграв боротьбу й перехопив м'яч!");
+              }
+              return;
+            }
             const supportX=clamp(mate.baseX+Math.sin(timer*1.25+i)*1.6+actor.root.position.x*.08,-13,13);
-            const runZ=i>=7?-Math.min(5,Math.max(0,actor.root.position.z+5)*.22):0;
+            const runZ=i>=7?-Math.min(6,Math.max(0,actor.root.position.z+5)*.24):0;
             const supportZ=clamp(mate.baseZ+Math.sin(timer*.7+i)*.55+runZ,-22,22);
             mate.root.position.x+=(supportX-mate.root.position.x)*dt*.16;
             mate.root.position.z+=(supportZ-mate.root.position.z)*dt*.16;
           });
+          if(userBallHolder&&!opponentPossession&&!ballAction&&!lock&&!sent){
+            teammatePossessionClock+=dt;
+            const carrier=userBallHolder;
+            const nearby=[...oppActors].map(d=>Math.hypot(d.root.position.x-carrier.root.position.x,d.root.position.z-carrier.root.position.z)).sort((a,b)=>a-b)[0]??99;
+            carrier.root.position.z=clamp(carrier.root.position.z-dt*(nearby < 3 ? .9 : 1.65),-21.8,22.5);
+            const laneX=clamp(carrier.root.position.x+Math.sin(timer*.8+carrier.index)*dt*1.4,-12.8,12.8);
+            carrier.root.position.x+=(laneX-carrier.root.position.x)*dt*.8;
+            carrier.root.rotation.y=Math.PI;
+            if(teammatePossessionClock>(carrier.root.position.z < -15 ? 1.05 : 1.6)){
+              teammatePossessionClock=0;
+              if(carrier.root.position.z < -15&&Math.random()<.42)launchShot(carrier);
+              else launchPass(false,carrier);
+            }
+          }
           // Leg and arm swings animate all 22 players, including AI runners.
           actors.forEach((a,i)=>{
             if(a!==actor){const phase=timer*5.5+i*.8;a.legs[0].rotation.x=Math.sin(phase)*.13;a.legs[1].rotation.x=-Math.sin(phase)*.13;a.arms[0].rotation.x=-Math.sin(phase)*.08;a.arms[1].rotation.x=Math.sin(phase)*.08;}
@@ -436,23 +519,37 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             if(t>=1){
               const action=ballAction;
               if(action.kind==="pass"&&action.success&&action.targetActor!==undefined){
-                activeIndex=action.targetActor;kickoffMode=false;opponentPossession=false;opponentHolder=null;
+                const receiver=userActors[action.targetActor];
+                userBallHolder=receiver===controlled()?null:receiver;
+                teammatePossessionClock=0;kickoffMode=false;opponentPossession=false;opponentHolder=null;
               }
-              if(action.kind==="shot"&&action.points===2)keeper.root.position.x=clamp(action.targetX*.8,-3.15,3.15);
+              if(action.kind==="shot"&&action.points===2){
+                keeper.root.position.x=clamp(action.targetX*.8,-3.15,3.15);
+                makeEvent("save","user","Воротар відбив удар.");
+                addEvent("save",opponentClub.id,"Воротар парирував удар.");
+                userBallHolder=null;
+              }
+              if(action.kind==="shot"&&action.success){
+                ownGoals.value+=1;
+                makeEvent("goal","user",action.description,action.actorName??"Гравець команди");
+                setHomeGoals(homeIsUser?ownGoals.value:opponentGoals.value);setAwayGoals(homeIsUser?opponentGoals.value:ownGoals.value);
+                userBallHolder=null;
+              }
               keeperReactAt=Number.POSITIVE_INFINITY;
               ballAction=null;lock=false;
               setPassAccuracy(ownPasses.value ? Math.round(ownPassesComplete.value/ownPasses.value*100) : null);
               if(action.kind==="shot"&&action.success){
-                // Every goal restarts from the centre spot instead of teleporting the ball to the player.
                 ball.position.set(0,.23,0);userActors[9].root.position.set(0,0,1.25);activeIndex=9;kickoffMode=true;
-                opponentPossession=false;opponentHolder=null;
+                userBallHolder=null;opponentPossession=false;opponentHolder=null;teammatePossessionClock=0;
                 targetX=0;aimX=0;aimZ=-18;aimRing.position.set(0,.05,-18);
               }else if(action.kind==="pass"&&!action.success){
-                opponentPossession=true;
+                opponentPossession=true;userBallHolder=null;
                 if(!opponentHolder)opponentHolder=oppActors[0];
                 opponentPossessionClock=0;ball.position.set(opponentHolder.root.position.x,.23,opponentHolder.root.position.z+.65);
               }else if(opponentPossession&&opponentHolder){
                 ball.position.set(opponentHolder.root.position.x,.23,opponentHolder.root.position.z+.65);
+              }else if(userBallHolder){
+                ball.position.set(userBallHolder.root.position.x,.24,userBallHolder.root.position.z-.72);
               }else{
                 const active=controlled();ball.position.set(active.root.position.x,.24,active.root.position.z-.75);
               }
@@ -462,6 +559,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
             const active=controlled();
             if(kickoffMode)ball.position.set(0,.23,0);
             else if(opponentPossession&&opponentHolder)ball.position.set(opponentHolder.root.position.x,.23,opponentHolder.root.position.z+.65);
+            else if(userBallHolder)ball.position.set(userBallHolder.root.position.x,.23,userBallHolder.root.position.z-.72);
             else ball.position.set(active.root.position.x,.23,active.root.position.z-.8);
             ball.rotation.x+=dt*(moving?7:.4);
           }
@@ -469,16 +567,19 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           if(timer>=keeperReactAt){
             const diveDirection=Math.sign(keeperDiveX-keeper.root.position.x);
             keeper.root.position.x+=(clamp(keeperDiveX,-3.15,3.15)-keeper.root.position.x)*Math.min(1,dt*4.2);
-            keeper.root.rotation.z+=(diveDirection*.28-keeper.root.rotation.z)*Math.min(1,dt*3.5);
+            keeper.root.rotation.z+=(diveDirection*.34-keeper.root.rotation.z)*Math.min(1,dt*3.5);
+            keeper.arms[0].rotation.z+=(diveDirection*.8-keeper.arms[0].rotation.z)*Math.min(1,dt*5);
+            keeper.arms[1].rotation.z+=(diveDirection*.8-keeper.arms[1].rotation.z)*Math.min(1,dt*5);
           }else{
             keeper.root.position.x+=(0-keeper.root.position.x)*dt*.22;
             keeper.root.rotation.z+=(0-keeper.root.rotation.z)*dt*3;
+            keeper.arms.forEach((arm:any)=>{arm.rotation.z*=.88;});
           }
           userKeeper.root.position.x+=(clamp((opponentHolder?.root.position.x??0)*.18,-2.5,2.5)-userKeeper.root.position.x)*dt*.7;
-          const cameraOffset=new THREE.Vector3(Math.sin(cameraYaw)*12,9.2,Math.cos(cameraYaw)*14);
+          const cameraOffset=new THREE.Vector3(Math.sin(cameraYaw)*17,17.5,Math.cos(cameraYaw)*25);
           const desired=controlled().root.position.clone().add(cameraOffset);
-          camera.position.lerp(desired,1-Math.exp(-dt*3.8));
-          camera.lookAt(controlled().root.position.x,.7,controlled().root.position.z-5.5);
+          camera.position.lerp(desired,1-Math.exp(-dt*2.6));
+          camera.lookAt(controlled().root.position.x,.7,controlled().root.position.z-7.5);
           renderer.render(scene,camera);
 
           if(!sent&&matchMinute>=90&&!ballAction){addEvent("fulltime",userClub.id,"Фінальний свисток.");finishMatch();}
@@ -538,7 +639,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
       <div className="match3d-loading">{error||status}</div>
       <div className="match3d-status"><span className="match-live-dot"/> {status}</div>
       <div className="match3d-controls">
-        <span><b>W A S D / стрілки</b> рух</span><span><b>Shift</b> ривок</span><span><b>E</b> пас за прицілом</span><span><b>Q</b> пас у розріз</span><span><b>Space</b> удар</span><span><b>R</b> відбір</span>
+        <span><b>W A S D / стрілки</b> рух свого гравця</span><span><b>Shift</b> ривок</span><span><b>E</b> пас за курсором</span><span><b>Q</b> пас у розріз</span><span><b>Space</b> удар</span><span><b>R</b> відбір</span>
       </div>
       <div className="match3d-buttons">
         <button type="button" onClick={()=>actionRef.current.pass()}>Пас · E</button>
@@ -550,7 +651,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         <button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("w",true)}} onPointerUp={()=>actionRef.current.move("w",false)} onPointerCancel={()=>actionRef.current.move("w",false)}>▲</button>
         <div><button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("a",true)}} onPointerUp={()=>actionRef.current.move("a",false)} onPointerCancel={()=>actionRef.current.move("a",false)}>◀</button><button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("s",true)}} onPointerUp={()=>actionRef.current.move("s",false)} onPointerCancel={()=>actionRef.current.move("s",false)}>▼</button><button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("d",true)}} onPointerUp={()=>actionRef.current.move("d",false)} onPointerCancel={()=>actionRef.current.move("d",false)}>▶</button></div>
       </div>
-      {!started&&<div className="match3d-intro">Матч 11 на 11 на стадіоні. Наведи мишку на партнера або вільний простір, щоб спрямувати пас. Голкіпер реагує на удар із затримкою 0,3 секунди.</div>}
+      {!started&&<div className="match3d-intro">Матч 11 на 11 на стадіоні. Ти керуєш лише створеним футболістом — партнери та суперники діють самостійно. Наведи курсор саме на партнера для точної передачі. Голкіпер починає реакцію через 0,3 секунди, а результат удару фіксується після анімації польоту м'яча.</div>}
     </div>
     <div className="live-match-footer"><span><b>{playerName}</b> · OVR {rating}</span><span>Влучні передачі: {passAccuracy===null?"—":passAccuracy+"%"}</span><span>{minute<90?"Матч триває": "Матч завершено"}</span></div>
     <p className="live-match-tip">Порада: підведи футболіста ближче до штрафного перед ударом. Клацни мишкою по правій/лівій частині поля для прицілювання, потім натисни Space. На кожну дію є 3D-анімація м’яча.</p>

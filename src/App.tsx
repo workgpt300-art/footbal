@@ -59,7 +59,7 @@ export default function App(){
    case "home":return <Dashboard save={save} standing={standing} upcoming={upcoming} nextDay={nextDay} nextMatch={nextMatch} navigate={setView} training={()=>setView("training")}/>;
    case "player":return <PlayerPage save={save} training={()=>setView("training")} transfers={()=>setView("transfers")}/>;
    case "squad":return <SquadPage save={save} query={query} setQuery={setQuery}/>;
-   case "matches":return <MatchesPage save={save} nextDay={nextDay}/>;
+   case "matches":return <MatchesPage save={save} nextMatch={nextMatch}/>;
    case "calendar":return <CalendarPage save={save} fixtures={fixtures} futureOnly={futureOnly} setFutureOnly={setFutureOnly} nextMatch={nextMatch}/>;
    case "leagues":return <LeaguesPage/>;
    case "transfers":return <TransfersPage save={save} offers={offers} decision={decision}/>;
@@ -121,9 +121,75 @@ function MatchLine({f,clubId}:{f:Fixture;clubId:string}){
  const result=f.status==="played"&&own!==null&&other!==null?(own>other?"win":own===other?"draw":"loss"):"";
  return <div className="match-line"><div className="date-col"><b>{shortDate(f.date).split(" ")[0]}</b><small>{shortDate(f.date).split(" ").slice(1).join(" ")}</small></div><Crest id={clubId}/><div className="opponent"><b>{getClub(clubId).name}</b><small>{home?"Вдома":"На виїзді"} · Тур {f.round}</small></div><span className="dash">—</span><Crest id={opp.id}/><div className="opponent"><b>{opp.name}</b><small>{f.status==="played"?"Завершено":"Заплановано"}</small></div><strong className={"score "+result}>{f.status==="played"?own+" : "+other:"— : —"}</strong></div>;
 }
-function MatchesPage({save,nextDay}:{save:CareerSave;nextDay:()=>void}){
- const fs=save.fixtures.filter(f=>f.homeClubId===save.clubId||f.awayClubId===save.clubId),played=fs.filter(f=>f.status==="played");
- return <section className="panel"><PanelTitle title="Матчі сезону" subtitle="Усі ігри твого клубу" action={<Btn small onClick={nextDay}><Play size={13}/> Наступний день</Btn>}/><div className="summary">{[["Зіграно",played.length],["Попереду",fs.length-played.length],["Голи",played.reduce((n,f)=>n+(f.homeClubId===save.clubId?f.homeScore??0:f.awayScore??0),0)]].map(([a,b])=><div key={String(a)}><small>{a}</small><b>{b}</b></div>)}</div><div>{[...played.sort((a,b)=>b.date.localeCompare(a.date)),...fs.filter(f=>f.status==="scheduled").sort((a,b)=>a.date.localeCompare(b.date))].map(f=><MatchLine key={f.id} f={f} clubId={save.clubId}/>)}</div></section>;
+function MatchesPage({save,nextMatch}:{save:CareerSave;nextMatch:()=>void}){
+ const fs=save.fixtures.filter(f=>f.homeClubId===save.clubId||f.awayClubId===save.clubId);
+ const played=fs.filter(f=>f.status==="played").sort((a,b)=>b.date.localeCompare(a.date));
+ const upcoming=fs.filter(f=>f.status==="scheduled"&&f.date>=save.date).sort((a,b)=>a.date.localeCompare(b.date));
+ const [selectedId,setSelectedId]=useState("");
+ const selected=fs.find(f=>f.id===selectedId)??played[0]??upcoming[0]??null;
+ const [minute,setMinute]=useState(90);
+ useEffect(()=>{setMinute(selected?.status==="played"?90:0)},[selected?.id,selected?.status]);
+ const home=selected?getClub(selected.homeClubId):null;
+ const away=selected?getClub(selected.awayClubId):null;
+ const events=selected?.events??[];
+ const visibleEvents=events.filter(e=>e.minute<=minute);
+ const focusEvent=[...visibleEvents].reverse().find(e=>["shot","goal","save","corner"].includes(e.kind));
+ const homeGoals=selected&&home?events.filter(e=>e.kind==="goal"&&e.clubId===home.id&&e.minute<=minute).length:0;
+ const awayGoals=selected&&away?events.filter(e=>e.kind==="goal"&&e.clubId===away.id&&e.minute<=minute).length:0;
+ const homePositions:[number,number][]=[[42,200],[143,70],[143,155],[143,245],[143,330],[245,115],[245,285],[298,165],[298,235],[330,105],[330,295]];
+ const awayPositions:[number,number][]=[[718,200],[617,70],[617,155],[617,245],[617,330],[515,115],[515,285],[462,165],[462,235],[430,105],[430,295]];
+ const ballX=!focusEvent?380:focusEvent.clubId===home?.id?(focusEvent.kind==="goal"?694:605):(focusEvent.kind==="goal"?66:155);
+ const ballY=focusEvent?86+((focusEvent.minute*37+(selected?.seed??0))%226):200;
+ return <div className="match-workspace">
+  <section className="panel match-center">
+   <PanelTitle title="Матч-центр" subtitle="Симуляція збережених подій · умовна 2D-схема" action={<Btn small onClick={nextMatch}><Play size={13}/> До наступного матчу</Btn>}/>
+   {selected&&home&&away?<>
+    <div className="match-scoreboard">
+     <div className="match-score-team"><Crest id={home.id}/><b>{home.name}</b><small>{selected.homeClubId===save.clubId?"Твій клуб":"Господарі"}</small></div>
+     <div className="match-score-main"><div className="match-score-number">{selected.status==="played"?homeGoals+" : "+awayGoals:"— : —"}</div><span className={"tag "+(selected.status==="played"?"green-tag":"")}>{selected.status==="played"?"Завершено":"Заплановано"}</span><small>{formatDate(selected.date)} · Тур {selected.round}</small></div>
+     <div className="match-score-team"><Crest id={away.id}/><b>{away.name}</b><small>{selected.awayClubId===save.clubId?"Твій клуб":"Гості"}</small></div>
+    </div>
+    <div className="match-pitch-wrap">
+     <svg className="match-pitch" viewBox="0 0 760 400" role="img" aria-label="Умовна 2D-схема футбольного матчу">
+      <defs><linearGradient id="pitch-green" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#1c573c"/><stop offset="100%" stopColor="#103c2a"/></linearGradient></defs>
+      <rect x="8" y="8" width="744" height="384" rx="8" fill="url(#pitch-green)" stroke="rgba(255,255,255,.72)" strokeWidth="2"/>
+      {Array.from({length:10},(_,i)=><rect key={"stripe-"+i} x={10+i*74.2} y="10" width="37.1" height="380" fill="#ffffff" opacity={i%2===0?.035:0}/>)}
+      <line x1="380" y1="9" x2="380" y2="391" stroke="rgba(255,255,255,.72)" strokeWidth="2"/>
+      <circle cx="380" cy="200" r="62" fill="none" stroke="rgba(255,255,255,.72)" strokeWidth="2"/>
+      <circle cx="380" cy="200" r="3" fill="#fff"/>
+      <rect x="9" y="105" width="105" height="190" fill="none" stroke="rgba(255,255,255,.72)" strokeWidth="2"/>
+      <rect x="9" y="150" width="42" height="100" fill="none" stroke="rgba(255,255,255,.72)" strokeWidth="2"/>
+      <rect x="646" y="105" width="105" height="190" fill="none" stroke="rgba(255,255,255,.72)" strokeWidth="2"/>
+      <rect x="709" y="150" width="42" height="100" fill="none" stroke="rgba(255,255,255,.72)" strokeWidth="2"/>
+      <circle cx="82" cy="200" r="3" fill="#fff"/><circle cx="678" cy="200" r="3" fill="#fff"/>
+      {homePositions.map(([x,y],i)=><g key={"home-player-"+i} transform={"translate("+x+" "+y+")"}><circle r="12" fill={home.colors[0]} stroke="#ffffff" strokeWidth="1.8"/><text textAnchor="middle" y="3" fill="#ffffff" fontSize="8" fontWeight="800">{i===0?"GK":i===10?"9":String(i+1)}</text></g>)}
+      {awayPositions.map(([x,y],i)=><g key={"away-player-"+i} transform={"translate("+x+" "+y+")"}><circle r="12" fill={away.colors[0]} stroke="#ffffff" strokeWidth="1.8"/><text textAnchor="middle" y="3" fill="#ffffff" fontSize="8" fontWeight="800">{i===0?"GK":i===10?"9":String(i+1)}</text></g>)}
+      <circle cx={ballX} cy={ballY} r="12" fill="#101820" opacity=".24"/>
+      <circle cx={ballX} cy={ballY} r="5.5" fill="#ffffff" stroke="#101820" strokeWidth="1.5"/>
+      <path d={"M "+(ballX-2)+" "+(ballY-2)+" l 4 4 M "+(ballX-2)+" "+(ballY+2)+" l 4 -4"} stroke="#101820" strokeWidth="1"/>
+     </svg>
+    </div>
+    {selected.status==="played"?<div className="match-playback">
+      <div className="playback-top"><b><Timer size={14}/> Відтворення подій</b><strong>{minute}'</strong></div>
+      <input aria-label="Хвилина матчу" className="match-minute-slider" type="range" min="0" max="90" value={minute} onChange={e=>setMinute(Number(e.target.value))}/>
+      <div className="playback-range"><span>0'</span><span>Перерва 45'</span><span>90'</span></div>
+      <div className="match-event-list">{visibleEvents.length?visibleEvents.slice().reverse().slice(0,7).map((event,index)=><button type="button" className={"match-event "+(focusEvent===event?"event-active":"")} key={event.minute+"-"+event.kind+"-"+index} onClick={()=>setMinute(event.minute)}><span className={"event-minute "+(event.kind==="goal"?"event-goal":"")}>{event.minute}'</span><span className="event-copy"><b>{event.kind==="goal"?"ГОЛ":event.kind==="shot"?"Удар":event.kind==="save"?"Сейв":event.kind==="yellow"?"Жовта картка":event.kind==="red"?"Червона картка":event.kind==="corner"?"Кутовий":event.kind==="foul"?"Фол":event.kind==="halftime"?"Перерва":event.kind==="fulltime"?"Фінальний свисток":"Подія"}</b><small>{event.description}</small></span><ChevronRight size={14}/></button>):<div className="empty-match-events">На цю хвилину подій ще немає.</div>}</div>
+      {selected.stats&&minute===90&&<div className="match-stat-grid">
+       <div><small>Володіння</small><b>{selected.stats.possessionHome}% <span>—</span> {selected.stats.possessionAway}%</b></div>
+       <div><small>Удари</small><b>{selected.stats.shotsHome} <span>—</span> {selected.stats.shotsAway}</b></div>
+       <div><small>У площину</small><b>{selected.stats.shotsOnTargetHome} <span>—</span> {selected.stats.shotsOnTargetAway}</b></div>
+       <div><small>xG</small><b>{selected.stats.xgHome.toFixed(2)} <span>—</span> {selected.stats.xgAway.toFixed(2)}</b></div>
+      </div>}
+     </div>:<div className="match-pending-note"><Activity size={16}/><span>Матч ще не зіграно. Натисни «До наступного матчу», щоб просунути календар і провести чергові матчі за правилами симулятора. Події та статистика з’являться після завершення.</span></div>}
+   </>:<div className="empty-match-events">У календарі більше немає матчів цього клубу.</div>}
+  </section>
+  <section className="panel match-list-panel">
+   <PanelTitle title="Календар команди" subtitle="Обери зіграний матч для перегляду подій"/>
+   <div className="match-list-summary"><span><b>{played.length}</b> зіграно</span><span><b>{upcoming.length}</b> попереду</span><span><b>{played.reduce((n,f)=>n+(f.homeClubId===save.clubId?f.homeScore??0:f.awayScore??0),0)}</b> голів</span></div>
+   <div className="match-select-list">{[...upcoming,...played].map(f=>{const h=getClub(f.homeClubId),a=getClub(f.awayClubId);const isSelected=selected?.id===f.id;return <button type="button" key={f.id} className={"match-select "+(isSelected?"match-select-active":"")} onClick={()=>setSelectedId(f.id)}><span className="match-select-round">ТУР {f.round}<small>{shortDate(f.date)}</small></span><span className="match-select-teams"><span><i style={{background:h.colors[0]}}/>{h.name}</span><span><i style={{background:a.colors[0]}}/>{a.name}</span></span><strong className="match-select-score">{f.status==="played"?(f.homeScore??0)+" : "+(f.awayScore??0):"— : —"}</strong></button>})}</div>
+   <p className="match-list-footnote">Симуляція використовує силу команд, параметри твоєї кар’єри та контрольоване зерно випадковості. Схема поля умовна: рушій зберігає події та статистику, а не GPS-координати кожного гравця.</p>
+  </section>
+ </div>;
 }
 function CalendarPage({save,fixtures,futureOnly,setFutureOnly,nextMatch}:{save:CareerSave;fixtures:Fixture[];futureOnly:boolean;setFutureOnly:(v:boolean)=>void;nextMatch:()=>void}){
  return <section className="panel"><PanelTitle title="Календар сезону" subtitle="Матчі чемпіонату" action={<Btn small onClick={nextMatch}><Play size={13}/> До матчу</Btn>}/><div className="toolbar"><small>{fixtures.length} матчів</small><label><input type="checkbox" checked={futureOnly} onChange={e=>setFutureOnly(e.target.checked)}/> Лише заплановані</label></div><div className="calendar-grid">{fixtures.map(f=><div className="calendar-card" key={f.id}><div className="calendar-head"><b>ТУР {f.round}</b><small>{formatDate(f.date)}</small></div>{[f.homeClubId,f.awayClubId].map((id,index)=><div className="calendar-team" key={id+index}><Crest id={id}/><span>{getClub(id).name}</span>{f.status==="played"&&<b>{index===0?f.homeScore:f.awayScore}</b>}</div>)}<div className="calendar-foot"><span className={"tag "+(f.status==="played"?"green-tag":"")}>{f.status==="played"?"Зіграно":"Заплановано"}</span>{f.date<save.date&&f.status==="scheduled"&&<small>Дата минула</small>}</div></div>)}</div></section>;

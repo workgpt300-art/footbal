@@ -50,11 +50,12 @@ export interface ContractNegotiation {
   status: "open" | "signed" | "rejected";
   tryoutScore: number;
 }
+export interface SeasonSummary { season: string; clubId: string; finishedAt: string; tablePosition: number | null; careerMatches: number; careerGoals: number; careerAssists: number; }
 export interface CareerSave {
   id: string; name: string; createdAt: string; updatedAt: string; date: string; season: string; player: CareerPlayer; clubId: string;
   fixtures: Fixture[]; offers: TransferOffer[]; news: NewsItem[]; trainingFocus: TrainingFocus;
   difficulty: "Нормальна" | "Складна" | "Легенда"; lastEvent: string; isDemoWorld: boolean;
-  contractStatus?: "active" | "free-agent"; contractEndDate?: string;
+  contractStatus?: "active" | "free-agent"; contractEndDate?: string; seasonHistory?: SeasonSummary[];
   tryoutApplications?: TryoutApplication[]; activeTryout?: TryoutSession | null; contractNegotiation?: ContractNegotiation | null;
 }
 export interface StandingRow { clubId: string; played: number; wins: number; draws: number; losses: number; goalsFor: number; goalsAgainst: number; goalDifference: number; points: number; form: string[]; }

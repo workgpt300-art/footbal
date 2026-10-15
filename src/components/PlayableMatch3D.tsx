@@ -187,17 +187,14 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         const standMat=mat(0x263541),seatA=mat(0x607482),seatB=mat(0x9ba9b3),lightMat=mat(0xe9f6ff);
         box(4.6,4.2,60,standMat,-19.2,1.8,0);box(4.6,4.2,60,standMat,19.2,1.8,0);
         box(43,4.2,4.4,standMat,0,1.8,-30.6);box(43,4.2,4.4,standMat,0,1.8,30.6);
+        // Continuous coloured seating rows keep the bowl readable without hundreds of draw calls.
         for(let row=0;row<7;row+=1){
-          for(let seat=-10;seat<=10;seat+=1){
-            const x=seat*1.72;
-            box(.72,.22,.42,(row+seat)%4===0?seatB:seatA,x,.5+row*.48,-30-row*.08);
-            box(.72,.22,.42,(row-seat)%4===0?seatB:seatA,x,.5+row*.48,30+row*.08);
-          }
-          for(let seat=0;seat<16;seat+=1){
-            const z=-27+seat*3.6;
-            box(.42,.22,.92,(row+seat)%5===0?seatB:seatA,-18.6-row*.25,.5+row*.48,z);
-            box(.42,.22,.92,(row+seat+2)%5===0?seatB:seatA,18.6+row*.25,.5+row*.48,z);
-          }
+          const y=.55+row*.48;
+          const seatMat=row%3===0?seatB:seatA;
+          box(42,.2,.48,seatMat,0,y,-30-row*.08);
+          box(42,.2,.48,seatMat,0,y,30+row*.08);
+          box(.42,.2,55,seatMat,-18.5-row*.25,y,0);
+          box(.42,.2,55,seatMat,18.5+row*.25,y,0);
         }
         for(const x of [-22,22]){
           box(.18,13,.18,standMat,x,6.2,-29);box(1.8,.18,1.8,lightMat,x,13,-29);
@@ -316,17 +313,26 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         window.addEventListener("keydown",onKeyDown);window.addEventListener("keyup",onKeyUp);
         cleanups.push(()=>window.removeEventListener("keydown",onKeyDown),()=>window.removeEventListener("keyup",onKeyUp));
 
-        const onPointerDown=(e:PointerEvent)=>{
+        const updateAim=(e:PointerEvent,announce=false)=>{
           const rect=renderer.domElement.getBoundingClientRect();
           pointer.set(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
           raycaster.setFromCamera(pointer,camera);
           const ray=raycaster.ray;
           if(Math.abs(ray.direction.y)>.0001){
             const dist=(0-ray.origin.y)/ray.direction.y;
-            if(dist>0){const p=ray.origin.clone().add(ray.direction.clone().multiplyScalar(dist));targetX=clamp(p.x,-16,16);aimX=targetX;aimZ=clamp(p.z,-25,25);aimRing.position.set(targetX,.05,aimZ);setStatus("Ціль наведено: E/Q — пас партнеру в цьому напрямку · Space — удар у ворота.");}
+            if(dist>0){
+              const p=ray.origin.clone().add(ray.direction.clone().multiplyScalar(dist));
+              targetX=clamp(p.x,-16,16);aimZ=clamp(p.z,-25,25);
+              aimRing.position.set(targetX,.05,aimZ);
+              if(announce)setStatus("Ціль наведено: E/Q — пас партнеру в цьому напрямку · Space — удар у ворота.");
+            }
           }
         };
-        renderer.domElement.addEventListener("pointerdown",onPointerDown);cleanups.push(()=>renderer.domElement.removeEventListener("pointerdown",onPointerDown));
+        const onPointerDown=(e:PointerEvent)=>updateAim(e,true);
+        const onPointerMove=(e:PointerEvent)=>{if(e.buttons===0)updateAim(e,false);};
+        renderer.domElement.addEventListener("pointerdown",onPointerDown);
+        renderer.domElement.addEventListener("pointermove",onPointerMove);
+        cleanups.push(()=>renderer.domElement.removeEventListener("pointerdown",onPointerDown),()=>renderer.domElement.removeEventListener("pointermove",onPointerMove));
 
         resizeFallback=()=>{
           if(!host.clientWidth||!host.clientHeight)return;

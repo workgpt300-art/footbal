@@ -296,10 +296,19 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         const onKeyDown=(e:KeyboardEvent)=>{
           const k=e.key.toLowerCase();
           if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","shift"].includes(k))e.preventDefault();
-          if((k===" "||k==="e"||k==="q")&&!e.repeat){
+          if((k===" "||k==="e"||k==="q"||k==="r")&&!e.repeat){
             if(k===" "){launchShot();return;}
             if(k==="e"){launchPass(false);return;}
             if(k==="q"){launchPass(true);return;}
+            if(k==="r"){
+              const carrier=opponentHolder??[...oppActors].sort((a,b)=>Math.hypot(a.root.position.x-controlled().root.position.x,a.root.position.z-controlled().root.position.z)-Math.hypot(b.root.position.x-controlled().root.position.x,b.root.position.z-controlled().root.position.z))[0];
+              if(opponentPossession&&carrier&&Math.hypot(carrier.root.position.x-controlled().root.position.x,carrier.root.position.z-controlled().root.position.z)<2.8){
+                opponentPossession=false;opponentHolder=null;opponentPossessionClock=0;kickoffMode=false;
+                ball.position.set(controlled().root.position.x,.23,controlled().root.position.z-.7);
+                setStatus("Чудовий відбір! М'яч знову у твоєї команди.");
+              } else setStatus("Підійди ближче до суперника та натисни R для відбору.");
+              return;
+            }
           }
           keys.add(k);
         };
@@ -314,7 +323,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           const ray=raycaster.ray;
           if(Math.abs(ray.direction.y)>.0001){
             const dist=(0-ray.origin.y)/ray.direction.y;
-            if(dist>0){const p=ray.origin.clone().add(ray.direction.clone().multiplyScalar(dist));targetX=clamp(p.x,-3.35,3.35);aimRing.position.x=targetX;setStatus("Приціл змінено — Space, щоб пробити.");}
+            if(dist>0){const p=ray.origin.clone().add(ray.direction.clone().multiplyScalar(dist));targetX=clamp(p.x,-16,16);aimX=targetX;aimZ=clamp(p.z,-25,25);aimRing.position.set(targetX,.05,aimZ);setStatus("Ціль наведено: E/Q — пас партнеру в цьому напрямку · Space — удар у ворота.");}
           }
         };
         renderer.domElement.addEventListener("pointerdown",onPointerDown);cleanups.push(()=>renderer.domElement.removeEventListener("pointerdown",onPointerDown));
@@ -327,7 +336,14 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         if(typeof ResizeObserver!=="undefined"){observer=new ResizeObserver(()=>resizeFallback?.());observer.observe(host);}
         else{window.addEventListener("resize",resizeFallback!);cleanups.push(()=>window.removeEventListener("resize",resizeFallback!));}
         resizeFallback();
-        setStarted(true);setStatus("WASD — починай атаку · E — пас · Q — пас у розріз · Space — удар");
+        actionRef.current={
+          pass:()=>launchPass(false),
+          through:()=>launchPass(true),
+          shoot:()=>launchShot(),
+          move:(key,down)=>{if(down)keys.add(key.toLowerCase());else keys.delete(key.toLowerCase());},
+          fullscreen:()=>{if(!document.fullscreenElement)void host.requestFullscreen?.();else void document.exitFullscreen?.();},
+        };
+        setStarted(true);setStatus("Матч 11 на 11 · WASD/стрілки — рух · E — пас за прицілом · Q — розріз · Space — удар · R — відбір");
         let walk=0;
         const animate=()=>{
           if(disposed)return;
@@ -441,6 +457,7 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
     void startScene();
     return () => {
       disposed = true;
+      actionRef.current={pass:()=>{},through:()=>{},shoot:()=>{},move:()=>{},fullscreen:()=>{}};
       window.cancelAnimationFrame(frame);
       observer?.disconnect();
       cleanups.forEach(fn=>fn());
@@ -448,10 +465,6 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
       if(scene)scene.traverse((o:any)=>{o.geometry?.dispose?.();if(Array.isArray(o.material))o.material.forEach((m:any)=>m.dispose?.());else o.material?.dispose?.();});
     };
   }, [home.id, away.id, userClubId, playerName, rating, finishing, passing, dribbling, fitness]);
-
-  function buttonKey(key: string) {
-    window.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
-  }
 
   return <section className="panel live-match-panel">
     <div className="live-match-head">
@@ -468,14 +481,19 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
       <div className="match3d-loading">{error||status}</div>
       <div className="match3d-status"><span className="match-live-dot"/> {status}</div>
       <div className="match3d-controls">
-        <span><b>W A S D</b> рух</span><span><b>Shift</b> ривок</span><span><b>E</b> пас</span><span><b>Q</b> пас у розріз</span><span><b>Space</b> удар</span>
+        <span><b>W A S D / стрілки</b> рух</span><span><b>Shift</b> ривок</span><span><b>E</b> пас за прицілом</span><span><b>Q</b> пас у розріз</span><span><b>Space</b> удар</span><span><b>R</b> відбір</span>
       </div>
       <div className="match3d-buttons">
-        <button type="button" onClick={()=>buttonKey("e")}>Пас · E</button>
-        <button type="button" onClick={()=>buttonKey("q")}>У розріз · Q</button>
-        <button type="button" onClick={()=>buttonKey(" ")}>Удар · Space</button>
+        <button type="button" onClick={()=>actionRef.current.pass()}>Пас · E</button>
+        <button type="button" onClick={()=>actionRef.current.through()}>У розріз · Q</button>
+        <button type="button" onClick={()=>actionRef.current.shoot()}>Удар · Space</button>
+        <button type="button" onClick={()=>actionRef.current.fullscreen()}>⛶ Повний екран</button>
       </div>
-      {!started&&<div className="match3d-intro">WASD — вперед до воріт. Підійди до штрафного, відкрий партнера або пробий сам.</div>}
+      <div className="match3d-touch-pad" aria-label="Сенсорне керування">
+        <button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("w",true)}} onPointerUp={()=>actionRef.current.move("w",false)} onPointerCancel={()=>actionRef.current.move("w",false)}>▲</button>
+        <div><button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("a",true)}} onPointerUp={()=>actionRef.current.move("a",false)} onPointerCancel={()=>actionRef.current.move("a",false)}>◀</button><button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("s",true)}} onPointerUp={()=>actionRef.current.move("s",false)} onPointerCancel={()=>actionRef.current.move("s",false)}>▼</button><button type="button" onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);actionRef.current.move("d",true)}} onPointerUp={()=>actionRef.current.move("d",false)} onPointerCancel={()=>actionRef.current.move("d",false)}>▶</button></div>
+      </div>
+      {!started&&<div className="match3d-intro">Матч 11 на 11 на стадіоні. Наведи мишку на партнера або вільний простір, щоб спрямувати пас. Голкіпер реагує на удар із затримкою 0,3 секунди.</div>}
     </div>
     <div className="live-match-footer"><span><b>{playerName}</b> · OVR {rating}</span><span>Влучні передачі: {passAccuracy===null?"—":passAccuracy+"%"}</span><span>{minute<90?"Матч триває": "Матч завершено"}</span></div>
     <p className="live-match-tip">Порада: підведи футболіста ближче до штрафного перед ударом. Клацни мишкою по правій/лівій частині поля для прицілювання, потім натисни Space. На кожну дію є 3D-анімація м’яча.</p>

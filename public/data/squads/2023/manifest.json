@@ -2,19 +2,23 @@
   "season": 2023,
   "seasonLabel": "2023/24",
   "seasonConvention": "start-year",
-  "status": "pending-data",
-  "description": "Real-world club squads for the 2023/24 season. Populate each league file only after verifying the source and team-season mapping.",
+  "status": "data-imported",
+  "description": "Premier League squads and player records for 2023/24 are imported. Other leagues remain to be populated. The game loader still needs to be wired to read these JSON files.",
   "leagues": [
     {
       "leagueId": 39,
       "leagueName": "Premier League",
       "file": "leagues/39.json",
-      "status": "pending-data",
+      "status": "data-imported",
       "source": {
-        "name": "Not yet selected",
-        "url": null,
-        "retrievedAt": null
-      }
+        "name": "Samoilov2004/premier_league_dataset (records derived from Transfermarkt)",
+        "url": "https://github.com/Samoilov2004/premier_league_dataset/tree/main/dataset/DATA_JSON/Season_2023",
+        "officialCrossCheck": "https://www.premierleague.com/en/news/3681595/202324-premier-league-squad-lists",
+        "retrievedAt": "2026-10-15",
+        "licenseReviewRequired": true
+      },
+      "teamCount": 20,
+      "playerCount": 853
     }
   ]
 }

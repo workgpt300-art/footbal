@@ -99,8 +99,8 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
         foulsHome: intBetween(4, 15), foulsAway: intBetween(4, 15),
         yellowsHome: intBetween(0, 3), yellowsAway: intBetween(0, 3),
         redsHome: 0, redsAway: 0,
-        savesHome: homeIsUser ? opponentOnTarget.value - ownGoals.value : ownOnTarget.value - opponentGoals.value,
-        savesAway: homeIsUser ? ownOnTarget.value - opponentGoals.value : opponentOnTarget.value - ownGoals.value,
+        savesHome: homeIsUser ? opponentOnTarget.value - opponentGoals.value : ownOnTarget.value - ownGoals.value,
+        savesAway: homeIsUser ? ownOnTarget.value - ownGoals.value : opponentOnTarget.value - opponentGoals.value,
       };
       const safeStats: MatchStats = { ...stats, savesHome: Math.max(0, stats.savesHome), savesAway: Math.max(0, stats.savesAway) };
       finishRef.current({ homeScore: homeIsUser ? ownGoals.value : opponentGoals.value, awayScore: homeIsUser ? opponentGoals.value : ownGoals.value, events: [...events].sort((a,b)=>a.minute-b.minute), stats: safeStats });

@@ -336,9 +336,20 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           if(!success){opponentPossession=true;opponentHolder=target;userBallHolder=null;opponentPossessionClock=0;}
           setStatus(desc);lock=true;
         };
+        const keyFromEvent=(e:KeyboardEvent)=>{
+          // Use physical key codes, not e.key characters: W/A/S/D must work on every keyboard layout.
+          const codeMap:Record<string,string>={
+            KeyW:"w",KeyA:"a",KeyS:"s",KeyD:"d",KeyE:"e",KeyQ:"q",KeyR:"r",
+            ArrowUp:"arrowup",ArrowDown:"arrowdown",ArrowLeft:"arrowleft",ArrowRight:"arrowright",
+            Space:" ",ShiftLeft:"shift",ShiftRight:"shift",
+          };
+          return codeMap[e.code]??e.key.toLowerCase();
+        };
         const onKeyDown=(e:KeyboardEvent)=>{
-          const k=e.key.toLowerCase();
-          if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","shift"].includes(k))e.preventDefault();
+          const target=e.target;
+          if(target instanceof HTMLElement&&(target.isContentEditable||["INPUT","TEXTAREA","SELECT"].includes(target.tagName)))return;
+          const k=keyFromEvent(e);
+          if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," ","shift","e","q","r"].includes(k))e.preventDefault();
           if((k===" "||k==="e"||k==="q"||k==="r")&&!e.repeat){
             if(k===" "){launchShot();return;}
             if(k==="e"){launchPass(false);return;}
@@ -355,9 +366,18 @@ export function PlayableMatch3D({ home, away, userClubId, playerName, rating, fi
           }
           keys.add(k);
         };
-        const onKeyUp=(e:KeyboardEvent)=>keys.delete(e.key.toLowerCase());
-        window.addEventListener("keydown",onKeyDown,true);window.addEventListener("keyup",onKeyUp,true);
-        cleanups.push(()=>window.removeEventListener("keydown",onKeyDown,true),()=>window.removeEventListener("keyup",onKeyUp,true));
+        const onKeyUp=(e:KeyboardEvent)=>keys.delete(keyFromEvent(e));
+        const clearKeys=()=>keys.clear();
+        window.addEventListener("keydown",onKeyDown,true);
+        window.addEventListener("keyup",onKeyUp,true);
+        window.addEventListener("blur",clearKeys);
+        document.addEventListener("visibilitychange",clearKeys);
+        cleanups.push(
+          ()=>window.removeEventListener("keydown",onKeyDown,true),
+          ()=>window.removeEventListener("keyup",onKeyUp,true),
+          ()=>window.removeEventListener("blur",clearKeys),
+          ()=>document.removeEventListener("visibilitychange",clearKeys)
+        );
 
         const updateAim=(e:PointerEvent,announce=false)=>{
           const rect=renderer.domElement.getBoundingClientRect();

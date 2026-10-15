@@ -242,7 +242,7 @@ export function advanceOneDay(save:CareerSave):CareerSave{
   if(today.length){
     for(const fixture of today){
       const played=simulateFixture(fixture,next);next.fixtures=next.fixtures.map((item)=>item.id===played.id?played:item);
-      if(played.homeClubId===next.clubId||played.awayClubId===next.clubId){
+      if(next.contractStatus!=="free-agent"&&(played.homeClubId===next.clubId||played.awayClubId===next.clubId)){
         const goals=played.events.filter((e)=>e.kind==="goal"&&e.clubId===next.clubId&&e.playerName===next.player.name).length;
         const started=next.player.rating>=55&&next.player.fitness>=45;const minutes=started?(next.player.fitness>70?90:65):next.player.fitness>=30?22:0;
         const assists=played.events.filter((e)=>e.kind==="goal"&&e.clubId===next.clubId&&randomForEvent(e.minute+played.seed)<.2).length;
@@ -277,6 +277,7 @@ export function advanceOneDay(save:CareerSave):CareerSave{
   return {...next,news:next.news.slice(0,60)};
 }
 export function advanceToNextMatch(save:CareerSave):CareerSave{
+   if(save.contractStatus==="free-agent")return save;
   const fixture=save.fixtures.find((f)=>f.status==="scheduled"&&f.date>save.date&&(f.homeClubId===save.clubId||f.awayClubId===save.clubId));
   if(!fixture)return save;let next=save;while(next.date<fixture.date)next=advanceOneDay(next);return next;
 }

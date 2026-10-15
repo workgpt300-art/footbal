@@ -235,7 +235,7 @@ export function getStandings(fixtures:Fixture[],leagueId?:string):StandingRow[]{
   const result=[...rows.values()];result.forEach((row)=>{row.goalDifference=row.goalsFor-row.goalsAgainst;row.form=row.form.slice(-5);});
   return result.sort((a,b)=>b.points-a.points||b.goalDifference-a.goalDifference||b.goalsFor-a.goalsFor||getClub(a.clubId).name.localeCompare(getClub(b.clubId).name));
 }
-export function getUpcomingFixtures(save:CareerSave,limit=5):Fixture[]{return save.fixtures.filter((f)=>f.status==="scheduled"&&f.date>=save.date).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,limit);}
+export function getUpcomingFixtures(save:CareerSave,limit=5):Fixture[]{return save.fixtures.filter((f)=>f.status==="scheduled"&&f.date>=save.date&&(f.homeClubId===save.clubId||f.awayClubId===save.clubId)).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,limit);}
 export function formatMoney(value:number):string{if(value>=1000000)return "€"+(value/1000000).toFixed(value>=10000000?0:1)+" млн";if(value>=1000)return "€"+Math.round(value/1000)+" тис.";return "€"+Math.round(value);}
 export function formatDate(date:string):string{return new Intl.DateTimeFormat("uk-UA",{day:"2-digit",month:"short",year:"numeric",timeZone:"UTC"}).format(new Date(date+"T12:00:00Z"));}
 export function shortDate(date:string):string{return new Intl.DateTimeFormat("uk-UA",{day:"2-digit",month:"short",timeZone:"UTC"}).format(new Date(date+"T12:00:00Z"));}

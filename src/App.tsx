@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode, type CSSProperties } from "react";
 import { Activity, ArrowLeftRight, ArrowRight, BarChart3, Bell, CalendarDays, Check, ChevronRight, CircleHelp, CloudDownload, Coins, Dumbbell, FileDown, FileUp, Goal, House, Menu, MousePointer2, Newspaper, Play, Plus, Save, Search, Settings, Shield, Shirt, Star, Target, Timer, Trophy, UserRound, Users, Wallet, X, Zap } from "lucide-react";
 import type { CareerSave, Fixture, MatchEvent, MatchStats, Position, TrainingFocus, TryoutApplication, TryoutSession } from "./types";
-import { advanceOneDay, advanceToNextMatch, CLUBS, createCareer, createTransferOffers, decideTransfer, formatDate, formatMoney, getClub, getStandings, getTrainingLabel, getUpcomingFixtures, getVirtualSquad, LEAGUES, nextFixtureForPlayer, POSITIONS, shortDate, TRAINING, trainPlayer } from "./lib/game";
+import { advanceOneDay, advanceToNextMatch, CLUBS, createCareer, createTransferOffers, decideTransfer, formatDate, formatMoney, getClub, getStandings, getTrainingLabel, getUpcomingFixtures, getVirtualSquad, LEAGUES, nextFixtureForPlayer, POSITIONS, shortDate, simulateFixture, TRAINING, trainPlayer } from "./lib/game";
 import { exportSave, getActiveSaveId, importSave, loadSaves, persistSaves, setActiveSaveId } from "./lib/storage";
 import { supabase, supabaseConfigured } from "./lib/supabase";
 import { ThreeDTrial } from "./components/ThreeDTrial";

@@ -24,9 +24,37 @@ export interface Fixture {
 }
 export interface TransferOffer { id: string; clubId: string; createdAt: string; fee: number; wage: number; contractYears: number; status: "pending" | "accepted" | "rejected" | "expired"; type: "transfer" | "loan"; }
 export interface NewsItem { id: string; date: string; category: "match" | "training" | "transfer" | "system"; title: string; body: string; }
+export interface TryoutApplication {
+  id: string;
+  clubId: string;
+  requestedAt: string;
+  status: "invited" | "rejected" | "completed";
+  score?: number;
+  message?: string;
+}
+export type TryoutPhase = "shooting" | "passing" | "dribbling" | "complete";
+export interface TryoutSession {
+  id: string;
+  clubId: string;
+  phase: TryoutPhase;
+  attemptsInPhase: number;
+  totalAttempts: number;
+  score: number;
+  lastResult: string;
+}
+export interface ContractNegotiation {
+  clubId: string;
+  proposedWage: number;
+  requestedWage: number;
+  years: number;
+  status: "open" | "signed" | "rejected";
+  tryoutScore: number;
+}
 export interface CareerSave {
   id: string; name: string; createdAt: string; updatedAt: string; date: string; season: string; player: CareerPlayer; clubId: string;
   fixtures: Fixture[]; offers: TransferOffer[]; news: NewsItem[]; trainingFocus: TrainingFocus;
   difficulty: "Нормальна" | "Складна" | "Легенда"; lastEvent: string; isDemoWorld: boolean;
+  contractStatus?: "active" | "free-agent"; contractEndDate?: string;
+  tryoutApplications?: TryoutApplication[]; activeTryout?: TryoutSession | null; contractNegotiation?: ContractNegotiation | null;
 }
 export interface StandingRow { clubId: string; played: number; wins: number; draws: number; losses: number; goalsFor: number; goalsAgainst: number; goalDifference: number; points: number; form: string[]; }

@@ -107,6 +107,7 @@ export function FCMainMenu({ hasSave, playerName, clubName, season, rating, onCo
         <div className="fc27-hero-actions">
           <button className="fc27-play-button" onClick={hasSave ? onContinue : onNewCareer}><CirclePlay size={20} fill="currentColor" /> {hasSave ? "ПРОДОВЖИТИ КАР'ЄРУ" : "ПОЧАТИ КАР'ЄРУ"} <ArrowRight size={18} /></button>
           <button className="fc27-secondary-button" onClick={() => hasSave ? onNavigate("matches") : onNewCareer()}><Gamepad2 size={17} /> ШВИДКИЙ МАТЧ</button>
+          {hasSave && <button className="fc27-secondary-button fc27-new-career-button" onClick={onNewCareer}><Shield size={16} /> НОВА КАР'ЄРА</button>}
         </div>
         <div className="fc27-platform-hint"><span className="fc27-keycap">↑</span><span className="fc27-keycap">↓</span><span>НАВІГАЦІЯ</span><b>ENTER</b><span>ОБРАТИ</span><b>1–7</b><span>ШВИДКИЙ ДОСТУП</span></div>
       </div>
